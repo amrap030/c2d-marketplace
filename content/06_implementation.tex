@@ -1,0 +1,24 @@
+\chapter{Implementation}
+\label{cha:implementation}
+
+The final outcome of this thesis will consist of multiple software artifacts, implementing a fully functional data marketplace, as described in the use case of the previous chapter \ref{chapter:solution}. The combination of all software artifacts builds the blockchain-based data trading platform. According to that, the platform is composed of a public permissionless Blockchain, a Blockchain Indexer, a Marketplace User Interface, a decentralized Off-chain Storage Node, a private Compute Node and a Zero-knowledge Proof Service. 
+
+\subsubsection{Blockchain}
+The Blockchain is the single source of truth for all advertised datasets on the the marketplace user interface. It provides non-repudiable tamper-proof logs of transactions, everything visible via the user interface. All necessary smart contracts will be written using the Solidity\footnote{https://github.com/ethereum/solidity} programming language and deployed to an Ethereum Virtual Machine (EVM) compliant public permissionless Blockchain such as Ethereum itself, or a layer 2 network such as Polygon. 
+
+\subsubsection{Blockchain Indexer}
+Unfortunately, the Blockchain is a time-ordered append-only data structure, which makes it highly inefficient to query, i.e. filter, search, paginate and aggregate. However, for a practical data marketplace this is absolutely necessary. Blockchain Indexers typically provide an efficient protocol, to extract raw data from the Blockchain, process it and store it into some kind of database, as soon as a new block is written to the ledger. Additionally, Blockchain Indexers expose an API, to provide highly efficient and fast access to Blockchain data with all desired querying capabilities. The Blockchain indexer will be implemented with the Graph\footnote{https://thegraph.com/en/}.
+
+\subsubsection{User Interface}
+The user interface is the entry point to the blockchain-based data trading platform. A seller can advertise and monetize arbitrary datasets whereas a buyer can transparently browse the marketplace and buy interesting datasets. It will provide most of the functional requirements of Figure \ref{fig:components} and will be implemented as a Vue\footnote{https://vuejs.org/} 3 single page application (SPA) with commonly used libraries such as Ethers.js\footnote{https://github.com/ethers-io/ethers.js/} and Hardhat\footnote{https://github.com/NomicFoundation/hardhat} to efficiently build modern decentralized applications (dApps). To securely interact with smart contracts, I will use Metamask\footnote{https://metamask.io/} as a wallet.
+
+\subsubsection{Off-chain Storage}
+The off-chain storage node is not used to store the advertised raw datasets. It is rather used to store the dataset's metadata according to the Content-Addressable Storage Pattern\cite{eberhardtBlockchainInsightsOffChaining2017}, including a detailed description of the dataset and its hash. As a decentralized peer-to-peer storage network, the InterPlanetary File System\footnote{https://docs.ipfs.tech/} (IPFS) will provide highly available and immutable access to metadata. A content identifier (CID) is stored with every advertised dataset on-chain.
+
+\subsubsection{Compute Node}
+The compute node is a private node of the seller to fulfill the purchase order of the buyer, i.e. computing a statistical query on a private dataset. This compute node will be implemented as a Node.js\footnote{https://nodejs.org/en/} application.
+%- policies
+%- purpose based access control + abac
+
+\subsubsection{Zero-knowledge Proof Service}
+The ZKP service is the focus of this thesis and will automatically generate proving programs based on the individual purchase of a buyer. It compiles high-level ZoKrates\footnote{https://github.com/Zokrates/ZoKrates} code into an executable constraint system (ECS) using the Intermediate Representation (ZIR) of ZoKrates. Furthermore, it automatically generates an evidence key pair for proof creation and verification, also referred as the one-time setup. Finally, a buyer can send the proving key to the seller and deploys a smart contract for proof verification. The seller uses the proving key and the generated proving program to deliver such a proof.
