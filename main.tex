@@ -41,6 +41,7 @@ TCP
 
 %make readable references
 \usepackage[pdftex,pdfpagelabels=true]{hyperref}
+\usepackage[acronym]{glossaries}
 \hypersetup{%
 	pdftitle={Thesis Title},
 	pdfauthor={Thesis Author},
@@ -53,6 +54,8 @@ TCP
 \def\@textbottom{\vskip \z@ \@plus 1pt}
 \let\@texttop\relax
 \makeatother
+\makeglossaries
+\input{content/glossary/index.tex}
 
 \begin{document}
 
@@ -92,6 +95,8 @@ TCP
 % Lists of tables and figures
 \listoftables
 \listoffigures
+\printglossary[type=\acronymtype,title={List of Abbreviations}]
+\addcontentsline{toc}{chapter}{List of Abbreviations}
 
 % Bibliography
 \setwidesite{}						% Set page to be wider for bibliography
