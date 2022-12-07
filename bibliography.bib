@@ -629,3 +629,107 @@ abstract = { Usually, a proof of a theorem contains more knowledge than the mere
   langid = {english},
   file = {/Users/kevinhertwig/Documents/Zotero/storage/CCLLEPUY/Hum et al. - Zero-Knowledge and Its Applications (Extended Abst.pdf}
 }
+
+@incollection{grothSizePairingBasedNoninteractive2016,
+  title = {On the {{Size}} of {{Pairing-Based Non-interactive Arguments}}},
+  booktitle = {Advances in {{Cryptology}} \textendash{} {{EUROCRYPT}} 2016},
+  author = {Groth, Jens},
+  editor = {Fischlin, Marc and Coron, Jean-S{\'e}bastien},
+  year = {2016},
+  volume = {9666},
+  pages = {305--326},
+  publisher = {{Springer Berlin Heidelberg}},
+  address = {{Berlin, Heidelberg}},
+  doi = {10.1007/978-3-662-49896-5_11},
+  abstract = {Non-interactive arguments enable a prover to convince a verifier that a statement is true. Recently there has been a lot of progress both in theory and practice on constructing highly efficient non-interactive arguments with small size and low verification complexity, so-called succinct non-interactive arguments (SNARGs) and succinct non-interactive arguments of knowledge (SNARKs).},
+  isbn = {978-3-662-49895-8 978-3-662-49896-5},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/EBLN9CW2/Groth - 2016 - On the Size of Pairing-Based Non-interactive Argum.pdf}
+}
+
+@article{sallerasZPiEZeroKnowledgeProofs2021,
+  title = {{{ZPiE}}: {{Zero-Knowledge Proofs}} in {{Embedded Systems}}},
+  shorttitle = {{{ZPiE}}},
+  author = {Salleras, Xavier and Daza, Vanesa},
+  year = {2021},
+  month = oct,
+  journal = {Mathematics},
+  volume = {9},
+  number = {20},
+  pages = {2569},
+  issn = {2227-7390},
+  doi = {10.3390/math9202569},
+  abstract = {Zero-Knowledge Proofs (ZKPs) are cryptographic primitives allowing a party to prove to another party that the former knows some information while keeping it secret. Such a premise can lead to the development of numerous privacy-preserving protocols in different scenarios, like proving knowledge of some credentials to a server without leaking the identity of the user. Even when the applications of ZKPs were endless, they were not exploited in the wild for a couple of decades due to the fact that computing and verifying proofs was too computationally expensive. However, the advent of efficient schemes (in particular, zk-SNARKs) made this primitive to break into the scene in fields like cryptocurrencies, smart-contracts, and more recently, selfsovereign scenarios: private-by-design identity management and authentication. Nevertheless, its adoption in environments like the Internet of Things (IoT) remains unexplored due to the computational limitations of embedded systems. In this paper, we introduce ZPiE, a C library intended to create ZKP applications to be executed in embedded systems. Its main feature is portability: it can be compiled, executed, and used outof-the-box in a wide variety of devices. Moreover, our proof-of-concept has been proved to work smoothly in different devices with limited resources, which can execute state-of-the-art ZKP authentication protocols.},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/JX8D5H2V/Salleras und Daza - 2021 - ZPiE Zero-Knowledge Proofs in Embedded Systems.pdf}
+}
+
+@inproceedings{bensassonZerocashDecentralizedAnonymous2014,
+  title = {Zerocash: {{Decentralized Anonymous Payments}} from {{Bitcoin}}},
+  shorttitle = {Zerocash},
+  booktitle = {2014 {{IEEE Symposium}} on {{Security}} and {{Privacy}}},
+  author = {Ben Sasson, Eli and Chiesa, Alessandro and Garman, Christina and Green, Matthew and Miers, Ian and Tromer, Eran and Virza, Madars},
+  year = {2014},
+  month = may,
+  pages = {459--474},
+  publisher = {{IEEE}},
+  address = {{San Jose, CA}},
+  doi = {10.1109/SP.2014.36},
+  abstract = {Bitcoin is the first digital currency to see widespread adoption. Although payments are conducted between pseudonyms, Bitcoin cannot offer strong privacy guarantees: payment transactions are recorded in a public decentralized ledger, from which much information can be deduced. Zerocoin (Miers et al., IEEE S\&P 2013) tackles some of these privacy issues by unlinking transactions from the payment's origin. Yet it still reveals payment destinations and amounts, and is limited in functionality.},
+  isbn = {978-1-4799-4686-0},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/797R7QEJ/Ben Sasson et al. - 2014 - Zerocash Decentralized Anonymous Payments from Bi.pdf}
+}
+
+@article{parnoPinocchioNearlyPractical,
+  title = {Pinocchio: {{Nearly Practical Verifiable Computation}}},
+  author = {Parno, Bryan and Howell, Jon and Gentry, Craig and Raykova, Mariana},
+  journal = {V KF},
+  pages = {16},
+  abstract = {To instill greater confidence in computations outsourced to the cloud, clients should be able to verify the correctness of the results returned. To this end, we introduce Pinocchio, a built system for efficiently verifying general computations while relying only on cryptographic assumptions. With Pinocchio, the client creates a public evaluation key to describe her computation; this setup is proportional to evaluating the computation once. The worker then evaluates the computation on a particular input and uses the evaluation key to produce a proof of correctness. The proof is only 288 bytes, regardless of the computation performed or the size of the inputs and outputs. Anyone can use a public verification key to check the proof.},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/UGA9ZI4F/Parno et al. - Pinocchio Nearly Practical Veriﬁable Computation.pdf}
+}
+
+@inproceedings{mallerSonicZeroKnowledgeSNARKs2019,
+  title = {Sonic: {{Zero-Knowledge SNARKs}} from {{Linear-Size Universal}} and {{Updatable Structured Reference Strings}}},
+  shorttitle = {Sonic},
+  booktitle = {Proceedings of the 2019 {{ACM SIGSAC Conference}} on {{Computer}} and {{Communications Security}}},
+  author = {Maller, Mary and Bowe, Sean and Kohlweiss, Markulf and Meiklejohn, Sarah},
+  year = {2019},
+  month = nov,
+  pages = {2111--2128},
+  publisher = {{ACM}},
+  address = {{London United Kingdom}},
+  doi = {10.1145/3319535.3339817},
+  abstract = {Ever since their introduction, zero-knowledge proofs have become an important tool for addressing privacy and scalability concerns in a variety of applications. In many systems each client downloads and verifies every new proof, and so proofs must be small and cheap to verify. The most practical schemes require either a trusted setup, as in (pre-processing) zk-SNARKs, or verification complexity that scales linearly with the complexity of the relation, as in Bulletproofs. The structured reference strings required by most zkSNARK schemes can be constructed with multi-party computation protocols, but the resulting parameters are specific to an individual relation. Groth et al. discovered a zk-SNARK protocol with a universal structured reference string that is also updatable, but the string scales quadratically in the size of the supported relations.},
+  isbn = {978-1-4503-6747-9},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/SXT5RVDA/Maller et al. - 2019 - Sonic Zero-Knowledge SNARKs from Linear-Size Univ.pdf}
+}
+
+@article{gabizonPlonKPermutationsLagrangebases,
+  title = {{{PlonK}}: {{Permutations}} over {{Lagrange-bases}} for {{Oecumenical Noninteractive}} Arguments of {{Knowledge}}},
+  author = {Gabizon, Ariel and Williamson, Zachary J and Ciobotaru, Oana},
+  pages = {34},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/ICF6EVCK/Gabizon et al. - PlonK Permutations over Lagrange-bases for Oecume.pdf}
+}
+
+@incollection{chiesaMarlinPreprocessingZkSNARKs2020,
+  title = {Marlin: {{Preprocessing zkSNARKs}} with {{Universal}} and {{Updatable SRS}}},
+  shorttitle = {Marlin},
+  booktitle = {Advances in {{Cryptology}} \textendash{} {{EUROCRYPT}} 2020},
+  author = {Chiesa, Alessandro and Hu, Yuncong and Maller, Mary and Mishra, Pratyush and Vesely, Noah and Ward, Nicholas},
+  editor = {Canteaut, Anne and Ishai, Yuval},
+  year = {2020},
+  volume = {12105},
+  pages = {738--768},
+  publisher = {{Springer International Publishing}},
+  address = {{Cham}},
+  doi = {10.1007/978-3-030-45721-1_26},
+  abstract = {We present a methodology to construct preprocessing zkSNARKs where the structured reference string (SRS) is universal and updatable. This exploits a novel use of holography [Babai et al., STOC 1991], where fast verification is achieved provided the statement being checked is given in encoded form. We use our methodology to obtain a preprocessing zkSNARK where the SRS has linear size and arguments have constant size. Our construction improves on Sonic [Maller et al., CCS 2019], the prior state of the art in this setting, in all efficiency parameters: proving is an order of magnitude faster and verification is thrice as fast, even with smaller SRS size and argument size. Our construction is most efficient when instantiated in the algebraic group model (also used by Sonic), but we also demonstrate how to realize it under concrete knowledge assumptions. We implement and evaluate our construction.},
+  isbn = {978-3-030-45720-4 978-3-030-45721-1},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/5RIHBNJA/Chiesa et al. - 2020 - Marlin Preprocessing zkSNARKs with Universal and .pdf}
+}
