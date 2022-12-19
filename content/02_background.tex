@@ -1,51 +1,159 @@
 \chapter{Background}
 \label{cha:background}
 
+- online marketplace, data marketplace, decentralized data marketplace (vielleicht zu related work kurze einleitung?)
+
+- information security, gdpr, privacy
+
 - blockchain/decentralized systems
-- online marketplace, data marketplace, decentralized data marketplace
 - smart contract
-- fair exchange
+- (fair exchange)
 - erc721
 - erc20
-- zkp
 - on-/off-chain
-- snarks, starks, bulletproofs
-- gdpr, privacy, information security
 
-%VOC is a derivative of Verifiable Computation and aims to secure the integrity of computations performed by untrusted parties off the Blockchain. The result of the computation is then published to the Blockchain and verified on-chain with a cryptographic proof, attesting its correctness. Off-loading the computation has multiple benefits -- (i.) it increases the scalability by avoiding complex redundant computations on each node; (ii.) it reduces on-chain transaction costs by significantly lowering the size of transactions; and (iii.) it improves privacy by hiding PII and confidential data from the public ledger. \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021,xuSlimChainScalingBlockchain} 
+\section{Blockchain}
+\label{sec:blockchain}
 
-%According to \cite{eberhardtOffchainingModelsApproaches2018}, a reasonable VC scheme for off-chain computations needs to fulfill the following requirements: (i.) non-interactivity; (ii.) cheap verification; (iii.) weak security assumptions; and (iv.) zero-knowledge. ZkSNARKs, ZkSTARKs and Bulletproofs provide a valid approach to the aforementioned requirements. ZkSNARKs are a type of Zero-knowledge proof (ZKP) that are \emph{non-interactive} and \emph{succinct}. \emph{Non-interactivity} defines the possibility to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. \emph{Succinct} defines a proof that is small in size, compared to ZkSTARKs and Bulletproofs, and can be verified cheaply and quickly, typically within a few milliseconds \cite{simunicVerifiableComputingApplications2021}. This thesis uses a ZKP with ZkSNARKs for verifiable computations on private datasets.
+\subsection{Smart Contracts}
+\label{subsec:sc}
+
+Smart Contracts were first mentioned in 1994 by Nick Szabo, as a "computerized transaction protocol that executes the terms of a contract" \cite{Szabo_1997}. When contract terms are met, computer code executes exactly as designed in a \emph{trustless} and \emph{self-enforcing}-manner, without the need for a central authority or any other \acrshort{ttp}. It can be compared to a vending machine, which automatically drops a selected product, assuming pre-determined conditions are met, i.e. the product is in stock and the price is covered \cite{Szabo_1997}. This creates a predictable outcome.
+
+In 2014, Vitalik Buterin \cite{buterinNEXTGENERATIONSMART} brings the idea of smart contracts to the Ethereum blockchain. Next to payments, it was now possible to deploy and execute computer programs on Ethereum, in a distributed manner without trusting a central server. Every smart contract has its own address on the blockchain, that can be targeted by an \acrfull{eoa} or another smart contract in the form of a transaction. A transaction can trigger smart contract functions, which can be read-only, state-changing in the smart contracts memory or even call other smart contracts functions or deploy new smart contracts. The runtime is called the \acrfull{evm}. It implements a turing-complete programming language in which smart contracts are written. To prevent inconsistent state on the blockchain, smart contracts need to satisfy \emph{determinism} and \emph{termination}.
+
+\begin{enumerate}
+    \item \emph{Determinism}: Each node in the network produces the same result given the same input to guarantee consensus. Hence, access to the filesystem and network is forbidden.
+    \item \emph{Termination}: To prevent a \acrfull{dos} by infinite loops or long-running transactions, Ethereum adds the concept of gas to force transactions to terminate. This is a circumvention of the halting problem for turing-complete programming languages. If the maximum amount of gas allocated for a transaction runs out before the transaction is finished, the execution terminates and state reverts to the previous state before the transaction. This is known as the transaction gas limit. Besides that, the block gas limit specifies the maximum amount of gas for \emph{all} transactions.
+\end{enumerate}
+
+\subsection{Tokenization}
+\label{subsec:tokenization}
+
+mint burn erwähnen?
+
+\subsubsection{ERC-20}
+\label{subsubsec:erc20}
+
+An \acrfull{erc20} token is a technical standard for a fungible token as a smart contract on the Ethereum blockchain. Fungible tokens are interchangeable, not unique and transferable. They can represent anything, but mostly some kind of asset, access right, reputation point, voting right, or even a new cryptocurrency. The \acrshort{erc20} standard was proposed in 2015 and implemented as an \acrfull{eip20}\footnote{https://eips.ethereum.org/EIPS/eip-20} in 2017. The core implementation of an \acrshort{erc20} compliant token consists of 6 functions and 2 events, as depicted below in Listing \ref{lst:erc20-implementation}.\vspace{3mm}
+
+\begin{lstlisting}[language=Solidity,caption={Core interface of an ERC-20 compliant token},label={lst:erc20-implementation}]
+// amount of tokens in circulation
+function totalSupply() public view returns (uint256)
+// amount of tokens owned by an account
+function balanceOf(address _owner) public view returns (uint256 balance)
+// transfers amount of tokens from the owner to a recipients address
+function transfer(address _to, uint256 _value) public returns (bool success)
+// transfers amount of tokens from one address to another on behalf of owner
+function transferFrom(address _from, address _to, uint256 _value) public returns (bool success)
+// approves an address to spend a specific amount of tokens from owner
+function approve(address _spender, uint256 _value) public returns (bool success)
+// returns remaining amount of tokens allowed to spend from owner
+function allowance(address _owner, address _spender) public view returns (uint256 remaining)
+// emitted on a successful transfer of tokens
+event Transfer(address indexed _from, address indexed _to, uint256 _value)
+// emitted when a spender is approved to spend tokens on behalf of owner
+event Approval(address indexed _owner, address indexed _spender, uint256 _value)
+\end{lstlisting}
+
+\subsubsection{ERC-721}
+\label{subsubsec:erc721}
+
+\acrshort{erc721}\footnote{https://eips.ethereum.org/EIPS/eip-721} compliant tokens are more complex than \acrshort{erc20} tokens, because they are unique and not interchangeable. Hence, each \acrshort{erc721} token can have a different value than another token. For example, a seat in the front row of a concert might have a different value than a seat in the back row. This property of distinctness makes it a so called \acrfull{nft}. According to that, the core implementation of an \acrshort{erc721} compliant token consists of 8 functions and 3 events, as depicted below in Listing \ref{lst:erc721-implementation}.\vspace{3mm}
+
+\begin{lstlisting}[language=Solidity,caption={Core interface of an ERC-721 compliant token},label={lst:erc721-implementation}]
+// amount of tokens owned by an account
+function balanceOf(address _owner) external view returns (uint256);
+// owner of a specific token id
+function ownerOf(uint256 _tokenId) external view returns (address);
+// safely transfers a token id to another account
+function safeTransferFrom(address _from, address _to, uint256 _tokenId) external payable;
+// transfers a token id to another account (deprecated)
+function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
+// gives an account permission to transfer a token id to another account
+function approve(address _approved, uint256 _tokenId) external payable;
+// gives an account permissions to manage all owned token id's
+function setApprovalForAll(address _operator, bool _approved) external;
+// returns an account approved for a token id
+function getApproved(uint256 _tokenId) external view returns (address);
+// returns if operator is allowed to manage all of the token id's of owner 
+function isApprovedForAll(address _owner, address _operator) external view returns (bool);
+// emitted on a successful transfer of a token id
+event Transfer(address indexed _from, address indexed _to, uint256 indexed _tokenId);
+// emitted when an operator is approved to manage a token id
+event Approval(address indexed _owner, address indexed _approved, uint256 indexed _tokenId);
+// emitted when an operator is approved to manage all token id's
+event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
+\end{lstlisting}
+
+\subsection{On-chain vs. Off-chain}
+\label{subsec:onoff}
 
 \section{Zero-knowledge Proof}
 \label{sec:zkp}
 
-A \acrfull{zkp}, first introduced in 1989 by Shafi Goldwasser and Silvio Micali \cite{doi:10.1137/0218012}, is a method to prove the validity of a statement without revealing any more information, besides the certainty, that this statement indeed is valid \cite{simunicVerifiableComputingApplications2021}. Suppose you have a traditional deck of 52 cards, of which 26 are red and 26 are black. You as the prover randomly choose one card and want to prove that your card is red, without revealing it. To prove this statement, you simply need to give the verifier all black cards. This is a real-world example for a \acrshort{zkp}. According to that, a prover is the one who proves the statement to another party called the verifier.
+A \acrfull{zkp}, first introduced in 1985 by Shafi Goldwasser and Silvio Micali \cite{doi:10.1137/0218012}, is a method to prove the validity of a statement without disclosing any more information, besides the fact that this statement indeed is valid \cite{simunicVerifiableComputingApplications2021}. Suppose you have a traditional deck of 52 cards, of which 26 are red and 26 are black. You as the prover randomly choose one card and want to prove that your card is red, without revealing it. To prove this statement, you simply need to give the verifier all black cards. This is a real-world example for a \acrshort{zkp}. According to that, a \emph{prover} is the one who proves the statement to another party called the \emph{verifier}.
 
-WHY ZKP?
+Any \acrshort{zkp} needs to satisfy at least 3 requirements: \emph{Completeness}, \emph{Soundness}, and \emph{Zero-knowledge}. \emph{Completeness} describes the fact, that an honest prover will eventually convince an honest verifier about the truthiness of the statement \cite{simunicVerifiableComputingApplications2021}. \emph{Soundness} is the property, that no cheating prover can convince an honest verifier that a false statement is true, except with some small probability \cite{simunicVerifiableComputingApplications2021}. Lastly, with \emph{Zero-knowledge}, the verifier learns no more information, except the validity of the statement \cite{simunicVerifiableComputingApplications2021}.
 
-\subsection{Requirements for Zero-knowledge Proofs}
+\acrshort{zkp}'s can significantly improve scaling and privacy limitations of blockchains, and reduce transaction costs. This is done by moving complex computations off-chain, while submitting only the result together with a cryptographic proof attesting the computation's correctness on-chain. For example, it enables identity validation on-chain, while hiding \acrshort{pii} off-chain; it enables anonymous payments; and it enables batch-processing of transactions off-chain, while submitting a verifiable proof on-chain, known as ZK-rollups. Hence, \acrshort{zkp}'s are a class of \acrfull{voc}.
+
+\subsection{Types of Zero-knowledge Proofs}
 \label{subsec:zkp_req}
 
-Any \acrshort{zkp} needs to satisfy at least 3 requirements -- \emph{Completeness}, \emph{Soundness}, and \emph{Zero-knowledge}. With \emph{Completeness}, an honest verifier will be convinced that the statement is true by an untrusted prover if the statement is true \cite{simunicVerifiableComputingApplications2021}. With \emph{Soundness} no cheating prover can convince the honest verifier that the statement is true, except with some small probability if the statement is false \cite{simunicVerifiableComputingApplications2021}. Lastly, with \emph{Zero-knowledge}, the verifier learns no more information, except the validity of the statement \cite{simunicVerifiableComputingApplications2021}. Furthermore, it is impossible for the verifier to learn private inputs from the proof \cite{simunicVerifiableComputingApplications2021}.
-
-\acrlong{zkp}'s can be divided into \emph{interactive} - and \emph{non-interactive} \acrshort{zkp}'s. An interactive \acrshort{zkp} requires two parties, a prover and a verifier, to interact back and forth until the verifier is convinced about the validity of a statement. This provides limited usefulness for real-world applications and makes it impossible to be verified repeatedly by any party. Consequently, Hum et. al \cite{humZeroKnowledgeItsApplications} introduced the \acrfull{nizkp} as a proof system that is able to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. This allows the proof to be verified repeatedly by any party and provides greater efficiency and flexibility for real-world applications. The foundation is a shared random string, which is common between the prover and verifier. ZK-SNARKs, ZK-STARKs, and Bulletproofs are examples of non-interactive \acrshort{zkp}'s.
-
-%\subsection{Types of Zero-knowledge Proofs}
-%\label{subsec:zkp_types}
+\acrlong{zkp}'s can be divided into \emph{interactive} - and \emph{non-interactive} \acrshort{zkp}'s. An interactive \acrshort{zkp} requires two parties, a prover and a verifier, to interact back and forth until the verifier is convinced about the validity of a statement. This provides limited usefulness for real-world applications and makes it impossible to be verified repeatedly by any other party. Consequently, Hum et. al \cite{humZeroKnowledgeItsApplications} introduced the \acrfull{nizkp} as a proof system that is able to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. This allows the proof to be verified repeatedly by any party and provides greater efficiency and flexibility for real-world applications. The foundation is a shared random string, which is common between the prover and verifier. \acrshort{zksnark}'s, \acrshort{zkstark}'s, and Bulletproofs are examples of non-interactive \acrshort{zkp}'s.
 
 \subsubsection{ZK-SNARKs}
 \label{subsubsec:zksnarks}
 
-\textbf{Z}ero-\textbf{K}nowledge \textbf{S}uccinct \textbf{N}on-Interactive \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zksnark}) is a type of \acrshort{zkp} with special properties. \emph{Succinctness} means, that the proof is small in size, compared to ZK-STARKs and Bulletproofs, and can be verified cheaply and quickly, typically within a few milliseconds \cite{simunicVerifiableComputingApplications2021}. \emph{Non-Interactivity} describes the possibility to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. The \emph{Argument} is the proof that satisfies completeness and soundness requirements. (besser)
+\textbf{Z}ero-\textbf{K}nowledge \textbf{S}uccinct \textbf{N}on-Interactive \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zksnark}) is a type of \acrshort{zkp} with special properties. \emph{Succinctness} refers to a small-sized proof that can be verified cheaply and quickly, typically within a few milliseconds \cite{simunicVerifiableComputingApplications2021}. \emph{Non-Interactivity} describes the possibility to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. The \emph{Argument} guarantees completeness and soundness requirements of a statement, assuming limited computational power so that nobody could create fake proofs. Every \acrshort{zksnark} consists of 3 algorithms: $G$ (Generator), $P$ (Prover), and $V$ (Verifier).
 
-\acrshort{zksnark}'s require a one-time trusted setup, i.e. the prover and verifier need to agree on one \acrfull{csr} to generate some public parameters. These in turn are used to generate and verify proofs. The \acrshort{csr} is referred to as \emph{toxic waste} because it is possible to create undetectable fake proofs if it is leaked. Consequently, in a trusted setup, participants need to trust each other to destroy the toxic waste for the scheme to be secure. One way to mitigate this security risk is to perform a trusted setup ceremony with \acrfull{smpc}. In this way, multiple participants contribute some randomness to the \acrshort{csr}, and only one participant needs to destroy his toxic waste in order to make the scheme entirely secure. Unfortunately, the \acrshort{csr} is not upgradeable, because the trusted setup is a one-time event, tied to each circuit.
+\begin{enumerate}
+    \item $G$: This algorithm generates 2 public keys, one proving key $pk$, and one verification key $vk$, for a given secret parameter $\lambda$ and a zero-knowledge program $C$.
+    \item $P$: This algorithm generates a proof $\pi = P(pk, x, w)$, stating the prover knows some secret information $w$, also referred to as the witness, which satisfies the zero-knowledge program $C$. It takes a public input $x$, a private input $w$, and the proving key $pk$ as input parameters.
+    \item $V$: This algorithm $V = (vk, x, \pi)$ verifies if the proof is valid, so that $C(x, w) = true$. It takes a public input $x$, the proof $\pi$, and the verifying key $vk$ as input parameters. $V$ is often executed on-chain.
+\end{enumerate}
 
-For encryption, \acrshort{zksnark}'s use elliptic curve cryptography, in particular the \acrfull{ecdsa}. This elliptic curve is then paired with a proving scheme, most famously the Groth16 \cite{grothSizePairingBasedNoninteractive2016} proving scheme. Groth16 is currently the benchmark for \acrshort{zksnark}'s because of the small proof size of $\sim O(1)$ and an on-chain verification complexity of $\sim O(1)$ \cite{sallerasZPiEZeroKnowledgeProofs2021}.\footnote{https://github.com/matter-labs/awesome-zero-knowledge-proofs\#comparison-of-the-most-popular-zkp-systems} This makes it highly scalable and very efficient for blockchain-based applications, as it results in lower verification gas costs. However, the evolution of quantum computers can potentially break the \acrfull{dlp} on elliptic curves, making \acrshort{zksnark}'s \textbf{not} post-quantum secure.
+The algorithm $G$ is known as the one-time trusted setup, i.e. the prover and verifier need to agree on one \acrfull{csr} $\lambda$ to generate the public keys. These in turn are used to generate and verify proofs. The \acrshort{csr} is considered as \emph{toxic waste} because it is possible to create undetectable fake proofs if leaked. Consequently, in a trusted setup, participants need to trust each other to destroy the toxic waste for the scheme to be secure. One way to mitigate this security risk is to perform a trusted setup ceremony with \acrfull{smpc}. In this way, multiple participants contribute some randomness to the \acrshort{csr}, and only one participant must destroy his toxic waste to make the scheme entirely secure. Unfortunately, the \acrshort{csr} is not upgradeable, because the trusted setup is a one-time event, tied to each zero-knowledge program.
 
-One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensassonZerocashDecentralizedAnonymous2014}. Zcash has strong privacy guarantees, as it makes payments anonymously by shielded transactions with \acrshort{zkp}'s. The implementation first started with the Pinocchio \cite{parnoPinocchioNearlyPractical} protocol, followed by the Jens Groth \cite{grothSizePairingBasedNoninteractive2016} protocol after the Sapling upgrade\footnote{https://z.cash/technology/zksnarks/}, and finally, the Orchard shielded payment protocol\footnote{https://zips.z.cash/zip-0224}, using the Halo 2{\footnote{https://halo2.dev/}\textsuperscript{,}\footnote{https://zcash.github.io/halo2/}} proving scheme. At this stage, Zcash is able to remove the trusted setup while still providing high scalability. In addition, Zcash supports a universal and updatable \acrshort{csr}. This new generation of a \acrshort{zksnark} is called a \textbf{S}uccinct \textbf{N}on-interactive \textbf{O}ecumenical (Universal) a\textbf{R}gument of \textbf{K}nowledge. \acrshort{zksnork}. Sonic \cite{mallerSonicZeroKnowledgeSNARKs2019}, PLONK \cite{gabizonPlonKPermutationsLagrangebases}, and Marlin \cite{chiesaMarlinPreprocessingZkSNARKs2020} are examples of \acrshort{zksnork}'s with a universal and updateable trusted setup.
+To solve the one-time trusted setup, there are two approaches -- a \emph{Transparent} and a \emph{Universal} Setup. A transparent setup creates a public \acrshort{csr}, which is not considered as toxic waste. However, the proof size is mostly quite large. Bulletproofs \cite{bunzBulletproofsShortProofs2018}, Fractal \cite{chiesaFractalPostquantumTransparent2020}, Halo \cite{boweRecursiveProofComposition}, SuperSonic-CG \cite{bunzTransparentSNARKsDARK2020}, and ZK-STARK's \cite{ben-sassonScalableTransparentPostquantum} have a transparent setup, as shown in Table \ref{tab:snarks-classification}. A universal setup creates a \acrfull{srs}, which is considered toxic waste, but can be used with arbitrary circuits. This new generation of \acrshort{zksnark}'s is called a \textbf{S}uccinct \textbf{N}on-interactive \textbf{O}ecumenical (Universal) a\textbf{R}gument of \textbf{K}nowledge (\acrshort{zksnork}). \acrshort{srs}'s can even be updated at any time, to secure the setup in case the toxic waste was leaked. Sonic \cite{mallerSonicZeroKnowledgeSNARKs2019}, PLONK \cite{gabizonPlonKPermutationsLagrangebases}, and Marlin \cite{chiesaMarlinPreprocessingZkSNARKs2020} are examples of \acrshort{zksnork}'s with a universal and updateable trusted setup.
+
+% Table generated by Excel2LaTeX
+\begin{table}[H]
+  \small
+  \centering
+    \begin{tabular}{cccc}
+    \toprule
+    \textbf{Common Reference String (CRS)} & \multicolumn{3}{c}{\textbf{Structured Reference String (SRS)}} \\
+    \midrule
+    \multirow{2}[4]{*}{\textbf{Transparent}} & \multicolumn{2}{c}{\textbf{Universal}} & \multicolumn{1}{l}{\textbf{Circuit Specific}} \\
+\cmidrule{2-4}          & \multicolumn{2}{c}{\textbf{Updatable}} & \textbf{Static} \\
+    \midrule
+    Bulletproofs \cite{bunzBulletproofsShortProofs2018} & \multicolumn{2}{c}{Marlin \cite{chiesaMarlinPreprocessingZkSNARKs2020}} & Groth16 \cite{grothSizePairingBasedNoninteractive2016} \\
+    Fractal \cite{chiesaFractalPostquantumTransparent2020} & \multicolumn{2}{c}{PLONK \cite{gabizonPlonKPermutationsLagrangebases}} &  \\
+    Halo \cite{boweRecursiveProofComposition}  & \multicolumn{2}{c}{Sonic \cite{mallerSonicZeroKnowledgeSNARKs2019}} &  \\
+    SuperSonic-CG \cite{bunzTransparentSNARKsDARK2020} &  &  \\
+    ZK-STARK \cite{ben-sassonScalableTransparentPostquantum} &       &       &  \\
+    \bottomrule
+    \end{tabular}%
+  \caption{Classification of ZK-SNARK's based on the type of reference string}
+  \label{tab:snarks-classification}%
+\end{table}%
+
+For encryption, \acrshort{zksnark}'s use elliptic curve cryptography, in particular the \acrfull{ecdsa}. This elliptic curve is used within a proving scheme, most famously the Groth16 \cite{grothSizePairingBasedNoninteractive2016} proving scheme. Groth16 is currently the benchmark for \acrshort{zksnark}'s because of the small proof size of $\sim O(1)$ and an on-chain verification complexity of $\sim O(1)$ \cite{sallerasZPiEZeroKnowledgeProofs2021}.\footnote{\label{gh_zkp}https://github.com/matter-labs/awesome-zero-knowledge-proofs\#comparison-of-the-most-popular-zkp-systems} This makes it highly scalable and very efficient for blockchain-based applications, as it results in lower verification gas costs. However, the evolution of quantum computers can potentially break the \acrfull{dlp} on elliptic curves, making \acrshort{zksnark}'s \textbf{not} post-quantum secure. (weiter nach oben?)
+
+One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensassonZerocashDecentralizedAnonymous2014}. Zcash has strong privacy guarantees, as it makes payments anonymously by shielded transactions with \acrshort{zkp}'s. The implementation first started with the Pinocchio \cite{parnoPinocchioNearlyPractical} protocol, followed by the Jens Groth \cite{grothSizePairingBasedNoninteractive2016} protocol after the Sapling upgrade\footnote{https://z.cash/technology/zksnarks/}, and finally, the Orchard shielded payment protocol\footnote{https://zips.z.cash/zip-0224}, using the Halo 2{\footnote{https://halo2.dev/}\textsuperscript{,}\footnote{https://zcash.github.io/halo2/}} proving scheme. At this stage, Zcash is able to remove the trusted setup while still providing high scalability. In addition, Zcash supports a universal and updatable \acrshort{csr}.
 
 \subsubsection{ZK-STARKs}
 \label{subsubsec:zkstarks}
 
+A \textbf{Z}ero-\textbf{K}nowledge \textbf{S}calable \textbf{T}ransparent \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zkstark}) is a \acrshort{nizkp}, which was first described by Ben-Sasson et al. \cite{ben-sassonScalableTransparentPostquantum} in 2018. They are similar to \acrshort{zksnark}'s, but provide some better \emph{Scalability} and \emph{Transparency} properties. The scalability is quasilinear according to the underlying computation complexity, making proof generation and verification faster, even for large witnesses. It has a proof size and on-chain verification complexity of around $\sim O(polylog(n))$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Unfortunately, proof sizes are very large, which provides limited usefulness for blockchain-based applications, as gas costs dramatically increase for proof verification. However, there is no trusted setup required, as \acrshort{zkstark}'s use a transparent setup, where public parameters are generated with publicly verifiable randomness. For encryption, \acrshort{zkstark}'s use collision-resistant hash functions, which are considered as post-quantum secure \cite{QuantumsafeCryptographyFundamentals}.
+
+StarkNet\footnote{https://starknet.io/} by StarkWare\footnote{https://starkware.co/} is an example of a \acrshort{zkstark} implementation, with the goal to achieve unlimited scalability for the Ethereum blockchain. Therefore, StarkNet is a ZK-Rollup solution, operating as a Layer 2 network over Ethereum. Besides StarkNet, there is Polygon Miden\footnote{https://polygon.technology/solutions/polygon-miden}, yet another Layer 2 scaling solution for Ethereum. Unlike StarkNet, Polygon Miden is open source\footnote{https://github.com/0xPolygonMiden/miden-vm} and directly \acrfull{evm}-compatible. (besser?)
+
 \subsubsection{Bulletproofs}
 \label{subsubsec:bulletproofs}
+
+Bulletproofs are short \acrshort{nizkp}'s, first introduced by Bunz et al. \cite{bunzBulletproofsShortProofs2018} in 2017. They were initially designed as range-proofs, to convince another party, that some encrypted value lies within an interval. However, they are also suitable for verifiable shuffles and arithmetic circuits, among other proving statements. In contrast to \acrshort{zkstark}'s, proofs are more succinct and relatively small in size. It has a proof size of $\sim O(log(n))$\footref{gh_zkp} and an on-chain verification complexity of around $\sim O(n)$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Additionally, like \acrshort{zkstark}'s, there is no trusted setup required. For encryption, they rely on the discrete logarithmic assumption and Pedersen commitments to obfuscate data. Like \acrshort{zksnark}'s, Bulletproofs are \textbf{not} post-quantum secure.
+
+The idea of Bulletproofs was to enable Confidential Transactions for Bitcoin or other cryptocurrencies. In particular, they enable a \acrfull{ringct}, by obfuscating the number of coins being sent in a transaction. A prominent implementation of Bulletproofs is Monero\footnote{https://www.getmonero.org/}. Since its implementation, the size of transactions in Monero and the transaction fees were reduced by around 80\%.

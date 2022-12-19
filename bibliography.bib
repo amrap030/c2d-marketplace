@@ -733,3 +733,91 @@ abstract = { Usually, a proof of a theorem contains more knowledge than the mere
   langid = {english},
   file = {/Users/kevinhertwig/Documents/Zotero/storage/5RIHBNJA/Chiesa et al. - 2020 - Marlin Preprocessing zkSNARKs with Universal and .pdf}
 }
+
+@article{ben-sassonScalableTransparentPostquantum,
+  title = {Scalable, Transparent, and Post-Quantum Secure Computational Integrity},
+  author = {{Ben-Sasson}, Eli and Bentov, Iddo and Horesh, Yinon and Riabzev, Michael},
+  pages = {83},
+  abstract = {Human dignity demands that personal information, like medical and forensic data, be hidden from the public. But veils of secrecy designed to preserve privacy may also be abused to cover up lies and deceit by institutions entrusted with Data, unjustly harming citizens and eroding trust in central institutions.},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/KS7Q7YXR/Ben-Sasson et al. - Scalable, transparent, and post-quantum secure com.pdf}
+}
+
+@article{QuantumsafeCryptographyFundamentals,
+  title = {Quantum-Safe Cryptography \textendash{} Fundamentals, Current Developments and Recommendations},
+  pages = {72},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/PFKN6E4K/Quantum-safe cryptography – fundamentals, current .pdf}
+}
+
+@inproceedings{bunzBulletproofsShortProofs2018,
+  title = {Bulletproofs: {{Short Proofs}} for {{Confidential Transactions}} and {{More}}},
+  shorttitle = {Bulletproofs},
+  booktitle = {2018 {{IEEE Symposium}} on {{Security}} and {{Privacy}} ({{SP}})},
+  author = {Bunz, Benedikt and Bootle, Jonathan and Boneh, Dan and Poelstra, Andrew and Wuille, Pieter and Maxwell, Greg},
+  year = {2018},
+  month = may,
+  pages = {315--334},
+  publisher = {{IEEE}},
+  address = {{San Francisco, CA}},
+  doi = {10.1109/SP.2018.00020},
+  abstract = {We propose Bulletproofs, a new non-interactive zero-knowledge proof protocol with very short proofs and without a trusted setup; the proof size is only logarithmic in the witness size. Bulletproofs are especially well suited for efficient range proofs on committed values: they enable proving that a committed value is in a range using only 2 log2pnq ` 9 group and field elements, where n is the bit length of the range. Proof generation and verification times are linear in n.},
+  isbn = {978-1-5386-4353-2},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/R86UW2VI/Bunz et al. - 2018 - Bulletproofs Short Proofs for Confidential Transa.pdf}
+}
+
+@incollection{chiesaFractalPostquantumTransparent2020,
+  title = {Fractal: {{Post-quantum}} and {{Transparent Recursive Proofs}} from {{Holography}}},
+  shorttitle = {Fractal},
+  booktitle = {Advances in {{Cryptology}} \textendash{} {{EUROCRYPT}} 2020},
+  author = {Chiesa, Alessandro and Ojha, Dev and Spooner, Nicholas},
+  editor = {Canteaut, Anne and Ishai, Yuval},
+  year = {2020},
+  volume = {12105},
+  pages = {769--793},
+  publisher = {{Springer International Publishing}},
+  address = {{Cham}},
+  doi = {10.1007/978-3-030-45721-1_27},
+  abstract = {We present a new methodology to efficiently realize recursive composition of succinct non-interactive arguments of knowledge (SNARKs). Prior to this work, the only known methodology relied on pairingbased SNARKs instantiated on cycles of pairing-friendly elliptic curves, an expensive algebraic object. Our methodology does not rely on any special algebraic objects and, moreover, achieves new desirable properties: it is post-quantum and it is transparent (the setup is public coin). We exploit the fact that recursive composition is simpler for SNARKs with preprocessing, and the core of our work is obtaining a preprocessing zkSNARK for rank-1 constraint satisfiability (R1CS) that is post-quantum and transparent. We obtain this latter by establishing a connection between holography and preprocessing in the random oracle model, and then constructing a holographic proof for R1CS.},
+  isbn = {978-3-030-45720-4 978-3-030-45721-1},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/FA5PKB33/Chiesa et al. - 2020 - Fractal Post-quantum and Transparent Recursive Pr.pdf}
+}
+
+@article{boweRecursiveProofComposition,
+  title = {Recursive {{Proof Composition}} without a {{Trusted Setup}}},
+  author = {Bowe, Sean and Grigg, Jack and Hopwood, Daira},
+  abstract = {Non-interactive arguments of knowledge are powerful cryptographic tools that can be used to demonstrate the faithful execution of arbitrary computations with publicly verifiable proofs. Increasingly efficient protocols have been described in recent years, with verification time and/or communication complexity that is sublinear in the size of the computation being described. These efficiencies can be exploited to realize recursive proof composition: the concept of proofs that attest to the correctness of other instances of themselves, thereby allowing large computational effort to be incrementally verified. All previously known realizations of recursive proof composition have required a trusted setup and cycles of expensive pairing-friendly elliptic curves. We obtain and implement Halo, the first practical example of recursive proof composition without a trusted setup, using the discrete log assumption over normal cycles of elliptic curves. In the process we develop several novel techniques that may be of independent interest.},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/BJT5UU8D/Bowe et al. - Recursive Proof Composition without a Trusted Setu.pdf}
+}
+
+@incollection{bunzTransparentSNARKsDARK2020,
+  title = {Transparent {{SNARKs}} from {{DARK Compilers}}},
+  booktitle = {Advances in {{Cryptology}} \textendash{} {{EUROCRYPT}} 2020},
+  author = {B{\"u}nz, Benedikt and Fisch, Ben and Szepieniec, Alan},
+  editor = {Canteaut, Anne and Ishai, Yuval},
+  year = {2020},
+  volume = {12105},
+  pages = {677--706},
+  publisher = {{Springer International Publishing}},
+  address = {{Cham}},
+  doi = {10.1007/978-3-030-45721-1_24},
+  abstract = {We construct a new polynomial commitment scheme for univariate and multivariate polynomials over finite fields, with logarithmic size evaluation proofs and verification time, measured in the number of coefficients of the polynomial. The underlying technique is a Diophantine Argument of Knowledge (DARK), leveraging integer representations of polynomials and groups of unknown order. Security is shown from the strong RSA and the adaptive root assumptions. Moreover, the scheme does not require a trusted setup if instantiated with class groups. We apply this new cryptographic compiler to a restricted class of algebraic linear IOPs, which we call Polynomial IOPs, to obtain doubly-efficient public-coin interactive arguments of knowledge for any NP relation with succinct communication. With linear preprocessing, the online verifier's work is logarithmic in the circuit complexity of the relation.},
+  isbn = {978-3-030-45720-4 978-3-030-45721-1},
+  langid = {english},
+  file = {/Users/kevinhertwig/Documents/Zotero/storage/F6USBES5/Bünz et al. - 2020 - Transparent SNARKs from DARK Compilers.pdf}
+}
+
+@article{Szabo_1997,
+  title = {Formalizing and Securing Relationships on Public Networks},
+  author = {Szabo, Nick},
+  year = {1997},
+  month = sep,
+  journal = {First Monday},
+  volume = {2},
+  number = {9},
+  doi = {10.5210/fm.v2i9.548},
+  annotation = {Abstract Note: Smart contracts combine protocols with user interfaces to formalize and secure relationships over computer networks. Objectives and principles for the design of these systems are derived from legal principles, economic theory, and theories of reliable and secure protocols. Similarities and differences between smart contracts and traditional business procedures based on written contracts, controls, and static forms are discussed. By using cryptographic and other security mechanisms, we can secure many algorithmically specifiable relationships from breach by principals, and from eavesdropping or malicious interference by third parties, up to considerations of time, user interface, and completeness of the algorithmic specification. This article discusses protocols with application in important contracting areas, including credit, content rights management, payment systems, and contracts with bearer.}
+}

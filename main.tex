@@ -32,6 +32,7 @@
 %
 % Template Style
 \include{style/style}
+\input{solidity-highlighting.tex}
 
 % custom hyphenation					% add words to this list to prevent hyphenation
 \hyphenation{
@@ -42,6 +43,7 @@ TCP
 %make readable references
 \usepackage[pdftex,pdfpagelabels=true]{hyperref}
 \usepackage[acronym]{glossaries}
+\usepackage{MnSymbol}
 \hypersetup{%
 	pdftitle={Thesis Title},
 	pdfauthor={Thesis Author},
@@ -97,6 +99,7 @@ TCP
 \listoffigures
 \printglossary[type=\acronymtype,title={List of Abbreviations}]
 \addcontentsline{toc}{chapter}{List of Abbreviations}
+\lstlistoflistings
 
 % Bibliography
 \setwidesite{}						% Set page to be wider for bibliography
