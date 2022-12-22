@@ -1,16 +1,11 @@
 \chapter{Background}
 \label{cha:background}
 
-- online marketplace, data marketplace, decentralized data marketplace (vielleicht zu related work kurze einleitung?)
-
 - information security, gdpr, privacy
 
 - blockchain/decentralized systems
-- smart contract
 - (fair exchange)
-- erc721
-- erc20
-- on-/off-chain
+- off-chain
 
 \section{Blockchain}
 \label{sec:blockchain}
@@ -20,7 +15,7 @@
 
 Smart Contracts were first mentioned in 1994 by Nick Szabo, as a "computerized transaction protocol that executes the terms of a contract" \cite{Szabo_1997}. When contract terms are met, computer code executes exactly as designed in a \emph{trustless} and \emph{self-enforcing}-manner, without the need for a central authority or any other \acrshort{ttp}. It can be compared to a vending machine, which automatically drops a selected product, assuming pre-determined conditions are met, i.e. the product is in stock and the price is covered \cite{Szabo_1997}. This creates a predictable outcome.
 
-In 2014, Vitalik Buterin \cite{buterinNEXTGENERATIONSMART} brought the idea of smart contracts to the Ethereum blockchain. Next to payments, it was possible to deploy and execute computer programs on Ethereum, in a distributed manner without trusting a central server. Every smart contract has its own address on the blockchain, which can be targeted by an \acrfull{eoa} or another smart contract in the form of a transaction. A transaction can trigger smart contract functions, which can be (i.) read-only; (ii.) state-changing in the smart contract's memory; (iii.) call a function of another smart contract; or (iv.) deploy a new smart contract. The runtime is called the \acrfull{evm}. It implements a turing-complete programming language in which smart contracts are written. To prevent inconsistent state on the blockchain, smart contracts need to satisfy \emph{determinism} and \emph{termination}.
+In 2014, Vitalik Buterin \cite{buterinNEXTGENERATIONSMART} brought the idea of smart contracts to the Ethereum blockchain. Next to payments, it was possible to deploy and execute computer programs on Ethereum, in a tamper-proof and distributed manner without trusting a central server. Every smart contract has its own address on the blockchain, which can be targeted by an \acrfull{eoa} or another smart contract in the form of a transaction. A transaction can trigger smart contract functions, which can be (i.) read-only; (ii.) state-changing in the smart contract's memory; (iii.) call a function of another smart contract; or (iv.) deploy a new smart contract. The runtime is called the \acrfull{evm} which implements a turing-complete programming language in which smart contracts are written. To prevent inconsistent state on the blockchain, smart contracts need to satisfy \emph{determinism} and \emph{termination}.
 
 \begin{enumerate}
     \item \emph{Determinism}: Each node in the network produces the same result given the same input to guarantee consensus. Hence, access to the filesystem and network is forbidden.
@@ -33,15 +28,15 @@ In 2014, Vitalik Buterin \cite{buterinNEXTGENERATIONSMART} brought the idea of s
 Next to the native currency of a blockchain such as Ether for Ethereum, other tokenized assets exist on top of the underlying blockchain. Tokenization is the process of transforming something valuable, i.e. a scarce digital or physical asset that is ownable, into a digital token, governed by a smart contract \cite{chenBlockchainTokensPotential2018}. Creating a new token is called \emph{minting} and destroying it is called \emph{burning}. In contrast to fiat money, tokens generally have a fixed supply to prevent inflation \cite{chenBlockchainTokensPotential2018}. Furthermore, a token can be (i.) \emph{tangible} if it is something physical or touchable such as gold, a car, or an artwork; (ii.) \emph{intangible} if it is something digital or untouchable such as a cryptocurrency or voting right; (iii.) \emph{fungible} if it is something interchangeable, divisible and not
 unique such as fiat money, Bitcoin, or gold; and (iv.) \emph{non-fungible} if it is unique, not interchangeable, and not divisible such as an artwork or a house. The morphological token classification framework \cite{freniTokenomicsBlockchainTokens2022} provides a more fine-grained analysis among multiple domains and dimensions.
 
-\noindent Coarsely, tokens can be classified as currency -, utility -, and security tokens, among others:
+Coarsely, tokens can be classified as currency -, utility -, and security tokens, among others:
 
 \begin{enumerate}
-    \item \emph{Currency Token}: A currency token is used for payments and thus tradeable and spendable. Next to the most prominent example Bitcoin, there are other ERC-20 compliant stable coins such as Thether\footnote{https://tether.to/en/} and USD Coin\footnote{https://www.centre.io/usdc}, being an equivalent to the US dollar. 
-    \item \emph{Utility Token}: A utility token has a specific purpose, for example giving preferred access to a service or qualify the owner for bonuses and prices. The value of the token is not tied to the companies success, but it arouses interest to the companie's products and services.
-    \item \emph{Security Token}: A security token is typically a share or voting right in a company as an investment. Hence, the value may vary according to their underlying asset. Just like traditional securities, the owner gets specific rights with regards to the company.
+    \item \emph{Currency Token}: A currency token is used for payments and thus tradeable and spendable. Next to the most prominent example Bitcoin, there are for example other stable coins such as Thether\footnote{https://tether.to/en/} and USD Coin\footnote{https://www.centre.io/usdc}, being a substitute of the US dollar. 
+    \item \emph{Utility Token}: A utility token has a specific purpose, for example giving preferred access to a service or qualify the owner for bonuses and prices. The value of the token is not tied to the companie's success, but it arouses interest to the companie's products and services.
+    \item \emph{Security Token}: A security token is typically a share or voting right in a company as an investment. Hence, the value may vary according to the underlying asset. Just like traditional securities, the owner gets specific rights with regards to the company.
 \end{enumerate}
 
-% was ist gut an tokens? https://www.gemini.com/cryptopedia/what-is-tokenization-definition-crypto-token#section-the-benefits-of-tokenization
+Tokenization can have multiple benefits. For example, fractionalization of an underlying asset in a token can positively influence the range of investment opportunities and liquidity. In this way, it is possible to invest in 1/20 of an expensive art piece for example. Furthermore, tokenization can reduce costs and transaction times due to less intermediaries, less bureaucracy, and automated workflows with smart contracts. Lastly, blockchain inherently is transparent and immutable and thus increases trust since users can reliably trace the origin of an asset, its history and changes in ownership. 
 
 \subsubsection{ERC-20}
 \label{subsubsec:erc20}
@@ -97,12 +92,12 @@ event Approval(address indexed _owner, address indexed _approved, uint256 indexe
 event ApprovalForAll(address indexed _owner, address indexed _operator, bool _approved);
 \end{lstlisting}
 
-Each newly minted NFT has a unique identifier, the so-called token id, that is linked to one account address. Consequently, NFT's represent ownership of an asset, which is publicly verifiable by the \texttt{ownerOf} function. Currently, those assets oftentimes represent collectibles such as digital artwork, however, they can also represent physical assets such as real estate. The ERC721Metadata\footnote{https://docs.openzeppelin.com/contracts/3.x/api/token/erc721\#IERC721Metadata} interface can extend the core implementation to add metadata. It uses the \texttt{tokenURI(uint256 tokenId)} function, to point to the location of the asset's metadata or even the asset itself.
+Each newly minted NFT has a unique identifier, the so-called token id, that is linked to one account address. Consequently, NFT's represent ownership of an asset, which is publicly verifiable by the \texttt{ownerOf} function. Currently, those assets oftentimes represent collectibles such as digital artwork, however, they can also represent physical assets such as real estate. The ERC721Metadata\footnote{https://docs.openzeppelin.com/contracts/3.x/api/token/erc721\#IERC721Metadata} interface can extend the core implementation to add metadata to a token. It uses the \texttt{tokenURI(uint256 tokenId)} function, to point to the location of the asset's metadata or even the asset itself.
 
-% ownership, interfaces, token id
-
-\subsection{On-chain vs. Off-chain}
+\subsection{Off-chaining}
 \label{subsec:onoff}
+
+
 
 \section{Zero-knowledge Proof}
 \label{sec:zkp}
@@ -164,7 +159,7 @@ One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensasson
 
 A \textbf{Z}ero-\textbf{K}nowledge \textbf{S}calable \textbf{T}ransparent \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zkstark}) is a \acrshort{nizkp}, which was first described by Ben-Sasson et al. \cite{ben-sassonScalableTransparentPostquantum} in 2018. They are similar to \acrshort{zksnark}'s, but provide some better \emph{Scalability} and \emph{Transparency} properties. The scalability is quasi-linear according to the underlying computation complexity, making proof generation and verification faster, even for large witnesses. It has a proof size and on-chain verification complexity of around $\sim O(polylog(n))$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Unfortunately, proof sizes are very large, which provides limited usefulness for blockchain-based applications, as gas costs dramatically increase for proof verification. However, there is no trusted setup required, as \acrshort{zkstark}'s use a transparent setup, where public parameters are generated with publicly verifiable randomness. For encryption, \acrshort{zkstark}'s use collision-resistant hash functions, which are considered as post-quantum secure \cite{QuantumsafeCryptographyFundamentals}.
 
-StarkNet\footnote{https://starknet.io/} by StarkWare\footnote{https://starkware.co/} is an example of a \acrshort{zkstark} implementation, with the goal to achieve unlimited scalability for the Ethereum blockchain. Therefore, StarkNet is a ZK-Rollup solution, operating as a Layer 2 network over Ethereum. Besides StarkNet, there is Polygon Miden\footnote{https://polygon.technology/solutions/polygon-miden}, yet another Layer 2 scaling solution for Ethereum. Unlike StarkNet, Polygon Miden is open source\footnote{https://github.com/0xPolygonMiden/miden-vm} and directly \acrfull{evm}-compatible. (besser?)
+StarkNet\footnote{https://starknet.io/} by StarkWare\footnote{https://starkware.co/} is an example of a \acrshort{zkstark} implementation, with the goal to achieve unlimited scalability for the Ethereum blockchain. Therefore, StarkNet is a ZK-Rollup solution, operating as a Layer 2 network over Ethereum. Besides StarkNet, there is Polygon Miden\footnote{https://polygon.technology/solutions/polygon-miden}, yet another Layer 2 scaling solution for Ethereum. Unlike StarkNet, Polygon Miden is open source\footnote{https://github.com/0xPolygonMiden/miden-vm} and directly \acrfull{evm}-compatible.
 
 \subsubsection{Bulletproofs}
 \label{subsubsec:bulletproofs}
