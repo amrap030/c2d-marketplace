@@ -1,8 +1,32 @@
 \chapter{Requirements}
 \label{cha:requirements}
 
-\section{Functional Requirements}
-\label{sec:functional_requirements}
+The following functional and non-functional requirements define what the designed marketplace should be capable of, in the scope of this thesis, and what should be its general properties. Thereby, each requirement is classified in Table \ref{tab:nfr-vs-fr} according to its type and explicitly numbered to be used as a reference. Furthermore, each requirement is described as a user story to be easily understandable, to focus on business values and the customer's needs, and to support iterative development in an agile way. Those user stories are very coarse-grained and thus refined into specific development tasks, as visible on our KanBan\footnote{https://github.com/users/amrap030/projects/1} board. Non-functional requirements are not visible on the board, because they are general properties that translate into each functional requirement when implemented.
 
-\section{Non-Functional Requirements}
-\label{sec:nonfunctional_requirements}
+% scalability missing? would be 8th nfr -> then +1 fr?
+
+\begin{xltabular}{\textwidth}{lllX}
+\toprule
+\textbf{\#} & \textbf{Type} & \textbf{Name}   & \textbf{Description} \\ \midrule
+\endfirsthead
+
+\multicolumn{4}{c}%
+{\tablename\ \thetable{} -- continued from previous page}\vspace{2mm} \\
+\endhead
+    F01 & Functional & Sell datasets & As a seller, I would like to sell valuable datasets in a privacy-preserving manner, so that I get compensated for data access by interested parties to make a profit. \\ \midrule
+    F02 & Functional & Search datasets & As a buyer, I would like to explore the marketplace by full-text search or tags, so that I find interesting datasets more quickly. \\ \midrule
+    F03 & Functional & Filter datasets & As a buyer, I would like to filter datasets when exploring the marketplace so that I reduce the offers to a minimum to find interesting datasets more quickly. \\ \midrule
+    F04 & Functional & Buy computations & As a buyer, I would like to buy a computation on a dataset to perform data analytics to gain new insights on interesting datasets. \\ \midrule
+    F05 & Functional & Create algorithms & As a marketplace participant, I would like to create computing algorithms so that buyers can use them to compute data. \\ \midrule
+    F06 & Functional & Check quality & As a buyer, I would like to check the data quality before I buy a computation so that the result is not falsified. \\ \midrule
+    F07 & Functional & Create ToS & As a seller, I would like to declare terms of use for data usage, so that any misusage is punishable. \\ \midrule
+    N01 & Non-Functional & Privacy & As a seller, I would like to protect \acrshort{pii} and confidential data in my raw datasets, so that buyers learn nothing more than the result of a computation on a never seen private dataset. \\ \midrule
+    N02 & Non-Functional & Ownership & As a seller, I would like to preserve ownership of my raw datasets, so that nobody else can make use and profit from my own dataset. \\ \midrule
+    N03 & Non-Functional & Fairness & As a marketplace participant, I would like to encounter fair exchange, so that buyers receive legitimate data while sellers receive the agreed-upon payment without cheating. \\ \midrule
+    N04 & Non-Functional & Security & As a marketplace participant, I want the marketplace to have a secure information exchange and to be resilient against malicious attackers and unauthorized access.   \\ \midrule
+    N05 & Non-Functional & Efficiency & As a marketplace participant, I want the interaction with the marketplace to be at a comparable speed to state-of-the-art marketplaces so that I don't get frustrated when using it. \\ \midrule
+    N06 & Non-Functional & Transparency & As a marketplace participant, I want to have all events on the marketplace be publicly traceable, so that trust and compliance are increased in the marketplace.  \\ \midrule
+    N07 & Non-Functional & Availability & As a marketplace participant, I want the marketplace in its entirety to be available 99.99\% of the time I try to interact with it so that I can make a purchase, search or sell data when needed. 
+    \\ \bottomrule
+\caption{TODO TODO TODO!} \label{tab:nfr-vs-fr}
+\end{xltabular}%

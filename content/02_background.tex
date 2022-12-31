@@ -1,14 +1,47 @@
 \chapter{Background}
 \label{cha:background}
 
-- information security, gdpr, privacy
+%\section{Information Security}
+%\label{sec:information_security}
 
-- blockchain/decentralized systems
-- (fair exchange)
-- off-chain
+%Nowadays, information is one of the most important assets in enterprises. All employees create and work with information day by day. This information can be essential for the success of enterprises. According to that, insufficiently protected information can be a high-risk factor and even be existence-threatening for enterprises. \cite{bsi} Besides important enterprise assets, personal data additionally has to be considered in information security, particularly regulated by the General Data Protection Regulation (\textbf{GDPR}). \cite{EU-DSGVO} information security is a dynamically evolving field according to technological development. It defines multiple information security goals, that can determine to what extent IT-Systems have reached information security. The most important information security goals are \emph{confidentiality}, \emph{authenticity}, \emph{availability}, and \emph{integrity}. \cite{schutzziele_bedner}
+
+%\subsection{Confidentiality}
+%\label{subsec:confidentiality}
+
+%Confidentiality in IT-Systems means, that information is only available to authorized individuals. This is mostly a defined group of individuals. Compliance with confidentiality requires an access control mechanism, to distinguish authorized and unauthorized individuals, depending on their access rights. Another important instrument for confidentiality is the encryption of information. The goal is to obfuscate information in an unreadable way so that only authorized individuals with a corresponding key can decrypt and interpret the information. \cite{schutzziele_bedner}
+
+%\subsection{Authenticity}
+%\label{subsec:authenticity}
+
+%Authenticity in IT-Systems is responsible for the identification of a user by control mechanism and the verification, that data and information derives from a valid source. The identification is mostly based upon a set of credentials that is owned by and explicitly identifies him. For example, this could be a user password, biometric fingerprints, or identification cards such as a personal identity card. In IT-Systems, identification is mostly done during a login, by verifying the credentials of a user. Furthermore, it is important that the identity is not only guaranteed at the beginning of a communication but also during the entire communication. \cite{schutzziele_bedner}
+
+%\subsection{Availability}
+%\label{subsec:availability}
+
+%Availability directly concerns applications and services as well as data and assets that are managed inside applications. It ensures that applications and services are in operation at any time and that users can access data and assets at any time while guaranteeing their completeness and correctness. The maximum desirable availability is of course 100\%. This is calculated by the relation between the actual running time and the expected running time. The time, when the application is not running and not available is defined as downtime. Availability is often part of a Service-Level-Agreement (\textbf{SLA}), that defines the application's availability by a contract between the service provider and the customer. \cite{schutzziele_bedner}
+
+%\subsection{Integrity}
+%\label{subsec:integrity}
+
+%Integrity ensures that data and assets are complete and available. Secondly, it ensures that data and assets are correct and tamper-free and that applications and services are working as intended. Integrity is reached when data and assets are tamper-free during processing and transmission and unauthorized parties are not able to manipulate them. Manipulations include replacing, inserting, or deleting data. There are a variety of tools and methods to ensure tamper-free data. For example, cryptographic hash methods are used to sign data and subsequently recognize manipulated data when verifying the signature. \cite{schutzziele_bedner}
+
+\section{Marketplace}
+\label{sec:marketplace}
+
+% marketplace & trading platform interchangeable
+% real world examples
 
 \section{Blockchain}
 \label{sec:blockchain}
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 \subsection{Smart Contracts}
 \label{subsec:sc}
@@ -99,9 +132,9 @@ Each newly minted NFT has a unique identifier, the so-called token id, that is l
 
 Public permission-less blockchains are peer-to-peer networks that inherently validate and process transaction data at every node, in order to guarantee network consensus. By virtue of its design, all data is available at each node which makes this system purposely public in favor of transparency and immutability properties. However, full replication of data is extremely expensive and leads to blockchain bloating for large amounts of data \cite{eberhardtBlockchainInsightsOffChaining2017}. Likewise, data sharing often incorporates \acrshort{pii} and confidential data. Not only is it impossible to store and compute in a privacy-preserving manner, but even impossible to delete a piece in the blockchain's transaction history. Consequently, regulatory enforcements such as the right to erasure \cite[Art. 17]{european_commission_regulation_2016} and the role of a controller \cite[Art. 4 (7)]{european_commission_regulation_2016} among others are hardly realizable on public permission-less blockchains. Off-chaining is suggested to overcome those limitations \cite{eberhardtBlockchainInsightsOffChaining2017}.
 
-Off-chaining is the concept of outsourcing the computation and storage of the blockchain, however, core characteristics of blockchains must not be compromised, in particular availability, immutability, and non-repudiation \cite{eberhardtOffchainingModelsApproaches2018,eberhardtBlockchainInsightsOffChaining2017}. With regards to off-chain storage, the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017} seems to be a reasonable solution. Accordingly, a hash of the data object is stored as a reference on-chain and can be recalculated at any time to verify data integrity. Decentralized peer-to-peer storage networks such as IPFS \cite{benetIPFSContentAddressed2014}, Filecoin \cite{filecoin} and SWARM \cite{swarm} provide a promising approach to that. However, full availability cannot be guaranteed \cite{eberhardtOffchainingModelsApproaches2018} and the right to erasure \cite[Art. 17]{european_commission_regulation_2016} as well as privacy is hardly achievable due to open access and persistent data replication across the network.
+Off-chaining is the concept of outsourcing the computation and storage of the blockchain, however, core characteristics of blockchains must not be compromised, in particular availability, immutability, and non-repudiation \cite{eberhardtOffchainingModelsApproaches2018,eberhardtBlockchainInsightsOffChaining2017}. With regards to off-chain storage, the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017} seems to be a reasonable solution. Accordingly, a hash of the data object is stored as a reference on-chain and can be recalculated at any time to verify data integrity. Decentralized content-addressable peer-to-peer storage networks such as IPFS \cite{benetIPFSContentAddressed2014}, Filecoin \cite{filecoin} and SWARM \cite{swarm} provide a promising approach to that. However, full availability cannot be guaranteed \cite{eberhardtOffchainingModelsApproaches2018} and the right to erasure \cite[Art. 17]{european_commission_regulation_2016} as well as privacy is hardly achievable due to open access and persistent data replication across the network.
 
-Next to off-chain storage, off-chain computation approaches have been suggested to improve the scalability and privacy issues of public blockchains. Accordingly, arbitrary computations are outsourced to untrusted off-chain nodes while maintaining verifiable results. Next to \acrfull{ioc}, Secure Multiparty Computation-based Off-chaining (SMPC), Enclave-based Off-chain Computation -- \acrfull{voc} is a promising approach and particularly interesting for this thesis \cite{eberhardtOffchainingModelsApproaches2018}. VOC is a derivative of Verifiable Computation and aims to secure the integrity of computations performed by untrusted parties off the blockchain. An off-chain node, i.e. the prover, published the result of a computation on-chain together with a cryptographic proof, attesting its correctness which can be verified on-chain and persisted in case of a success \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021,xuSlimChainScalingBlockchain}. Zero-knowledge proofs which are described in the following Section \ref{sec:zkp} are an example for VOC and a major building block of this thesis.
+Next to off-chain storage, off-chain computation approaches have been suggested to improve the scalability and privacy issues of public blockchains. Accordingly, arbitrary computations are outsourced to untrusted off-chain nodes. However, this system must not introduce trust, such that results need to be verifiable. Next to \acrfull{ioc}, Secure Multiparty Computation-based Off-chaining (SMPC) and Enclave-based Off-chain Computation -- \acrfull{voc} is a promising approach and particularly interesting for this thesis \cite{eberhardtOffchainingModelsApproaches2018}. VOC is a derivative of Verifiable Computation and aims to secure the integrity of computations performed by untrusted off-chain parties. An off-chain prover, publishes the result of a computation on-chain together with a cryptographic proof, attesting its correctness which can be verified on-chain and persisted in case of a success \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021,xuSlimChainScalingBlockchain}. Zero-knowledge proofs which are described in the following Section \ref{sec:zkp} are an example of VOC and a major building block of this thesis.
 
 \section{Zero-knowledge Proof}
 \label{sec:zkp}
