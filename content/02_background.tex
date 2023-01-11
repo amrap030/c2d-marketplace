@@ -26,30 +26,38 @@
 
 %Integrity ensures that data and assets are complete and available. Secondly, it ensures that data and assets are correct and tamper-free and that applications and services are working as intended. Integrity is reached when data and assets are tamper-free during processing and transmission and unauthorized parties are not able to manipulate them. Manipulations include replacing, inserting, or deleting data. There are a variety of tools and methods to ensure tamper-free data. For example, cryptographic hash methods are used to sign data and subsequently recognize manipulated data when verifying the signature. \cite{schutzziele_bedner}
 
-\section{Marketplace}
+\section{Data Marketplace}
 \label{sec:marketplace}
+
+A data marketplace is a two-sided market that connects a buyer, i.e. a data consumer, and a seller, i.e. a data producer, for exchanging valuable commodities -- in this case, data. Both parties benefit from each other, as producers can monetize their data, whereas buyers can browse and purchase data on one user-friendly platform. According to that, the data marketplace is the single source of discoverability for multiple data sources. Furthermore, it typically provides rich metadata and descriptions along with indicators of quality. 
+
+%Marketplaces are useful in three major ways. First, they provide a point of discoverability and comparison for data, along with indicators of quality and scope. Second, they handle the cleaning and formatting of the data, so it is ready for use (often 80\% of the work in any data integration). Finally, marketplaces provide an economic model for broad access to data that would otherwise prove difficult to either publish or consume.
+
+\subsection{Taxonomy}
+\label{subsec:taxonomy}
+
+With a taxonomy, data marketplaces can be compared against various elements of their business model. According to that, Spiekermann \cite{spiekermannDataMarketplacesTrends2019} investigated in a morphological box to compare real-world solutions based on eight different attributes and characteristics. Those attributes are composed of the \emph{Value Proposition}, \emph{Market Positioning}, \emph{Market Access}, \emph{Integration}, \emph{Transformation}, \emph{Architecture}, \emph{Price Model}, and \emph{Revenue Model}.
+
+\cite{fruhwirthDiscoveringBusinessModels}
+
+% data types
+% monetization types
+
+\subsection{Components and Properties}
+\label{subsec:elements-marketplace}
 
 % marketplace & trading platform interchangeable
 % real world examples
 
-%agora
-%Data privacy: no party can learn any information about the
-%raw data of the generators, apart from the function output
-%that is learnt by the broker and paying consumers.
-%Output verifiability: no broker can successfully sell an incorrect
-%or falsified result to a consumer.
-%Atomicity of payments: no entity can avoid paying for services,
-%i.e., generators are reimbursed for their data and
-%brokers are paid for providing function outputs.
-
 % drynx
 % A. Use Cases We illustrate Drynx’s utility in the medical sector, as it is a paradigmatic example where privacy is paramount and data sharing is needed. Recently, multiple initiatives have emerged to realize the promise of personalized medicine and to address the challenges posed by the increasing digitalization of medical data [48], [49], [50]. In this context, the ability to share highly sensitive medical data while protecting patients’ privacy is becoming of primary importance. We illustrate the possible use of Drynx in two specific settings that cover most medical data sharing scenarios: (1) Hospital Data Sharing (HDS), where multiple hospitals enable statistical computations and the training of machine-learning models across their datasets of patients (e.g., [50], [51]), and (2) Personal Data Sharing (P DS), where a medical institute runs studies, e.g., on heart issues, by directly computing on data collected from people’s wearables (e.g., [52], [53]).
-
 
 % review system hinzufügen (Towards a Decentralized Data Marketplace for Smart Cities hat auch ratings, gucken welche noch ratings haben)
 % ramachandranDecentralizedDataMarketplace2018 - rating system to ensure trust
 % idmob auch ratings: a voting system to rank data sources
 
+Any digital data marketplace, whether centralized or decentralized, needs some specific properties and key components. This includes: (i.) \emph{Fairness}; (ii.) \emph{Transparency}, \emph{Privacy} and \emph{Security}; (iii.) \emph{Regulation}; as well as (iv.) \emph{Efficiency}, according to Banerjee and Ruj \cite{banerjeeBlockchainEnabledData2019}. In the case of \acrshort{c2d} marketplaces, Koutsos et al. \cite{koutsosAgoraPrivacyAwareData} add the notion of (xi.) \emph{output verifiability} such that computation results should be verifiable by consumers. Ramachandran et al. \cite{ramachandranDecentralizedDataMarketplace2018} complements this by functional requirements such as: (v.) \emph{Posting and Discovery}; (vi.) \emph{Data Transfer and Payments}; (vii.) \emph{Metadata Organization}; (viii.) \emph{Buyer and Seller
+Ratings}; (ix.) \emph{Curation and Recommendations}; and (x.) \emph{Identity - and Access Control Management (IAM)}. All the requirements are finally surrounded by the consumer and producer, as depicted in Figure \ref{fig:components}.
 
 \begin{figure}[!htb]
     \centering
@@ -57,6 +65,11 @@
     \caption[Key components and features of a digital data trading platform]{Key components and features of a digital data trading platform. All components in red show the aspired enhancements by the contributions of this thesis.}
     \label{fig:components}
 \end{figure}
+
+According to that, it is trivial to implement sufficient \emph{Transparency} and \emph{Security} in blockchain-based data marketplaces. Furthermore, it turns out the non-trivial \emph{Fairness} problem in a two-party trading relationship seems to be solved by Blockchain technology in one atomic swap \cite{dziembowskiFairSwapHowFairly2018,liZKCPlusOptimizedFairexchange2021}. However, \emph{Privacy}, \emph{Regulation} and \emph{Efficiency} remain a bigger problem for blockchain-based data marketplaces due to limitations of public permission-less Blockchains such as Bitcoin \cite{nakamotoBitcoinPeertoPeerElectronic} and Ethereum \cite{buterinNEXTGENERATIONSMART}.
+
+\subsection{Compute-to-Data}
+\label{subsec:c2d}
 
 \section{Blockchain}
 \label{sec:blockchain}
@@ -66,8 +79,6 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 \subsection{Smart Contracts}
 \label{subsec:sc}
@@ -153,26 +164,23 @@ event ApprovalForAll(address indexed _owner, address indexed _operator, bool _ap
 
 Each newly minted NFT has a unique identifier, the so-called token id, that is linked to one account address. Consequently, NFT's represent ownership of an asset, which is publicly verifiable by the \texttt{ownerOf} function. Currently, those assets oftentimes represent collectibles such as digital artwork, however, they can also represent physical assets such as real estate. The ERC721Metadata\footnote{https://docs.openzeppelin.com/contracts/3.x/api/token/erc721\#IERC721Metadata} interface can extend the core implementation to add metadata to a token. It uses the \texttt{tokenURI(uint256 tokenId)} function, to point to the location of the asset's metadata or even the asset itself.
 
-\subsection{Off-chaining}
-\label{subsec:onoff}
+\section{Off-chaining}
+\label{sec:onoff}
 
 Public permission-less blockchains are peer-to-peer networks that inherently validate and process transaction data at every node, in order to guarantee network consensus. By virtue of its design, all data is available at each node which makes this system purposely public in favor of transparency and immutability properties. However, full replication of data is extremely expensive and leads to blockchain bloating for large amounts of data \cite{eberhardtBlockchainInsightsOffChaining2017}. Likewise, data sharing often incorporates \acrshort{pii} and confidential data. Not only is it impossible to store and compute in a privacy-preserving manner, but even impossible to delete a piece in the blockchain's transaction history. Consequently, regulatory enforcements such as the right to erasure \cite[Art. 17]{european_commission_regulation_2016} and the role of a controller \cite[Art. 4 (7)]{european_commission_regulation_2016} among others are hardly realizable on public permission-less blockchains. Off-chaining is suggested to overcome those limitations \cite{eberhardtBlockchainInsightsOffChaining2017}.
 
-Off-chaining is the concept of outsourcing the computation and storage of the blockchain, however, core characteristics of blockchains must not be compromised, in particular availability, immutability, and non-repudiation \cite{eberhardtOffchainingModelsApproaches2018,eberhardtBlockchainInsightsOffChaining2017}. With regards to off-chain storage, the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017} seems to be a reasonable solution. Accordingly, a hash of the data object is stored as a reference on-chain and can be recalculated at any time to verify data integrity. Decentralized content-addressable peer-to-peer storage networks such as IPFS \cite{benetIPFSContentAddressed2014}, Filecoin \cite{filecoin} and SWARM \cite{swarm} provide a promising approach to that. However, full availability cannot be guaranteed \cite{eberhardtOffchainingModelsApproaches2018} and the right to erasure \cite[Art. 17]{european_commission_regulation_2016} as well as privacy is hardly achievable due to open access and persistent data replication across the network.
+Off-chaining is the concept of outsourcing the computation and storage of the blockchain, however, core characteristics of blockchains must not be compromised, in particular availability, immutability, and non-repudiation \cite{eberhardtOffchainingModelsApproaches2018,eberhardtBlockchainInsightsOffChaining2017}. With regards to off-chain storage, the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017} seems to be a reasonable solution. Accordingly, a hash of the data object is stored as a reference on-chain and can be recalculated at any time to verify data integrity. Decentralized content-addressable peer-to-peer storage networks such as IPFS \cite{benetIPFSContentAddressed2014}, Filecoin \cite{filecoin} and SWARM \cite{swarm} provide a promising approach to that. However, full availability cannot be guaranteed \cite{eberhardtOffchainingModelsApproaches2018} and the right to erasure \cite[Art. 17]{european_commission_regulation_2016}, as well as privacy, is hardly achievable due to open access and persistent data replication across the network.
 
-Next to off-chain storage, off-chain computation approaches have been suggested to improve the scalability and privacy issues of public blockchains. Accordingly, arbitrary computations are outsourced to untrusted off-chain nodes. However, this system must not introduce trust, such that results need to be verifiable. Next to \acrfull{ioc}, Secure Multiparty Computation-based Off-chaining (SMPC) and Enclave-based Off-chain Computation -- \acrfull{voc} is a promising approach and particularly interesting for this thesis \cite{eberhardtOffchainingModelsApproaches2018}. VOC is a derivative of Verifiable Computation and aims to secure the integrity of computations performed by untrusted off-chain parties. An off-chain prover, publishes the result of a computation on-chain together with a cryptographic proof, attesting its correctness which can be verified on-chain and persisted in case of a success \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021,xuSlimChainScalingBlockchain}. Zero-knowledge proofs which are described in the following Section \ref{sec:zkp} are an example of VOC and a major building block of this thesis.
+Next to off-chain storage, off-chain computation approaches have been suggested to improve the scalability and privacy issues of public blockchains. Accordingly, arbitrary computations are outsourced to untrusted off-chain nodes. However, this system must not introduce trust, such that results need to be verifiable. Next to \acrfull{ioc}, Secure Multiparty Computation-based Off-chaining (SMPC) and Enclave-based Off-chain Computation -- \acrfull{voc} \cite{eberhardtOffchainingModelsApproaches2018} is a promising approach and particularly interesting for this thesis. VOC is a derivative of Verifiable Computation and aims to secure the integrity of computations performed by untrusted off-chain parties. An off-chain prover, publishes the result of a computation on-chain together with a cryptographic proof, attesting its correctness which can be verified on-chain and persisted in case of success \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021,xuSlimChainScalingBlockchain}. Zero-knowledge proofs which are described in the following Section \ref{subsec:zkp} are an example of \acrshort{voc}.
 
-\section{Zero-knowledge Proof}
-\label{sec:zkp}
+\subsection{Zero-knowledge Proofs}
+\label{subsec:zkp}
 
 A \acrfull{zkp}, first introduced in 1985 by Shafi Goldwasser and Silvio Micali \cite{doi:10.1137/0218012}, is a method to prove the validity of a statement without disclosing any more information, besides the fact that this statement indeed is valid \cite{simunicVerifiableComputingApplications2021}. Suppose you have a traditional deck of 52 cards, of which 26 are red and 26 are black. You as the prover randomly choose one card and want to prove that your card is red, without revealing it. To prove this statement, you simply need to give the verifier all black cards. This is a real-world example for a \acrshort{zkp}. According to that, a \emph{prover} is the one who proves the statement to another party called the \emph{verifier}.
 
 Any \acrshort{zkp} needs to satisfy at least 3 requirements: \emph{Completeness}, \emph{Soundness}, and \emph{Zero-knowledge}. \emph{Completeness} describes the fact, that an honest prover will eventually convince an honest verifier about the truthiness of the statement \cite{simunicVerifiableComputingApplications2021}. \emph{Soundness} is the property, that no cheating prover can convince an honest verifier that a false statement is true, except with some small probability \cite{simunicVerifiableComputingApplications2021}. Lastly, with \emph{Zero-knowledge}, the verifier learns no more information, except the validity of the statement \cite{simunicVerifiableComputingApplications2021}.
 
 \acrshort{zkp}'s can significantly improve scaling and privacy limitations of blockchains, and reduce transaction costs. This is done by moving complex computations off-chain while submitting only the result together with a cryptographic proof attesting to the computation's correctness on-chain. For example, it enables identity validation on-chain, while hiding \acrshort{pii} off-chain; it enables anonymous payments; and it enables batch processing of transactions off-chain while submitting a verifiable proof on-chain, known as ZK-rollups. Hence, \acrshort{zkp}'s are a class of \acrfull{voc}.
-
-\subsection{Types of Zero-knowledge Proofs}
-\label{subsec:zkp_req}
 
 \acrlong{zkp}'s can be divided into \emph{interactive} - and \emph{non-interactive} \acrshort{zkp}'s. An interactive \acrshort{zkp} requires two parties, a prover and a verifier, to interact back and forth until the verifier is convinced about the validity of a statement. This provides limited usefulness for real-world applications and makes it impossible to be verified repeatedly by any other party. Consequently, Hum et. al \cite{humZeroKnowledgeItsApplications} introduced the \acrfull{nizkp} as a proof system that is able to convince a verifier of a particular statement with only \emph{one} message \cite{eberhardtOffchainingModelsApproaches2018,eberhardtZoKratesScalablePrivacyPreserving2018a,simunicVerifiableComputingApplications2021}. This allows the proof to be verified repeatedly by any party and provides greater efficiency and flexibility for real-world applications. The foundation is a shared random string, which is common between the prover and verifier. \acrshort{zksnark}'s, \acrshort{zkstark}'s, and Bulletproofs are examples of non-interactive \acrshort{zkp}'s.
 
@@ -217,16 +225,19 @@ For encryption, \acrshort{zksnark}'s use elliptic curve cryptography, in particu
 
 One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensassonZerocashDecentralizedAnonymous2014}. Zcash has strong privacy guarantees, as it makes payments anonymously by shielded transactions with \acrshort{zkp}'s. The implementation first started with the Pinocchio \cite{parnoPinocchioNearlyPractical} protocol, followed by the Jens Groth \cite{grothSizePairingBasedNoninteractive2016} protocol after the Sapling upgrade\footnote{https://z.cash/technology/zksnarks/}, and finally, the Orchard shielded payment protocol\footnote{https://zips.z.cash/zip-0224}, using the Halo 2{\footnote{https://halo2.dev/}\textsuperscript{,}\footnote{https://zcash.github.io/halo2/}} proving scheme. At this stage, Zcash is able to remove the trusted setup while still providing high scalability. In addition, Zcash supports a universal and updatable \acrshort{csr}.
 
-\subsubsection{ZK-STARKs}
-\label{subsubsec:zkstarks}
+\subsection{ZoKrates}
+\label{subsec:zokrates}
 
-A \textbf{Z}ero-\textbf{K}nowledge \textbf{S}calable \textbf{T}ransparent \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zkstark}) is a \acrshort{nizkp}, which was first described by Ben-Sasson et al. \cite{ben-sassonScalableTransparentPostquantum} in 2018. They are similar to \acrshort{zksnark}'s, but provide some better \emph{Scalability} and \emph{Transparency} properties. The scalability is quasi-linear according to the underlying computation complexity, making proof generation and verification faster, even for large witnesses. It has a proof size and on-chain verification complexity of around $\sim O(polylog(n))$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Unfortunately, proof sizes are very large, which provides limited usefulness for blockchain-based applications, as gas costs dramatically increase for proof verification. However, there is no trusted setup required, as \acrshort{zkstark}'s use a transparent setup, where public parameters are generated with publicly verifiable randomness. For encryption, \acrshort{zkstark}'s use collision-resistant hash functions, which are considered as post-quantum secure \cite{QuantumsafeCryptographyFundamentals}.
+%\subsubsection{ZK-STARKs}
+%\label{subsubsec:zkstarks}
 
-StarkNet\footnote{https://starknet.io/} by StarkWare\footnote{https://starkware.co/} is an example of a \acrshort{zkstark} implementation, with the goal to achieve unlimited scalability for the Ethereum blockchain. Therefore, StarkNet is a ZK-Rollup solution, operating as a Layer 2 network over Ethereum. Besides StarkNet, there is Polygon Miden\footnote{https://polygon.technology/solutions/polygon-miden}, yet another Layer 2 scaling solution for Ethereum. Unlike StarkNet, Polygon Miden is open source\footnote{https://github.com/0xPolygonMiden/miden-vm} and directly \acrfull{evm}-compatible.
+%A \textbf{Z}ero-\textbf{K}nowledge \textbf{S}calable \textbf{T}ransparent \textbf{Ar}gument of \textbf{K}nowledge (\acrshort{zkstark}) is a \acrshort{nizkp}, which was first described by Ben-Sasson et al. \cite{ben-sassonScalableTransparentPostquantum} in 2018. They are similar to \acrshort{zksnark}'s, but provide some better \emph{Scalability} and \emph{Transparency} properties. The scalability is quasi-linear according to the underlying computation complexity, making proof generation and verification faster, even for large witnesses. It has a proof size and on-chain verification complexity of around $\sim O(polylog(n))$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Unfortunately, proof sizes are very large, which provides limited usefulness for blockchain-based applications, as gas costs dramatically increase for proof verification. However, there is no trusted setup required, as \acrshort{zkstark}'s use a transparent setup, where public parameters are generated with publicly verifiable randomness. For encryption, \acrshort{zkstark}'s use collision-resistant hash functions, which are considered as post-quantum secure \cite{QuantumsafeCryptographyFundamentals}.
 
-\subsubsection{Bulletproofs}
-\label{subsubsec:bulletproofs}
+%StarkNet\footnote{https://starknet.io/} by StarkWare\footnote{https://starkware.co/} is an example of a \acrshort{zkstark} implementation, with the goal to achieve unlimited scalability for the Ethereum blockchain. Therefore, StarkNet is a ZK-Rollup solution, operating as a Layer 2 network over Ethereum. Besides StarkNet, there is Polygon Miden\footnote{https://polygon.technology/solutions/polygon-miden}, yet another Layer 2 scaling solution for Ethereum. Unlike StarkNet, Polygon Miden is open source\footnote{https://github.com/0xPolygonMiden/miden-vm} and directly \acrfull{evm}-compatible.
 
-Bulletproofs are short \acrshort{nizkp}'s, first introduced by Bunz et al. \cite{bunzBulletproofsShortProofs2018} in 2017. They were initially designed as range-proofs, to convince another party, that some encrypted value lies within an interval. However, they are also suitable for verifiable shuffles and arithmetic circuits, among other proving statements. In contrast to \acrshort{zkstark}'s, proofs are more succinct and relatively small in size. It has a proof size of $\sim O(log(n))$\footref{gh_zkp} and an on-chain verification complexity of around $\sim O(n)$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Additionally, like \acrshort{zkstark}'s, there is no trusted setup required. For encryption, they rely on the discrete logarithmic assumption and Pedersen commitments to obfuscate data. Like \acrshort{zksnark}'s, Bulletproofs are \textbf{not} post-quantum secure.
+%\subsubsection{Bulletproofs}
+%\label{subsubsec:bulletproofs}
 
-The idea of Bulletproofs was to enable Confidential Transactions for Bitcoin or other cryptocurrencies. In particular, they enable a \acrfull{ringct}, by obfuscating the number of coins being sent in a transaction. A prominent implementation of Bulletproofs is Monero\footnote{https://www.getmonero.org/}. Since its implementation, the size of transactions in Monero and the transaction fees were reduced by around 80\%.
+%Bulletproofs are short \acrshort{nizkp}'s, first introduced by Bunz et al. \cite{bunzBulletproofsShortProofs2018} in 2017. They were initially designed as range-proofs, to convince another party, that some encrypted value lies within an interval. However, they are also suitable for verifiable shuffles and arithmetic circuits, among other proving statements. In contrast to \acrshort{zkstark}'s, proofs are more succinct and relatively small in size. It has a proof size of $\sim O(log(n))$\footref{gh_zkp} and an on-chain verification complexity of around $\sim O(n)$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Additionally, like \acrshort{zkstark}'s, there is no trusted setup required. For encryption, they rely on the discrete logarithmic assumption and Pedersen commitments to obfuscate data. Like \acrshort{zksnark}'s, Bulletproofs are \textbf{not} post-quantum secure.
+
+%The idea of Bulletproofs was to enable Confidential Transactions for Bitcoin or other cryptocurrencies. In particular, they enable a \acrfull{ringct}, by obfuscating the number of coins being sent in a transaction. A prominent implementation of Bulletproofs is Monero\footnote{https://www.getmonero.org/}. Since its implementation, the size of transactions in Monero and the transaction fees were reduced by around 80\%.
