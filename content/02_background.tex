@@ -225,9 +225,6 @@ For encryption, \acrshort{zksnark}'s use elliptic curve cryptography, in particu
 
 One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensassonZerocashDecentralizedAnonymous2014}. Zcash has strong privacy guarantees, as it makes payments anonymously by shielded transactions with \acrshort{zkp}'s. The implementation first started with the Pinocchio \cite{parnoPinocchioNearlyPractical} protocol, followed by the Jens Groth \cite{grothSizePairingBasedNoninteractive2016} protocol after the Sapling upgrade\footnote{https://z.cash/technology/zksnarks/}, and finally, the Orchard shielded payment protocol\footnote{https://zips.z.cash/zip-0224}, using the Halo 2{\footnote{https://halo2.dev/}\textsuperscript{,}\footnote{https://zcash.github.io/halo2/}} proving scheme. At this stage, Zcash is able to remove the trusted setup while still providing high scalability. In addition, Zcash supports a universal and updatable \acrshort{csr}.
 
-\subsection{ZoKrates}
-\label{subsec:zokrates}
-
 %\subsubsection{ZK-STARKs}
 %\label{subsubsec:zkstarks}
 
@@ -241,3 +238,53 @@ One prominent example that employs \acrshort{zksnark}'s is Zcash \cite{bensasson
 %Bulletproofs are short \acrshort{nizkp}'s, first introduced by Bunz et al. \cite{bunzBulletproofsShortProofs2018} in 2017. They were initially designed as range-proofs, to convince another party, that some encrypted value lies within an interval. However, they are also suitable for verifiable shuffles and arithmetic circuits, among other proving statements. In contrast to \acrshort{zkstark}'s, proofs are more succinct and relatively small in size. It has a proof size of $\sim O(log(n))$\footref{gh_zkp} and an on-chain verification complexity of around $\sim O(n)$\footref{gh_zkp}, with $n$ being the number of multiplication gates in the circuit. Additionally, like \acrshort{zkstark}'s, there is no trusted setup required. For encryption, they rely on the discrete logarithmic assumption and Pedersen commitments to obfuscate data. Like \acrshort{zksnark}'s, Bulletproofs are \textbf{not} post-quantum secure.
 
 %The idea of Bulletproofs was to enable Confidential Transactions for Bitcoin or other cryptocurrencies. In particular, they enable a \acrfull{ringct}, by obfuscating the number of coins being sent in a transaction. A prominent implementation of Bulletproofs is Monero\footnote{https://www.getmonero.org/}. Since its implementation, the size of transactions in Monero and the transaction fees were reduced by around 80\%.
+
+\subsection{ZoKrates}
+\label{subsec:zokrates}
+
+ZoKrates\footnote{https://github.com/Zokrates/ZoKrates} provides a toolbox to leverage \acrshort{zksnark}'s on the Ethereum blockchain or any other blockchain that supports the necessary cryptographic primitives \cite{eberhardtZoKratesScalablePrivacyPreserving2018a}. It abstracts the difficulties of codifying mathematical equations in the form of a \acrfull{qap} or a \acrfull{r1cs} which is mandatory for \acrshort{zksnark} proving schemes. Accordingly, ZoKrates provides a convenient high-level \acrfull{dsl} with a Python-similar syntax, so that developers can easily write provable programs which are convertible into \acrshort{r1cs} by the ZoKrates compiler. The following describes the process of employing \acrshort{zksnark}'s with ZoKrates as well as the components provided by the toolbox.
+
+%Zokrates is used to integrate zk-SNARKs into Ethereum by creating pre-compiled contracts with built-in verification. Off-chain, a proving and verifying key are created and provers use a prover’s key to create an off-chain proof. The smart contract can then be executed, and the verification done on-chain using the proof, verifying key, and other parameters. If the outcome is correct, the smart contract is executed and other on-chain activity can follow.
+
+\subsubsection{ZoKrates Process}
+\label{subsubsec:zkprocess}
+
+In general, ZoKrates is used to create an off-chain proof attesting to some program's correct execution and a pre-compiled smart contract to verify those proofs on-chain without revealing private inputs. Based on the outcome of the on-chain verification, the smart contract can trigger subsequent activities. The detailed process is depicted in the following figure \ref{fig:zokrates-process}.
+
+% eigenes bild
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=13cm]{images/zokrates.png}
+    \caption[...]{...}
+    \label{fig:zokrates-process}
+\end{figure}
+
+A provable program written in the ZoKrates \acrshort{dsl} is first compiled, i.e. parsed and flattened into the \acrfull{zir} which is similar to a \acrshort{r1cs} to be compatible with \acrshort{zksnark} proving schemes \cite{eberhardtZoKratesScalablePrivacyPreserving2018a}. As already described in section \ref{subsubsec:zksnarks}, \acrshort{zksnark}'s require a one-time trusted setup to agree on one \acrshort{csr} for generating a public evidence key pair. Accordingly, ZoKrates uses libsnark\footnote{https://github.com/scipr-lab/libsnark} to generate a long proving key and a short verification key which are restricted to the underlying provable program. The verification key is subsequently used to generate a Solidity\footnote{https://docs.soliditylang.org/en/v0.8.17/} smart contract that is deployable to the Ethereum blockchain. This smart contract includes the \texttt{verifyTx} function to verify proofs on-chain, based on the provable program's public inputs as well as the generated proof. For generating the proof, ZoKrates first executes the flattened \acrshort{zir} to find a solution to the provable program, referred to as the witness. Based on the witness and the proving key, a short proof can be generated to attest computational correctness on-chain.
+
+%G (Generator)
+
+\subsubsection{ZoKrates Toolbox}
+\label{subsubsec:toolbox}
+
+% noch etwas detailierter?
+The ZoKrates toolbox is a Rust-based\footnote{https://www.rust-lang.org/} implementation that provides all utilities to complete the entire process of figure \ref{fig:zokrates-process}. This includes (i.) a compiler that consists of a parser and flattener to translate \acrshort{dsl} into \acrshort{zir}; (ii.) a witness generator to find satisfying variable assignments for a \acrshort{zir} based on public and private inputs; (iii.) a setup generator to create an evidence key pair based on a \acrshort{csr}; (iv.) a proof generator to create a proof of computational correctness; and (v.) a contract generator to create a verification smart contract \cite{eberhardtZoKratesScalablePrivacyPreserving2018a}. All utilities are either usable via \acrfull{cli} or as an isomorphic JavaScript\footnote{https://www.npmjs.com/package/zokrates-js} library.
+
+To simplify the development of provable programs, the ZoKrates toolbox includes standard libraries for hash functions, elliptic curve cryptography, and standard utilities among others. It supports multiple elliptic curves and \acrshort{zksnark} proving schemes such as Groth 16 and Marlin as well as multiple backends for the compilation into constraint systems, as shown in table \ref{tab:zokrates-backend}. With Marlin, the ZoKrates toolbox even provides the possibility for a universal setup. The combination of scheme, elliptic curve, backend, and type of setup is specified by \acrshort{cli} flags or in the JavaScript library.
+
+% curves etc. nennen und tabelle
+% Table generated by Excel2LaTeX
+\begin{table}[H]
+  \small
+  \centering
+    \begin{tabular}{cccc}
+    \toprule
+    \textbf{Scheme} & \textbf{Curve} & \textbf{Backend} & \textbf{Universal} \\
+    \midrule
+    G16 \cite{grothSizePairingBasedNoninteractive2016} & ALTBN\_128, BLS12\_381 & Bellman & No \\
+    GM17 \cite{grothSnarkySignaturesMinimal2017} & ALTBN\_128, BLS12\_381, BLS12\_377, BW6\_761 & Bellman, Ark & No \\
+    Marlin \cite{chiesaMarlinPreprocessingZkSNARKs2020} & ALTBN\_128, BLS12\_381, BLS12\_377, BW6\_761 & Bellman, Ark & Yes \\
+    \bottomrule
+    \end{tabular}%
+  \caption{Classification of ZK-SNARK's based on the type of reference string}
+  \label{tab:zokrates-backend}%
+\end{table}%
