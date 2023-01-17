@@ -1,0 +1,5 @@
+---
+creation_rules:
+  - path_regex: ./*.env
+    age: >-
+      age1u30r06zu0jacsxj3m33rqggfw49up55jm0cs4hcax0vsrq4nl34s5xpg76

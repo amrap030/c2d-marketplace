@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "declaration": true,
+    "allowJs": true,
+    "resolveJsonModule": true
+  },
+  "include": ["./scripts", "./test", "./typechain", "utils/merkleTree.ts"],
+  "files": ["./hardhat.config.ts"]
+}
