@@ -30,6 +30,3 @@ export const INTERFACES: Record<string, Array<string>> = {
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)",
   ],
 };
-
-export const baseURI =
-  "ipfs://bafybeiaddimrv42pu5huawu5neoxctn4jlkmi3hs2y7k3oznonv55v2qee/";
