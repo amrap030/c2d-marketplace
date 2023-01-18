@@ -352,6 +352,7 @@ MigrationBackup/
 # Repository
 .env
 *.decrypted~*
+.DS_Store
 
 artifacts
 cache
