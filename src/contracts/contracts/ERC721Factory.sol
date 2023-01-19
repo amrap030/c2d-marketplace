@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/IERC721Template.sol";
-import "./CloneFactory.sol";
+import "./utils/CloneFactory.sol";
 
 contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
   using Strings for uint256;
@@ -21,9 +21,6 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
 
   // ERC721 Template address
   address private templateAddress;
-
-  // Mapping to limit amount of NFT's per address during whitelist sale
-  mapping(address => uint) public amountNFTsPerWalletWhitelistSale;
 
   // List of all available tokens
   mapping(address => address) public availableTokens;

@@ -9,12 +9,17 @@ pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./token/ERC721A.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+
+//import "./token/ERC721A.sol";
 
 contract ERC721Template is
-  ERC721A("Template", "TemplateSymbol"),
+  ERC721("Template", "TemplateSymbol"),
+  ERC721Enumerable,
   Ownable,
   Pausable,
   ReentrancyGuard
@@ -31,9 +36,10 @@ contract ERC721Template is
   address payable private paymentSplitter;
 
   // Max amount of available tokens
-  uint256 public constant MAX_SUPPLY = 1;
+  uint256 private constant MAX_SUPPLY = 1;
   // Initial price
   uint256 public price;
+
   // Tokens transferable
   bool private transferable;
 
@@ -66,16 +72,14 @@ contract ERC721Template is
     baseURI = _baseURI;
     transferable = _transferable;
     _safeMint(_owner, 1);
+    //_currentIndex++;
     return true;
   }
 
-  modifier callerIsUser() {
-    require(tx.origin == msg.sender, "The caller is another contract");
-    _;
-  }
+  // Utils
 
   /**
-   * @dev Possibility to set a new price.
+   * @dev Set a new price.
    *
    * @param _price uint256 new costs
    */
@@ -83,16 +87,16 @@ contract ERC721Template is
     price = _price;
   }
 
-  // Internals
-
   /**
-   * @dev Override the ERC721A _startTokenId() function, so that the first token starts with id 1.
+   * @dev Update metadata
    *
-   * @return 1
+   * @param _baseURI string new base URI
    */
-  function _startTokenId() internal pure virtual override returns (uint256) {
-    return 1;
+  function updateMetadata(string memory _baseURI) external onlyOwner {
+    baseURI = _baseURI;
   }
+
+  // Overrides
 
   /**
    * @dev Override internal name() function
@@ -112,7 +116,16 @@ contract ERC721Template is
     return tokenSymbol;
   }
 
-  // URI getters
+  /**
+   * @dev Override internal supportsInterface() function
+   *
+   * @return bool stating if interface is supported
+   */
+  function supportsInterface(
+    bytes4 interfaceId
+  ) public view override(ERC721, ERC721Enumerable) returns (bool) {
+    return super.supportsInterface(interfaceId);
+  }
 
   /**
    * @dev Get the token uri for 1 token by id.
@@ -153,17 +166,19 @@ contract ERC721Template is
    *
    * @param from address representing the previous owner of the given token ID
    * @param to target address that will receive the tokens
-   * @param startTokenId uint256 the first token id to be transferred
-   * @param quantity uint256 the amount to be transferred
+   * @param tokenId uint256 the first token id to be transferred
+   * @param batchSize uint256 the amount to be transferred
    */
-  function _beforeTokenTransfers(
+  function _beforeTokenTransfer(
     address from,
     address to,
-    uint256 startTokenId,
-    uint256 quantity
-  ) internal override whenNotPaused {
-    super._beforeTokenTransfers(from, to, startTokenId, quantity);
+    uint256 tokenId,
+    uint256 batchSize
+  ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+    super._beforeTokenTransfer(from, to, tokenId, batchSize);
   }
+
+  // Withdraw
 
   function withdraw() external nonReentrant {
     Address.sendValue(paymentSplitter, address(this).balance);
