@@ -15,10 +15,8 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-//import "./token/ERC721A.sol";
-
 contract ERC721Template is
-  ERC721("Template", "TemplateSymbol"),
+  ERC721("Name", "Symbol"),
   ERC721Enumerable,
   Ownable,
   Pausable,
@@ -35,8 +33,6 @@ contract ERC721Template is
   // Payment splitter address
   address payable private paymentSplitter;
 
-  // Max amount of available tokens
-  uint256 private constant MAX_SUPPLY = 1;
   // Initial price
   uint256 public price;
 
@@ -72,7 +68,6 @@ contract ERC721Template is
     baseURI = _baseURI;
     transferable = _transferable;
     _safeMint(_owner, 1);
-    //_currentIndex++;
     return true;
   }
 
