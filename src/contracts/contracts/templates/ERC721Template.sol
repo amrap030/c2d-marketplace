@@ -14,11 +14,9 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract ERC721Template is
   ERC721("Name", "Symbol"),
-  ERC721Enumerable,
   Ownable,
   Pausable,
   ReentrancyGuard,
@@ -135,12 +133,7 @@ contract ERC721Template is
    */
   function supportsInterface(
     bytes4 interfaceId
-  )
-    public
-    view
-    override(AccessControl, ERC721, ERC721Enumerable)
-    returns (bool)
-  {
+  ) public view override(AccessControl, ERC721) returns (bool) {
     return super.supportsInterface(interfaceId);
   }
 
@@ -188,7 +181,7 @@ contract ERC721Template is
     address to,
     uint256 tokenId,
     uint256 batchSize
-  ) internal override(ERC721, ERC721Enumerable) whenNotPaused {
+  ) internal override(ERC721) whenNotPaused {
     super._beforeTokenTransfer(from, to, tokenId, batchSize);
   }
 
