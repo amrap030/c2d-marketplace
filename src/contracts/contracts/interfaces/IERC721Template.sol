@@ -42,8 +42,7 @@ interface IERC721Template is IERC721A {
     address admin,
     string calldata name,
     string calldata symbol,
-    string calldata baseURI,
-    bool transferable
+    string calldata baseURI
   ) external returns (bool);
 
   struct Roles {

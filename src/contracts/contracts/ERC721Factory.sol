@@ -17,23 +17,20 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
   using Strings for uint256;
   using SafeMath for uint256;
 
-  uint256 private currentNFTCount;
+  // Number of all created ERC721 contracts with this factory
+  uint256 public currentERC721Count = 0;
 
   // ERC721 Template address
-  address private templateAddress;
+  address public templateAddress;
 
-  // List of all available tokens
-  mapping(address => address) public availableTokens;
-
-  event NFTCreated(
-    address indexed admin,
+  event ERC721Created(
+    address indexed owner,
     address indexed creator,
     address indexed templateAddress,
     address tokenAddress,
     string tokenName,
     string tokenSymbol,
-    string tokenURI,
-    bool transferable
+    string metadataURI
   );
 
   constructor(address _templateAddress) {
@@ -50,31 +47,27 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
     address _owner,
     string memory _name,
     string memory _symbol,
-    string memory _tokenURI,
-    bool _transferable
-  ) public returns (address token) {
+    string memory _metadataURI
+  ) external returns (address tokenAddress) {
     address template = templateAddress;
-    token = createClone(template);
-    availableTokens[token] = token;
-    currentNFTCount += 1;
+    tokenAddress = createClone(template);
+    currentERC721Count += 1;
 
-    emit NFTCreated(
+    emit ERC721Created(
       _owner,
       msg.sender,
       templateAddress,
-      token,
+      tokenAddress,
       _name,
       _symbol,
-      _tokenURI,
-      _transferable
+      _metadataURI
     );
 
-    IERC721Template(token).initialize(
+    IERC721Template(tokenAddress).initialize(
       _owner,
       _name,
       _symbol,
-      _tokenURI,
-      _transferable
+      _metadataURI
     );
   }
 }

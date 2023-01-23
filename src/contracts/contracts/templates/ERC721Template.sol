@@ -7,6 +7,7 @@ pragma solidity ^0.8.13;
 // @title ERC721Template
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
@@ -20,13 +21,14 @@ contract ERC721Template is
   ERC721Enumerable,
   Ownable,
   Pausable,
-  ReentrancyGuard
+  ReentrancyGuard,
+  AccessControl
 {
   using Strings for uint256;
   using SafeMath for uint256;
 
   // Token base URI
-  string private baseURI;
+  string private metadataURI;
   string private tokenName;
   string private tokenSymbol;
 
@@ -39,56 +41,71 @@ contract ERC721Template is
   // Tokens transferable
   bool private transferable;
 
+  bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
+
   function initialize(
     address _owner,
     string calldata _name,
     string calldata _symbol,
-    string calldata _baseURI,
-    bool _transferable
+    string calldata _metadataURI
   ) external returns (bool) {
-    bool initResult = _initialize(
-      _owner,
-      _name,
-      _symbol,
-      _baseURI,
-      _transferable
-    );
-    return (initResult);
+    return _initialize(_owner, _name, _symbol, _metadataURI);
   }
 
   function _initialize(
     address _owner,
     string memory _name,
     string memory _symbol,
-    string memory _baseURI,
-    bool _transferable
+    string memory _metadataURI
   ) internal returns (bool) {
     tokenName = _name;
     tokenSymbol = _symbol;
-    baseURI = _baseURI;
-    transferable = _transferable;
+    metadataURI = _metadataURI;
+
+    _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _safeMint(_owner, 1);
+
     return true;
   }
 
-  // Utils
+  // Setter
+
+  /**
+   * @dev Add a new manager.
+   *
+   * @param _manager address new manager
+   */
+  function addManager(address _manager) external onlyRole(MANAGER_ROLE) {
+    _grantRole(MANAGER_ROLE, _manager);
+  }
+
+  /**
+   * @dev Remove a manager.
+   *
+   * @param _manager address manager
+   */
+  function removeManager(address _manager) external onlyOwner {
+    _revokeRole(MANAGER_ROLE, _manager);
+  }
 
   /**
    * @dev Set a new price.
    *
    * @param _price uint256 new costs
    */
-  function setPrice(uint256 _price) external onlyOwner {
+  function setPrice(uint256 _price) external onlyRole(MANAGER_ROLE) {
     price = _price;
   }
 
   /**
    * @dev Update metadata
    *
-   * @param _baseURI string new base URI
+   * @param _metadataURI string new base URI
    */
-  function updateMetadata(string memory _baseURI) external onlyOwner {
-    baseURI = _baseURI;
+  function updateMetadata(
+    string memory _metadataURI
+  ) external onlyRole(MANAGER_ROLE) {
+    metadataURI = _metadataURI;
   }
 
   // Overrides
@@ -118,7 +135,12 @@ contract ERC721Template is
    */
   function supportsInterface(
     bytes4 interfaceId
-  ) public view override(ERC721, ERC721Enumerable) returns (bool) {
+  )
+    public
+    view
+    override(AccessControl, ERC721, ERC721Enumerable)
+    returns (bool)
+  {
     return super.supportsInterface(interfaceId);
   }
 
@@ -132,10 +154,7 @@ contract ERC721Template is
     uint256 _tokenId
   ) public view virtual override returns (string memory) {
     require(_exists(_tokenId), "URI query for nonexistent token");
-    return
-      bytes(baseURI).length > 0
-        ? string(abi.encodePacked(baseURI, _tokenId.toString(), ".json"))
-        : "";
+    return bytes(metadataURI).length > 0 ? metadataURI : "";
   }
 
   // Pausable
