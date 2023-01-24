@@ -45,7 +45,7 @@
     "unbuild": "^0.7.4"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,vue}": "yarn workspaces run lint"
+    "src/**/*.{js,jsx,ts,tsx,vue},!src/subgraph/**/**.ts": "yarn workspaces run lint"
   },
   "config": {
     "commitizen": {

@@ -1,0 +1,29 @@
+{
+  "name": "@c2d-trading/subgraph",
+  "version": "0.0.0",
+  "author": "Kevin Hertwig",
+  "license": "MIT",
+  "keywords": [
+    "subgraph",
+    "erc721"
+  ],
+  "scripts": {
+    "build": "graph build",
+    "codegen": "rm -Rf generated && graph codegen",
+    "lint": "eslint",
+    "create:local": "graph create --node http://localhost:8020/ c2d-trading/subgraph",
+    "remove:local": "graph remove --node http://localhost:8020/ c2d-trading/subgraph",
+    "deploy:local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 c2d-trading/subgraph"
+  },
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.37.6",
+    "@graphprotocol/graph-ts": "^0.29.1",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.49.0",
+    "@typescript-eslint/parser": "^5.49.0",
+    "eslint": "^8.32.0",
+    "typescript": "^4.9.4"
+  },
+  "private": true,
+  "type": "module"
+}

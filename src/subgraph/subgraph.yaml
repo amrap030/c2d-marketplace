@@ -1,0 +1,56 @@
+specVersion: 0.0.4
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: ERC721Factory
+    network: mainnet
+    source:
+      address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+      abi: ERC721Factory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/erc721Factory.ts
+      entities:
+        - Directory
+      abis:
+        - name: ERC721Factory
+          file: ./abi/ERC721Factory.json
+        - name: ERC721
+          file: ./abi/ERC721.json
+      eventHandlers:
+        - event: ERC721Created(indexed address,indexed address,indexed address,address,string,string,string)
+          handler: handleERC721Created
+
+templates:
+  - name: ERC721Template
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: ERC721Template
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/erc721.ts
+      entities:
+        - Contract
+        - Token
+      abis:
+        - name: ERC721Template
+          file: ./abi/ERC721Template.json
+        - name: ERC721
+          file: ./abi/ERC721.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Paused(address)
+          handler: handlePaused
+        - event: Unpaused(address)
+          handler: handleUnpaused

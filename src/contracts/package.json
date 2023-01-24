@@ -7,7 +7,7 @@
   "scripts": {
     "lint": "yarn run lint:contracts && yarn run lint:scripts",
     "lint:contracts": "solhint './contracts/**/*.sol'",
-    "lint:scripts": "eslint .",
+    "lint:scripts": "eslint",
     "lint:fix": "solhint './contracts/**/*.sol' --fix",
     "hh-node": "hardhat node",
     "compile": "hardhat compile",

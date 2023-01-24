@@ -1,0 +1,130 @@
+type Token @entity {
+  "The contract address"
+  id: ID!
+
+  # "The collection the token was created in"
+  # collection: Collection!
+
+  "The transaction hash the token was created at"
+  transactionHash: String!
+
+  "The current owner of the token"
+  owner: Account!
+
+  "The creator of the token"
+  creator: Account!
+
+  "The previous owner of the token"
+  prevOwner: Account!
+
+  "The approved user of the token"
+  approved: Account
+
+  "The uri of the metadata"
+  metadataURI: String!
+
+  "The timestamp of the block the token was minted in"
+  createdAtTimestamp: BigInt!
+
+  "The number of the block the token was minted in"
+  createdAtBlockNumber: BigInt!
+
+  "Supports ERC721 metadata"
+  supportsMetadata: Boolean
+
+  "The token name"
+  name: String!
+
+  "The token symbol"
+  symbol: String!
+
+  "The address of the template"
+  template: String!
+
+  "All addresses of managers"
+  managers: [String!]
+
+  "The paused state of the token"
+  paused: Boolean
+
+  "The transfers of the Media"
+  transfers: [Transfer!] @derivedFrom(field: "token")
+}
+
+type Account @entity {
+  "The account address"
+  id: ID!
+
+  "Users that have been granted `ApprovalForAll` token of the User's tokens"
+  authorizedUsers: [Account!]
+
+  "The Media the User owns"
+  ownings: [Token!]! @derivedFrom(field: "owner")
+
+  "The Media the User created"
+  creations: [Token!]! @derivedFrom(field: "creator")
+
+  # "The receiving from another user"
+  # transfers: [Transfer!]! @derivedFrom(field: "from")
+
+  "The transfers to another user"
+  transfers: [Transfer!]! @derivedFrom(field: "to")
+}
+
+# type Collection @entity {
+#   "The collection id"
+#   id: ID!
+
+#   "Supports ERC721 metadata"
+#   supportsMetadata: Boolean
+
+#   "The token name"
+#   name: String!
+
+#   "The token symbol"
+#   symbol: String!
+
+#   "The address of the template"
+#   template: String!
+
+#   "All addresses of managers"
+#   managers: [String!]
+
+#   "The current supply of tokens"
+#   totalSupply: BigInt
+
+#   "The paused state of the collection"
+#   paused: Boolean
+
+#   "All tokens of the collection"
+#   tokens: [Token!]! @derivedFrom(field: "collection")
+# }
+
+type Transfer @entity {
+  "<tokenId>-<transactionHash>-<logIndex>"
+  id: ID!
+
+  "Transaction hash for the transfer"
+  transactionHash: String!
+
+  "The Media associated with the Transfer"
+  token: Token!
+
+  "The User transferring the Media"
+  from: Account!
+
+  "The User receiving the Media"
+  to: Account!
+
+  "The timestamp of the block the Transfer was created in"
+  createdAtTimestamp: BigInt!
+
+  "The number of the block the Transfer was created in"
+  createdAtBlockNumber: BigInt!
+
+  "The gas price for the transaction"
+  gasPrice: BigInt!
+
+  "The price of the transaction"
+  value: BigInt!
+}
