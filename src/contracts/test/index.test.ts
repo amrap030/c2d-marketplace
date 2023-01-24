@@ -22,9 +22,19 @@ describe("ERC721Factory", async () => {
 
     erc721Template = await ERC721Template.deploy();
     await erc721Template.deployed();
+    console.log("Template: " + erc721Template.address);
+    // erc721Template = await ethers.getContractAt(
+    //   "ERC721Template",
+    //   "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    // );
 
     erc721Factory = await ERC721Factory.deploy(erc721Template.address);
     await erc721Factory.deployed();
+    console.log("Factory: " + erc721Factory.address);
+    // erc721Factory = await ethers.getContractAt(
+    //   "ERC721Factory",
+    //   "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+    // );
   });
 
   it("create erc721 and mint 1 token for owner", async () => {
@@ -32,16 +42,17 @@ describe("ERC721Factory", async () => {
       owner.address,
       "C2D",
       "C2DYMBOL",
-      "ipfs://trd4ertz/",
-      true
+      "ipfs://trd4ertz/"
     );
+
     const txReceipt = await tx.wait();
 
     if (txReceipt.events) {
       const event = txReceipt.events.find(
-        (event) => event.event === "NFTCreated"
+        (event) => event.event === "ERC721Created"
       );
       const newTokenAddress = (event?.args as string[])[3] as string;
+      console.log(newTokenAddress);
 
       newErc721Token = await ethers.getContractAt(
         "ERC721Template",
