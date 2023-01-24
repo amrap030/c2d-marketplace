@@ -21,7 +21,7 @@ export function handleTransfer(event: Transfer): void {
 
   log.info(
     `Starting handler for Transfer Event of tokenId: {}, from: {}. to: {}`,
-    [tokenId, from.id, to.id]
+    [tokenId, from.id, to.id],
   );
 
   let token = Token.load(event.address.toHexString());
@@ -51,12 +51,12 @@ export function handleTransfer(event: Transfer): void {
     event.block.timestamp,
     event.block.number,
     event.transaction.gasPrice,
-    event.transaction.value
+    event.transaction.value,
   );
 
   log.info(
     `Completed handler for Transfer Event of tokenId: {}, from: {}. to: {}`,
-    [tokenId, from.id, to.id]
+    [tokenId, from.id, to.id],
   );
 }
 
@@ -71,7 +71,7 @@ export function handleApproval(event: Approval): void {
 
   log.info(
     `Starting handler for Approval Event of tokenId: {}, owner: {}, approved: {}`,
-    [tokenId, owner, approvedUser]
+    [tokenId, owner, approvedUser],
   );
 
   let token = Token.load(event.address.toHexString());
@@ -92,7 +92,7 @@ export function handleApproval(event: Approval): void {
 
   log.info(
     `Completed handler for Approval Event of tokenId: {}, owner: {}, approved: {}`,
-    [tokenId, owner, approvedUser]
+    [tokenId, owner, approvedUser],
   );
 }
 
@@ -183,7 +183,7 @@ export function handlePaused(event: PausedEvent): void {
 
   log.info(
     `Completed handler for Paused Event. Contract execution paused for address: {}`,
-    [event.address.toHexString()]
+    [event.address.toHexString()],
   );
 }
 
@@ -208,7 +208,7 @@ export function handleUnpaused(event: UnpausedEvent): void {
 
   log.info(
     `Completed handler for Unpaused Event. Contract execution unpaused for address: {}`,
-    [event.address.toHexString()]
+    [event.address.toHexString()],
   );
 }
 
