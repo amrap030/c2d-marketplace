@@ -54,3 +54,5 @@ templates:
           handler: handlePaused
         - event: Unpaused(address)
           handler: handleUnpaused
+        - event: MetadataUpdated(indexed address,string,uint256,uint256)
+          handler: handleMetadataUpdated

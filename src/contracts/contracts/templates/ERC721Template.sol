@@ -41,6 +41,13 @@ contract ERC721Template is
 
   bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
 
+  event MetadataUpdated(
+    address indexed updatedBy,
+    string metadataURI,
+    uint256 timestamp,
+    uint256 blockNumber
+  );
+
   function initialize(
     address _owner,
     string calldata _name,
@@ -104,6 +111,12 @@ contract ERC721Template is
     string memory _metadataURI
   ) external onlyRole(MANAGER_ROLE) {
     metadataURI = _metadataURI;
+    emit MetadataUpdated(
+      msg.sender,
+      _metadataURI,
+      block.timestamp,
+      block.number
+    );
   }
 
   // Overrides

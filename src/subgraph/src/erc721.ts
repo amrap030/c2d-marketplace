@@ -1,9 +1,11 @@
+/* eslint-disable prefer-const */
 import { Token } from "../generated/schema";
 import {
   Approval,
   Transfer,
   Paused as PausedEvent,
   Unpaused as UnpausedEvent,
+  MetadataUpdated,
 } from "../generated/templates/ERC721Template/ERC721Template";
 import { log } from "@graphprotocol/graph-ts";
 import { createTransfer, findOrCreateUser, ZERO_ADDRESS } from "./helpers";
@@ -204,4 +206,24 @@ export function handleUnpaused(event: UnpausedEvent): void {
     `Completed handler for Unpaused Event. Contract execution unpaused for address: {}`,
     [event.address.toHexString()]
   );
+}
+
+export function handleMetadataUpdated(event: MetadataUpdated): void {
+  log.info(`Starting handler for MetadataUpdated Event of contract: {}`, [
+    event.address.toHexString(),
+  ]);
+
+  let token = Token.load(event.address.toHexString());
+
+  if (token === null) {
+    log.error(`Media is null for token address: {}`, [
+      event.address.toHexString(),
+    ]);
+    return;
+  }
+
+  token.metadataURI = event.params.metadataURI;
+  token.save();
+
+  log.info(`Completed handler for MetadataUpdated Event`, []);
 }
