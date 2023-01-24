@@ -5,9 +5,10 @@ const scopes = [
   "release",
   "readme",
   "build",
-  "backend",
+  "compute",
   "frontend",
   "contracts",
+  "subgraph",
 ];
 
 /** @type {import('cz-git').UserConfig} */
