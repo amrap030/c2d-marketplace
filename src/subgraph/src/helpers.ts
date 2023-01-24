@@ -123,7 +123,9 @@ export function createToken(
   token.prevOwner = prevOwner;
   token.metadataURI = metadataURI;
   token.createdAtTimestamp = createdAtTimestamp;
+  token.updatedAtTimestamp = createdAtTimestamp;
   token.createdAtBlockNumber = createdAtBlockNumber;
+  token.updatedAtBlockNumber = createdAtBlockNumber;
   token.supportsMetadata = supportsMetadata;
   token.name = name;
   token.symbol = symbol;

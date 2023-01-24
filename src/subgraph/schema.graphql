@@ -29,6 +29,12 @@ type Token @entity {
   "The number of the block the token was minted in"
   createdAtBlockNumber: BigInt!
 
+  "The timestamp of the block the token was updated"
+  updatedAtTimestamp: BigInt!
+
+  "The number of the block the token was updated"
+  updatedAtBlockNumber: BigInt!
+
   "Supports ERC721 metadata"
   supportsMetadata: Boolean
 

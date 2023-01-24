@@ -177,6 +177,8 @@ export function handlePaused(event: PausedEvent): void {
   }
 
   token.paused = true;
+  token.updatedAtBlockNumber = event.block.number;
+  token.updatedAtTimestamp = event.block.timestamp;
   token.save();
 
   log.info(
@@ -200,6 +202,8 @@ export function handleUnpaused(event: UnpausedEvent): void {
   }
 
   token.paused = false;
+  token.updatedAtBlockNumber = event.block.number;
+  token.updatedAtTimestamp = event.block.timestamp;
   token.save();
 
   log.info(
@@ -223,6 +227,8 @@ export function handleMetadataUpdated(event: MetadataUpdated): void {
   }
 
   token.metadataURI = event.params.metadataURI;
+  token.updatedAtBlockNumber = event.block.number;
+  token.updatedAtTimestamp = event.block.timestamp;
   token.save();
 
   log.info(`Completed handler for MetadataUpdated Event`, []);
