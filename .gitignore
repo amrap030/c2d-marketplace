@@ -357,3 +357,7 @@ MigrationBackup/
 artifacts
 cache
 typechain
+
+# subgraphs
+src/subgraph/generated
+src/subgraph/build
