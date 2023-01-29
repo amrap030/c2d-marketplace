@@ -1,0 +1,12 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - host: host.docker.internal
+    name: preprocessor
+    port: 3333
+    protocol: http
+    routes:
+      - name: health
+        paths:
+          - /api/health
