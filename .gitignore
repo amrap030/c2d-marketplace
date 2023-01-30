@@ -361,3 +361,7 @@ typechain
 # subgraphs
 src/subgraph/generated
 src/subgraph/build
+
+# preprocessor
+.mypy_cache
+__pycache__
