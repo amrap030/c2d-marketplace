@@ -23,6 +23,7 @@
   "scripts": {
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "commit": "git cz",
+    "decrypt": "sops --decrypt ./encrypted.env > ./.env",
     "prepare": "husky install",
     "release": "npx bumpp package.json ./src/**/package.json --execute 'yarn changelog' --all"
   },
