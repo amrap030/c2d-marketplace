@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: preprocessor:${PREPROCESSOR_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      PREPROCESSOR_HOST: 0.0.0.0
+
+  redis:
+    image: bitnami/redis:6.2.5
+    hostname: "preprocessor-redis"
+    restart: always
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 50
