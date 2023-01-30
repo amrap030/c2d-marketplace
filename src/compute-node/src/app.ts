@@ -1,14 +1,13 @@
 import compression from "compression";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express from "express";
+import express, { Router } from "express";
 import helmet from "helmet";
 import hpp from "hpp";
 import morgan from "morgan";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { PORT, LOG_FORMAT } from "@config";
-import { Routes } from "@interfaces/routes.interface";
 import errorMiddleware from "@middlewares/error.middleware";
 import { logger, stream } from "@utils/logger";
 
@@ -17,7 +16,7 @@ const app = express();
 const listen = () => {
   app.listen(PORT, () => {
     logger.info(`=================================`);
-    logger.info(`🚀 App listening on the port 3000`);
+    logger.info(`🚀 App listening on the port ${PORT}`);
     logger.info(`=================================`);
   });
 };
@@ -33,9 +32,9 @@ const initializeMiddlewares = () => {
   app.use(cookieParser());
 };
 
-const initializeRoutes = (routes: Routes[]) => {
+const initializeRoutes = (routes: any) => {
   routes.forEach(route => {
-    app.use("/", route.router);
+    app.use("/v1", route);
   });
 };
 
@@ -59,14 +58,10 @@ const initializeErrorHandling = () => {
   app.use(errorMiddleware);
 };
 
-export const startApp = (routes: Routes[]) => {
+export const startApp = (routes: Router[]) => {
   initializeMiddlewares();
   initializeRoutes(routes);
   initializeSwagger();
   initializeErrorHandling();
   listen();
-};
-
-export const getServer = () => {
-  return app;
 };
