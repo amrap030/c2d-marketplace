@@ -116,6 +116,19 @@ toml = ["toml"]
 yaml = ["PyYAML"]
 
 [[package]]
+name = "bitstring"
+version = "3.1.9"
+description = "Simple construction, analysis and modification of binary data."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "bitstring-3.1.9-py2-none-any.whl", hash = "sha256:e3e340e58900a948787a05e8c08772f1ccbe133f6f41fe3f0fa19a18a22bbf4f"},
+    {file = "bitstring-3.1.9-py3-none-any.whl", hash = "sha256:0de167daa6a00c9386255a7cac931b45e6e24e0ad7ea64f1f92a64ac23ad4578"},
+    {file = "bitstring-3.1.9.tar.gz", hash = "sha256:a5848a3f63111785224dca8bb4c0a75b62ecdef56a042c8d6be74b16f7e860e7"},
+]
+
+[[package]]
 name = "black"
 version = "22.12.0"
 description = "The uncompromising code formatter."
@@ -2025,7 +2038,22 @@ files = [
 idna = ">=2.0"
 multidict = ">=4.0"
 
+[[package]]
+name = "zokrates-pycrypto"
+version = "0.3.0"
+description = "Accompanying crypto application code for the zkSNARKs toolbox ZoKrates"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+files = [
+    {file = "zokrates-pycrypto-0.3.0.tar.gz", hash = "sha256:25be46790cfb3903777e06edfd365715681a29586bba5670c5c7f8e0a8c0fb1b"},
+    {file = "zokrates_pycrypto-0.3.0-py3-none-any.whl", hash = "sha256:9e0c9429f9b81d9db787e54751d574f7cefa8857118208c9bd6c3d7be633e30b"},
+]
+
+[package.dependencies]
+bitstring = ">=3.1,<4.0"
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "821dfbe424ec1b9e323ba0e7691a52149e8cee1b24337434c75da0ce6b693128"
+content-hash = "b3911e9f88a562287766119cc9431a7e0987199abfda9b4a88a0af534953f821"

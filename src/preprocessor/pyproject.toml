@@ -17,6 +17,7 @@ redis = {version = "^4.3.4", extras = ["hiredis"]}
 aiofiles = "^22.1.0"
 httptools = "^0.5.0"
 loguru = "^0.6.0"
+zokrates-pycrypto = "^0.3.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.3"

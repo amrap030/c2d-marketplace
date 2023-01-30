@@ -365,3 +365,4 @@ src/subgraph/build
 # preprocessor
 .mypy_cache
 __pycache__
+src/preprocessor/preprocessor/static
