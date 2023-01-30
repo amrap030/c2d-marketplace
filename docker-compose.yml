@@ -30,7 +30,7 @@ services:
       "
 
   kong:
-    build: ./src/gateway
+    build: ./src/api-gateway
     image: c2d-kong
     container_name: kong
     ports:
@@ -39,7 +39,7 @@ services:
       - "8442:8443"
       - "8444:8444"
     volumes:
-      - ./src/gateway/configuration/:/usr/local/kong/declarative
+      - ./src/api-gateway/configuration/:/usr/local/kong/declarative
     environment:
       KONG_DATABASE: off
       KONG_DECLARATIVE_CONFIG: /usr/local/kong/declarative/kong.yml
