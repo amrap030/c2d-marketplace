@@ -366,3 +366,12 @@ src/subgraph/build
 .mypy_cache
 __pycache__
 src/preprocessor/preprocessor/static
+
+# zokrates
+src/compute-node/zokrates/out
+src/compute-node/zokrates/*.r1cs
+src/compute-node/zokrates/out.wtns
+src/compute-node/zokrates/proof.json
+src/compute-node/zokrates/proving.key
+src/compute-node/zokrates/verification.key
+src/compute-node/zokrates/witness
