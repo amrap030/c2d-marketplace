@@ -14,8 +14,8 @@ import {
 
 export const initComputation = async () => {
   try {
-    await compile("./zokrates");
-    await setup("./zokrates");
+    await compile("/app/dist/zokrates");
+    await setup("/app/dist/zokrates");
     await computeWitness(
       [
         "0",
@@ -72,10 +72,10 @@ export const initComputation = async () => {
         "1885183916",
         "2978347395",
       ],
-      "./zokrates",
+      "/app/dist/zokrates",
     );
-    await generateProof("./zokrates");
-    await exportVerifier("./zokrates");
+    await generateProof("/app/dist/zokrates");
+    await exportVerifier("/app/dist/zokrates");
   } catch (e) {
     throw new HttpException(400, e.toString());
   }
