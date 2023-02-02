@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { initComputation } from "@/controllers/compute.controller";
+import { initComputation } from "@/controllers/computations.controller";
 
 /**
  * All routes for NFT assets

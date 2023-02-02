@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import ComputeService from "@services/compute.service";
+import ComputeService from "@/services/computations.service";
 // import { HttpException } from "@/exceptions/HttpException";
 
 export const initComputation = async (
