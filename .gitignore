@@ -375,3 +375,6 @@ src/compute-node/zokrates/proof.json
 src/compute-node/zokrates/proving.key
 src/compute-node/zokrates/verification.key
 src/compute-node/zokrates/witness
+
+# builds
+dist
