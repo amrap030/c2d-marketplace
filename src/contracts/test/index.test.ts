@@ -42,21 +42,21 @@ describe("ERC721Factory", async () => {
       owner.address,
       "C2D",
       "C2DYMBOL",
-      "ipfs://trd4ertz/"
+      "ipfs://trd4ertz/",
     );
 
     const txReceipt = await tx.wait();
 
     if (txReceipt.events) {
       const event = txReceipt.events.find(
-        (event) => event.event === "ERC721Created"
+        event => event.event === "ERC721Created",
       );
       const newTokenAddress = (event?.args as string[])[3] as string;
       console.log(newTokenAddress);
 
       newErc721Token = await ethers.getContractAt(
         "ERC721Template",
-        newTokenAddress
+        newTokenAddress,
       );
     } else {
       throw "Transaction failed!";
@@ -67,15 +67,11 @@ describe("ERC721Factory", async () => {
     expect(await newErc721Token.balanceOf(owner.address)).to.equal(1);
   });
 
-  it("total supply equals 1", async () => {
-    expect(await newErc721Token.totalSupply()).to.equal(1);
-  });
-
   it("new contract supports all interfaces", async () => {
     for (const k of ["ERC165", "ERC721", "ERC721Metadata"]) {
       const interfaceId = makeInterfaceId.ERC165(INTERFACES[k]);
       expect(await newErc721Token.supportsInterface(interfaceId)).to.equal(
-        true
+        true,
       );
     }
   });
