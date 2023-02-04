@@ -64,10 +64,14 @@ services:
     image: "ipfs/go-ipfs"
     container_name: ipfs
     ports:
-      - 127.0.0.1:5001:5001 # ipfs api
-      - 127.0.0.1:8081:8080 # ipfs gateway
+      - 5001:5001 # ipfs api
+      - 8081:8080 # ipfs gateway
       - 4001:4001 # ipfs swarm - expose if needed/wanted
+    volumes:
+      - "./cors.sh:/cors.sh"
+      - "./start_ipfs.sh:/start_ipfs.sh"
     restart: unless-stopped
+    entrypoint: sh -c "chmod +x /start_ipfs.sh && /start_ipfs.sh"
 
 volumes:
   minio_storage:
