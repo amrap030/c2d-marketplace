@@ -9,6 +9,7 @@ const scopes = [
   "frontend",
   "contracts",
   "subgraph",
+  "gateway",
 ];
 
 /** @type {import('cz-git').UserConfig} */
