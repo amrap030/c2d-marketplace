@@ -3,10 +3,19 @@ _transform: true
 
 services:
   - host: host.docker.internal
-    name: preprocessor
-    port: 3333
+    name: compute-node
+    port: 3000
     protocol: http
     routes:
-      - name: health
+      - name: algorithms
         paths:
-          - /api/health
+          - /v1/algorithms
+        strip_path: false
+      - name: assets
+        paths:
+          - /v1/assets
+        strip_path: false
+      - name: computations
+        paths:
+          - /v1/computations
+        strip_path: false
