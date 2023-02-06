@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .container {
+    @apply 2xl:max-w-[80rem];
+  }
+
+  .container-default {
+    @apply container mx-auto px-6 lg:px-12;
+  }
+
+  .title {
+    @apply text-4xl md:text-5xl font-semibold tracking-wide leading-tight;
+  }
+
+  .title-2 {
+    @apply font-semibold text-2xl md:text-3xl leading-tight;
+  }
+
+  .title-3 {
+    @apply font-semibold text-lg md:text-xl mb-4 leading-tight;
+  }
+
+  .title-4 {
+    @apply font-semibold text-sm uppercase mb-2 tracking-wide leading-tight;
+  }
+
+  .title-5 {
+    @apply font-semibold text-sm mb-1 tracking-widest leading-tight;
+  }
+
+  .subtitle {
+    @apply text-xs font-semibold tracking-widest uppercase;
+  }
+
+  .link,
+  .link-1 {
+    @apply leading-relaxed relative opacity-60 hover:opacity-100 after:block after:absolute after:bottom-px after:left-0 after:w-full after:h-px after:bg-current after:transition-all after:duration-200 hover:after:w-0;
+  }
+
+  .link.router-link-exact-active,
+  .link-1.router-link-exact-active {
+    @apply after:w-0 opacity-100;
+  }
+
+  .link-2 {
+    @apply font-semibold opacity-100 transition-opacity duration-200 hover:opacity-70;
+  }
+
+  .link-2.router-link-exact-active,
+  .link-2.router-link-exact-active {
+    @apply opacity-70;
+  }
+
+  .text-dripversity {
+    @apply inline-block w-20 align-middle pb-0.5;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-white text-neutral-800 selection:text-neutral-50 selection:bg-blue;
+  }
+
+  section {
+    @apply py-24 lg:py-32;
+  }
+
+  p {
+    @apply text-justify text-neutral-300/70;
+  }
+}

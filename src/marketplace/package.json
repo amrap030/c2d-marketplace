@@ -20,6 +20,18 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.7",
+    "@headlessui/vue": "^1.7.9",
+    "@heroicons/vue": "^2.0.14",
+    "@raugfer/jazzicon": "^1.0.6",
+    "@vue/apollo-composable": "^4.0.0-beta.2",
+    "@vueuse/core": "^9.12.0",
+    "@vueuse/head": "^1.0.24",
+    "@web3-onboard/injected-wallets": "^2.6.2",
+    "@web3-onboard/vue": "^2.5.1",
+    "ethers": "^5.7.2",
+    "evm-chains": "^0.2.0",
+    "gsap": "^3.11.4",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

@@ -6,7 +6,12 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "@types": ["types"]
+    },
+    "types": [
+      "vite/client" // if using vite
+      // ...
+    ]
   }
 }

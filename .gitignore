@@ -380,6 +380,8 @@ src/compute-node/zokrates/witness
 dist
 
 # marketplace
+src/marketplace/src/temp
+
 # Logs
 logs
 *.log
