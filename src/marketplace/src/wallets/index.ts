@@ -6,7 +6,7 @@ import { hexlify, hexStripZeros } from "ethers/lib/utils";
 const wallets = [injected];
 
 export const setupWeb3Onboard = function () {
-  const rpcUrl = `https://goerli.infura.io/v3/063b375ba6ea4f2a956e15aae6c937fe`;
+  const rpcUrl = `http://localhost:8545`;
 
   return init({
     wallets,
