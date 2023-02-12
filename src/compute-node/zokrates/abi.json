@@ -10,6 +10,11 @@
       }
     },
     {
+      "name": "nonce",
+      "public": false,
+      "type": "field"
+    },
+    {
       "name": "R",
       "public": false,
       "type": "array",
@@ -62,7 +67,11 @@
           "type": "bool"
         },
         {
-          "type": "u32"
+          "type": "array",
+          "components": {
+            "size": 8,
+            "type": "u32"
+          }
         }
       ]
     }
