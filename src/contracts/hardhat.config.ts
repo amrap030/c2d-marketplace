@@ -29,7 +29,7 @@ const config: HardhatUserConfig = {
   networks: {
     local: {
       url: "http://127.0.0.1:8545",
-      blockGasLimit: 10000000,
+      blockGasLimit: 30000000,
       gas: 10000000,
     },
     goerli: {
@@ -44,6 +44,7 @@ const config: HardhatUserConfig = {
   },
   gasReporter: {
     enabled: false,
+    token: "ETH",
     currency: "EUR",
     gasPrice: 21,
     coinmarketcap: process.env.COINMARKETCAP_KEY,
