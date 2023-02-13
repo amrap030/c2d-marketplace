@@ -16,7 +16,7 @@ export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export function supportsInterface(
   contract: ethereum.SmartContract,
   interfaceId: String,
-  expected: boolean = true
+  expected: boolean = true,
 ): boolean {
   let result = ethereum.call(
     new ethereum.SmartContractCall(
@@ -26,10 +26,10 @@ export function supportsInterface(
       "supportsInterface(bytes4):(bool)",
       [
         ethereum.Value.fromFixedBytes(
-          Bytes.fromHexString(interfaceId as string) as Bytes
+          Bytes.fromHexString(interfaceId as string) as Bytes,
         ),
-      ]
-    )
+      ],
+    ),
   );
 
   return (
@@ -79,7 +79,7 @@ export function handleMint(event: ERC721Created): void {
     event.params.tokenName,
     event.params.tokenSymbol,
     event.params.templateAddress.toHexString(),
-    false
+    false,
   );
 }
 
@@ -114,7 +114,7 @@ export function createToken(
   name: string,
   symbol: string,
   template: string,
-  paused: boolean
+  paused: boolean,
 ): Token {
   let token = new Token(id);
   token.owner = owner;
@@ -158,7 +158,7 @@ export function createTransfer(
   createdAtTimestamp: BigInt,
   createdAtBlockNumber: BigInt,
   gasPrice: BigInt,
-  value: BigInt
+  value: BigInt,
 ): Transfer {
   let transfer = new Transfer(id);
   transfer.token = token.id;

@@ -55,6 +55,9 @@ type Token @entity {
 
   "The transfers of the Media"
   transfers: [Transfer!] @derivedFrom(field: "token")
+
+  "The offerings of the Media"
+  items: [Item!] @derivedFrom(field: "token")
 }
 
 type Account @entity {
@@ -76,35 +79,6 @@ type Account @entity {
   "The transfers to another user"
   transfers: [Transfer!]! @derivedFrom(field: "to")
 }
-
-# type Collection @entity {
-#   "The collection id"
-#   id: ID!
-
-#   "Supports ERC721 metadata"
-#   supportsMetadata: Boolean
-
-#   "The token name"
-#   name: String!
-
-#   "The token symbol"
-#   symbol: String!
-
-#   "The address of the template"
-#   template: String!
-
-#   "All addresses of managers"
-#   managers: [String!]
-
-#   "The current supply of tokens"
-#   totalSupply: BigInt
-
-#   "The paused state of the collection"
-#   paused: Boolean
-
-#   "All tokens of the collection"
-#   tokens: [Token!]! @derivedFrom(field: "collection")
-# }
 
 type Transfer @entity {
   "<tokenId>-<transactionHash>-<logIndex>"
@@ -133,4 +107,23 @@ type Transfer @entity {
 
   "The price of the transaction"
   value: BigInt!
+}
+
+type Item @entity {
+  "The item id"
+  id: ID!
+
+  "The current owner of the token"
+  seller: Account!
+
+  "The creator of the token"
+  price: BigInt!
+
+  "The Media associated with the Transfer"
+  token: Token!
+}
+
+type Order @entity {
+  "The order id"
+  id: ID!
 }

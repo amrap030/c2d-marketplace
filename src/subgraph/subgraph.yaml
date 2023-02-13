@@ -10,7 +10,7 @@ dataSources:
       abi: ERC721Factory
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/erc721Factory.ts
       entities:
@@ -23,6 +23,33 @@ dataSources:
       eventHandlers:
         - event: ERC721Created(indexed address,indexed address,indexed address,address,string,string,string)
           handler: handleERC721Created
+  - kind: ethereum/contract
+    name: Marketplace
+    network: mainnet
+    source:
+      address: "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9"
+      abi: Marketplace
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/marketplace.ts
+      entities:
+        - Directory
+      abis:
+        - name: ERC721Factory
+          file: ./abi/ERC721Factory.json
+        - name: ERC721
+          file: ./abi/ERC721.json
+        - name: Marketplace
+          file: ./abi/Marketplace.json
+      eventHandlers:
+        - event: ItemCreated(indexed address,indexed address,(address,uint256))
+          handler: handleItemCreated
+        # - event: OrderCreated(indexed address,indexed address,indexed address,string,uint256)
+        #   handler: handleOrderCreated
+        # - event: ComputationVerified(indexed address,indexed address,indexed address,address)
+        #   handler: handleOrderCreated
 
 templates:
   - name: ERC721Template
@@ -32,11 +59,10 @@ templates:
       abi: ERC721Template
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.6
+      apiVersion: 0.0.7
       language: wasm/assemblyscript
       file: ./src/erc721.ts
       entities:
-        - Contract
         - Token
       abis:
         - name: ERC721Template
@@ -56,3 +82,18 @@ templates:
           handler: handleUnpaused
         - event: MetadataUpdated(indexed address,string,uint256,uint256)
           handler: handleMetadataUpdated
+  # - name: TokenMetadata
+  #   kind: file/ipfs
+  #   mapping:
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     file: ./src/handleMetadata.ts
+  #     handler: handleMetadata
+  #     entities:
+  #       - TokenMetadata
+  #       - Token
+  #     abis:
+  #       - name: ERC721Template
+  #         file: ./abi/ERC721Template.json
+  #       - name: ERC721
+  #         file: ./abi/ERC721.json
