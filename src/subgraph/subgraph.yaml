@@ -21,7 +21,7 @@ dataSources:
         - name: ERC721
           file: ./abi/ERC721.json
       eventHandlers:
-        - event: ERC721Created(indexed address,indexed address,indexed address,address,string,string,string)
+        - event: ERC721Created(indexed address,indexed address,indexed address,address,string,string,string,uint8)
           handler: handleERC721Created
   - kind: ethereum/contract
     name: Marketplace

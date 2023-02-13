@@ -47,7 +47,8 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
     address _owner,
     string memory _name,
     string memory _symbol,
-    string memory _metadataURI
+    string memory _metadataURI,
+    IERC721Template.Kind _kind
   ) external returns (address tokenAddress) {
     address template = templateAddress;
     tokenAddress = createClone(template);
@@ -67,7 +68,8 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
       _owner,
       _name,
       _symbol,
-      _metadataURI
+      _metadataURI,
+      _kind
     );
   }
 }

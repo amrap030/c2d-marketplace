@@ -6,6 +6,13 @@ import { ERC721 } from "../generated/templates/ERC721Template/ERC721";
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
+function getKind(kind: BigInt): string {
+  if (kind.equals(new BigInt(0))) {
+    return "dataset";
+  }
+  return "algorithm";
+}
+
 /**
  * Check if token supports specific interfaces
  *
@@ -66,6 +73,8 @@ export function handleMint(event: ERC721Created): void {
   let erc721 = ERC721.bind(event.params.tokenAddress);
   let supportsERC721Metadata = supportsInterface(erc721, "5b5e139f"); // ERC721Metadata
 
+  let kind = getKind(new BigInt(event.params.kind));
+
   createToken(
     event.params.tokenAddress.toHexString(),
     event.transaction.hash.toHexString(),
@@ -80,6 +89,7 @@ export function handleMint(event: ERC721Created): void {
     event.params.tokenSymbol,
     event.params.templateAddress.toHexString(),
     false,
+    kind,
   );
 }
 
@@ -115,6 +125,7 @@ export function createToken(
   symbol: string,
   template: string,
   paused: boolean,
+  kind: string,
 ): Token {
   let token = new Token(id);
   token.owner = owner;
@@ -131,6 +142,7 @@ export function createToken(
   token.symbol = symbol;
   token.template = template;
   token.paused = paused;
+  token.kind = kind;
 
   token.save();
   return token;

@@ -2,6 +2,9 @@ type Token @entity {
   "The contract address"
   id: ID!
 
+  "Kind of the token (one of <dataset, algorithm>)"
+  kind: String!
+
   # "The collection the token was created in"
   # collection: Collection!
 

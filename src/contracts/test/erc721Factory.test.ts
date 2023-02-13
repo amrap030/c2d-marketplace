@@ -26,12 +26,13 @@ describe("ERC721Factory", async () => {
     await erc721Factory.deployed();
   });
 
-  it("create erc721 and mint 1 token for owner", async () => {
+  it("create dataset and mint token for owner", async () => {
     const tx = await erc721Factory.cloneContract(
       owner.address,
       "C2D",
       "C2DYMBOL",
       "ipfs://bafkreihuk7qqpdskouyjax5wzpn4wwaktquzjd3flbluz6wbv46m7kt74u/",
+      0,
     );
 
     const txReceipt = await tx.wait();

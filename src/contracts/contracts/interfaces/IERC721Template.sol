@@ -16,6 +16,11 @@ interface IERC721Template is IERC721A {
     Store
   }
 
+  enum Kind {
+    dataset,
+    algorithm
+  }
+
   event MetadataCreated(
     address indexed createdBy,
     uint8 state,
@@ -42,7 +47,8 @@ interface IERC721Template is IERC721A {
     address admin,
     string calldata name,
     string calldata symbol,
-    string calldata baseURI
+    string calldata baseURI,
+    Kind _kind
   ) external returns (bool);
 
   struct Roles {

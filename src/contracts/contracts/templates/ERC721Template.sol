@@ -25,10 +25,16 @@ contract ERC721Template is
   using Strings for uint256;
   using SafeMath for uint256;
 
+  enum Kind {
+    dataset,
+    algorithm
+  }
+
   // Token base URI
   string private metadataURI;
   string private tokenName;
   string private tokenSymbol;
+  Kind private kind;
 
   // Payment splitter address
   address payable private paymentSplitter;
@@ -52,20 +58,23 @@ contract ERC721Template is
     address _owner,
     string calldata _name,
     string calldata _symbol,
-    string calldata _metadataURI
+    string calldata _metadataURI,
+    Kind _kind
   ) external returns (bool) {
-    return _initialize(_owner, _name, _symbol, _metadataURI);
+    return _initialize(_owner, _name, _symbol, _metadataURI, _kind);
   }
 
   function _initialize(
     address _owner,
     string memory _name,
     string memory _symbol,
-    string memory _metadataURI
+    string memory _metadataURI,
+    Kind _kind
   ) internal returns (bool) {
     tokenName = _name;
     tokenSymbol = _symbol;
     metadataURI = _metadataURI;
+    kind = _kind;
 
     _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
     _safeMint(_owner, 1);
