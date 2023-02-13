@@ -30,7 +30,8 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
     address tokenAddress,
     string tokenName,
     string tokenSymbol,
-    string metadataURI
+    string metadataURI,
+    IERC721Template.Kind kind
   );
 
   constructor(address _templateAddress) {
@@ -61,7 +62,8 @@ contract ERC721Factory is CloneFactory, Ownable, ReentrancyGuard {
       tokenAddress,
       _name,
       _symbol,
-      _metadataURI
+      _metadataURI,
+      _kind
     );
 
     IERC721Template(tokenAddress).initialize(

@@ -20,11 +20,9 @@ describe("Marketplace", async () => {
 
     marketplace = await Marketplace.deploy();
     await marketplace.deployed();
-    console.log(marketplace.address);
 
     verifier = await Verifier.deploy();
     await verifier.deployed();
-    console.log(verifier.address);
   });
 
   it("list two items", async () => {
