@@ -4,6 +4,7 @@ import { expect } from "chai";
 import { Marketplace, Verifier } from "../typechain";
 import proof from "../contracts/mock/proof.json";
 import { BigNumber } from "ethers";
+import { newErc721Token } from "./erc721Factory.test";
 
 describe("Marketplace", async () => {
   let marketplace: Marketplace,
@@ -19,9 +20,11 @@ describe("Marketplace", async () => {
 
     marketplace = await Marketplace.deploy();
     await marketplace.deployed();
+    console.log(marketplace.address);
 
     verifier = await Verifier.deploy();
     await verifier.deployed();
+    console.log(verifier.address);
   });
 
   it("list two items", async () => {
@@ -29,7 +32,7 @@ describe("Marketplace", async () => {
       marketplace
         .connect(seller)
         .createItem(
-          "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          newErc721Token.address,
           [
             "0xB7c7653c6eDd43d482704f0A7C8e7bc04c367f48",
             "0x798c72E326BF7A7d848caeD892DCae9C233D27Ec",
@@ -39,13 +42,13 @@ describe("Marketplace", async () => {
     )
       .to.emit(marketplace, "ItemCreated")
       .withArgs(
-        "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        newErc721Token.address,
         "0xB7c7653c6eDd43d482704f0A7C8e7bc04c367f48",
         [seller.address, 5],
       )
       .to.emit(marketplace, "ItemCreated")
       .withArgs(
-        "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        newErc721Token.address,
         "0x798c72E326BF7A7d848caeD892DCae9C233D27Ec",
         [seller.address, 10],
       );
@@ -56,7 +59,7 @@ describe("Marketplace", async () => {
       marketplace
         .connect(buyer)
         .createOrder(
-          "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          newErc721Token.address,
           verifier.address,
           "0xB7c7653c6eDd43d482704f0A7C8e7bc04c367f48",
           "ipfs://bafkreihuk7qqpdskouyjax5wzpn4wwaktquzjd3flbluz6wbv46m7kt74u/",
@@ -69,7 +72,7 @@ describe("Marketplace", async () => {
       .withArgs(
         seller.address,
         "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
-        "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+        newErc721Token.address,
         "ipfs://bafkreihuk7qqpdskouyjax5wzpn4wwaktquzjd3flbluz6wbv46m7kt74u/",
         5,
       );
@@ -81,7 +84,7 @@ describe("Marketplace", async () => {
     const sellerBalance = await marketplace.provider.getBalance(seller.address);
 
     const tx = await marketplace.connect(buyer).verifyComputation(
-      "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      newErc721Token.address,
       0,
       proof.inputs,
       proof.proof as any, // eslint-disable-line

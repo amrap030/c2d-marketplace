@@ -6,11 +6,12 @@ import { INTERFACES } from "../utils/constants";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { makeInterfaceId } = require("@openzeppelin/test-helpers");
 
+export let newErc721Token: ERC721Template;
+
 describe("ERC721Factory", async () => {
   let erc721Factory: ERC721Factory,
     erc721Template: ERC721Template,
-    owner: SignerWithAddress,
-    newErc721Token: ERC721Template;
+    owner: SignerWithAddress;
 
   before(async function() {
     [owner] = await ethers.getSigners();
