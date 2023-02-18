@@ -10,36 +10,62 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/introspection/IERC165.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "../fairswap/FairSwap.sol";
 
-contract Marketplace is ReentrancyGuard {
+contract Marketplace is ReentrancyGuard, FairSwap {
   using Strings for uint256;
 
-  event ItemCreated(
+  event OfferCreated(
     address indexed nftAddress,
     address indexed algorithm,
-    Item item
+    address indexed sender,
+    uint256 price
   );
 
-  event ItemUpdated();
-  event ItemRemoved();
-  event ItemSold();
+  event OfferUpdated();
+  event OfferRemoved();
 
   event ComputationVerified(
-    address indexed seller,
-    address indexed buyer,
+    address indexed sender,
+    address indexed receiver,
     address indexed nftAddress,
     address algorithm
   );
 
   event OrderCreated(
-    address indexed seller,
-    address indexed buyer,
+    Stage phase,
+    address indexed sender,
+    address indexed receiver,
     address indexed nftAddress,
+    address algorithm,
+    address verifier,
     string pkAddress,
-    uint256 price
+    uint256 timeout,
+    uint256 timeoutInterval,
+    uint256 price,
+    bytes32 sessionId
   );
 
-  event OrderUpdated();
+  event OrderInitialized(
+    uint256 depth,
+    uint256 length,
+    uint256 n,
+    bytes32 keyCommit,
+    bytes32 ciphertextRoot,
+    bytes32 fileRoot,
+    bytes32 sessionId
+  );
+
+  event OrderAccepted(
+    address indexed sender,
+    address indexed receiver,
+    address indexed nftAddress,
+    address algorithm,
+    uint256 price,
+    bytes32 sessionId
+  );
+
+  event OrderFulfilled();
   event OrderCancelled();
 
   struct G1Point {
@@ -58,33 +84,16 @@ contract Marketplace is ReentrancyGuard {
     G1Point c;
   }
 
-  struct Item {
-    address seller;
-    uint256 price;
-  }
-
-  struct Order {
-    address nftAddress;
-    address algorithm;
-    address verifier;
-    address buyer;
-    address seller;
-    uint256 price;
-    uint256 createdAt;
-    uint256 deadline;
-    string provingKey;
-    bool isFulfilled;
-    bool isProven;
-  }
-
-  /// @notice nftAddress -> algorithm -> Item
-  mapping(address => mapping(address => Item)) private items;
-  /// @notice buyerAddress -> Order[]
-  mapping(address => Order[]) private orders;
+  /// @notice nftAddress -> offers -> price
+  mapping(address => mapping(address => uint256)) private offers;
+  /// @notice receiverAddress -> fileSaleSession
+  mapping(address => bytes32) private orders;
 
   bytes4 private constant INTERFACE_ID_ERC721 = 0x80ac58cd;
 
-  function createItem(
+  uint256 constant TIMEOUT_INTERVAL = 1 hours;
+
+  function createOffer(
     address _nftAddress,
     address[] calldata _algorithms,
     uint256[] calldata _prices
@@ -97,12 +106,13 @@ contract Marketplace is ReentrancyGuard {
 
     for (uint256 i = 0; i < _algorithms.length; i++) {
       require(_prices[i] > 0, "Price can't be negative");
-      items[_nftAddress][_algorithms[i]] = Item(msg.sender, _prices[i]);
+      offers[_nftAddress][_algorithms[i]] = _prices[i];
 
-      emit ItemCreated(
+      emit OfferCreated(
         _nftAddress,
         _algorithms[i],
-        items[_nftAddress][_algorithms[i]]
+        IERC721(_nftAddress).ownerOf(1),
+        _prices[i]
       );
     }
   }
@@ -112,90 +122,123 @@ contract Marketplace is ReentrancyGuard {
     address _verifier,
     address _algorithm,
     string memory _pkAddress
-  ) external payable {
-    Item memory item = items[_nftAddress][_algorithm];
-    require(msg.value >= item.price, "Not enough funds");
+  ) external {
+    uint256 price = offers[_nftAddress][_algorithm]; // how to efficiently get offer???
+    address sender = IERC721(_nftAddress).ownerOf(1);
 
-    orders[_nftAddress].push(
-      Order(
-        _nftAddress,
-        _algorithm,
-        _verifier,
-        msg.sender,
-        item.seller,
-        item.price,
-        block.timestamp,
-        block.timestamp + 3 days,
-        _pkAddress,
-        false,
-        false
-      )
+    bytes32 sessionId = createFileSession(
+      payable(sender),
+      payable(msg.sender),
+      _nftAddress,
+      _algorithm,
+      _verifier,
+      _pkAddress,
+      TIMEOUT_INTERVAL,
+      price
     );
 
+    FileSaleSession memory session = sessions[sessionId];
+
     emit OrderCreated(
-      item.seller,
-      msg.sender,
-      _nftAddress,
-      _pkAddress,
-      item.price
+      session.phase,
+      session.sender,
+      session.receiver,
+      session.nftAddress,
+      session.algorithm,
+      session.verifier,
+      session.pkAddress,
+      session.timeout,
+      session.timeoutInterval,
+      session.price,
+      sessionId
     );
   }
 
-  function verifyComputation(
-    address _nftAddress,
-    uint256 _orderIndex,
+  function proofComputation(
+    bytes32 _sessionId,
+    uint256 _depth,
+    uint256 _length,
+    uint256 _n,
+    bytes32 _keyCommit,
+    bytes32 _ciphertextRoot,
+    bytes32 _fileRoot,
     uint256[] calldata _input,
     Proof calldata _proof
   ) external nonReentrant {
-    Order memory order = orders[_nftAddress][_orderIndex];
-    require(!order.isFulfilled && !order.isProven, "Order already fulfilled");
-    require(msg.sender == order.buyer, "Not the buyer");
+    FileSaleSession memory session = sessions[_sessionId];
+    require(session.phase == Stage.created, "Already initialized");
+    require(msg.sender == session.sender, "Not the sender");
 
     bytes memory payload = abi.encodeWithSignature(
       "verifyTx(((uint256,uint256),(uint256[2],uint256[2]),(uint256,uint256)),uint256[])",
       _proof,
       _input
     );
-    (bool success, bytes memory data) = address(order.verifier).call(payload); // solhint-disable-line avoid-low-level-calls
+    (bool success, bytes memory data) = address(session.verifier).call(payload); // solhint-disable-line avoid-low-level-calls
     require(success);
 
     bool isVerified = abi.decode(data, (bool));
-    require(isVerified, "Invalid proof");
+    require(isVerified);
 
-    transferFunds(order.seller, order.price);
-    order.isFulfilled = true;
-    order.isProven = true;
-
-    emit ComputationVerified(
-      order.seller,
-      order.buyer,
-      _nftAddress,
-      order.algorithm
+    _initFileSession(
+      _sessionId,
+      _depth,
+      _length,
+      _n,
+      _keyCommit,
+      _ciphertextRoot,
+      _fileRoot
     );
   }
 
-  function redeem(
-    address _nftAddress,
-    uint256 _oderIndex
-  ) external nonReentrant {
-    Order memory order = orders[_nftAddress][_oderIndex];
+  function _initFileSession(
+    bytes32 _sessionId,
+    uint256 _depth,
+    uint256 _length,
+    uint256 _n,
+    bytes32 _keyCommit,
+    bytes32 _ciphertextRoot,
+    bytes32 _fileRoot
+  ) private nonReentrant {
+    initializeFileSession(
+      _sessionId,
+      _depth,
+      _length,
+      _n,
+      _keyCommit,
+      _ciphertextRoot,
+      _fileRoot
+    );
 
-    if (
-      msg.sender == order.seller &&
-      order.deadline < block.timestamp &&
-      !order.isFulfilled &&
-      !order.isProven
-    ) {
-      transferFunds(msg.sender, order.price);
-    }
+    FileSaleSession memory session = sessions[_sessionId];
+
+    emit OrderInitialized(
+      session.depth,
+      session.length,
+      session.n,
+      session.keyCommit,
+      session.ciphertextRoot,
+      session.fileRoot,
+      _sessionId
+    );
   }
 
-  function transferFunds(address _receiver, uint256 _amount) internal {
-    (bool success, ) = payable(_receiver).call{value: _amount}(""); // solhint-disable-line avoid-low-level-calls
-    require(success, "Transfer failed");
+  function buy(bytes32 _sessionId) external {
+    accept(_sessionId);
+
+    FileSaleSession memory session = sessions[_sessionId];
+
+    emit OrderAccepted(
+      session.sender,
+      session.receiver,
+      session.nftAddress,
+      session.algorithm,
+      session.price,
+      _sessionId
+    );
   }
 
   receive() external payable {
-    revert("Only if items are sold");
+    revert("Only if computations are sold");
   }
 }
