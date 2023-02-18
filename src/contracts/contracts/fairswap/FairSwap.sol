@@ -53,7 +53,7 @@ contract FairSwap {
       sessions[_sessionId].timeoutInterval;
   }
 
-  function createFileSession(
+  function _createFileSession(
     address payable _sender,
     address payable _receiver,
     address _nftAddress,
@@ -62,7 +62,7 @@ contract FairSwap {
     string memory _pkAddress,
     uint _timeoutInterval,
     uint _price
-  ) public returns (bytes32) {
+  ) internal returns (bytes32) {
     bytes32 sessionId = sha256(
       abi.encodePacked(_sender, _receiver, _algorithm)
     );
@@ -91,7 +91,7 @@ contract FairSwap {
   }
 
   // constructor is initialize function
-  function initializeFileSession(
+  function _initializeFileSession(
     bytes32 _sessionId,
     uint _depth,
     uint _length,
@@ -99,7 +99,7 @@ contract FairSwap {
     bytes32 _keyCommit,
     bytes32 _ciphertextRoot,
     bytes32 _fileRoot
-  ) public allowed(_sessionId, sessions[_sessionId].sender, Stage.created) {
+  ) internal allowed(_sessionId, sessions[_sessionId].sender, Stage.created) {
     sessions[_sessionId].depth = _depth;
     sessions[_sessionId].length = _length;
     sessions[_sessionId].n = _n;
@@ -111,11 +111,10 @@ contract FairSwap {
   }
 
   // function accept
-  function accept(
+  function _accept(
     bytes32 _sessionId
   )
-    public
-    payable
+    internal
     allowed(_sessionId, sessions[_sessionId].receiver, Stage.initialized)
   {
     require(msg.value >= sessions[_sessionId].price);
@@ -123,47 +122,56 @@ contract FairSwap {
   }
 
   // function revealKey (key)
-  function revealKey(
+  function _revealKey(
     bytes32 _sessionId,
     bytes32 _key
-  ) public allowed(_sessionId, sessions[_sessionId].sender, Stage.accepted) {
+  ) internal allowed(_sessionId, sessions[_sessionId].sender, Stage.accepted) {
     require(sessions[_sessionId].keyCommit == sha256(abi.encodePacked(_key)));
     sessions[_sessionId].key = _key;
     nextStage(_sessionId);
   }
 
   // function complain about wrong hash of file
-  function noComplain(
+  function _noComplain(
     bytes32 _sessionId
   )
-    public
+    internal
     allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
   {
     transferFunds(sessions[_sessionId].sender, sessions[_sessionId].price);
     sessions[_sessionId].phase = Stage.finished;
+    delete sessions[_sessionId];
   }
 
   // function complain about wrong hash of file
-  function complainAboutRoot(
+  function _complainAboutRoot(
     bytes32 _sessionId,
     bytes32 _Zm,
     bytes32[] calldata _proofZm
   )
-    public
+    internal
     allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+    returns (bool success)
   {
-    require(vrfy(_sessionId, 2 * (sessions[_sessionId].n - 1), _Zm, _proofZm));
+    require(
+      vrfy(_sessionId, 2 * (sessions[_sessionId].n - 1), _Zm, _proofZm),
+      "Not in encoding"
+    );
     if (
       cryptSmall(_sessionId, 2 * (sessions[_sessionId].n - 1), _Zm) !=
       sessions[_sessionId].fileRoot
     ) {
       transferFunds(sessions[_sessionId].receiver, sessions[_sessionId].price);
       sessions[_sessionId].phase = Stage.finished;
+      delete sessions[_sessionId];
+      return true;
     }
+
+    return false;
   }
 
   // function complain about wrong hash of two inputs
-  function complainAboutLeaf(
+  function _complainAboutLeaf(
     bytes32 _sessionId,
     uint _indexOut,
     uint _indexIn,
@@ -175,32 +183,23 @@ contract FairSwap {
   )
     internal
     allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+    returns (bool)
   {
-    require(vrfy(_sessionId, _indexOut, _Zout, _proofZout));
+    require(vrfy(_sessionId, _indexOut, _Zout, _proofZout), "Not in encoding");
     bytes32 Xout = cryptSmall(_sessionId, _indexOut, _Zout);
 
     require(
-      vrfy(_sessionId, _indexIn, sha256(abi.encodePacked(_Zin1)), _proofZin)
+      vrfy(_sessionId, _indexIn, sha256(abi.encode(_Zin1)), _proofZin),
+      "Not in encoding"
     );
 
-    _complainAboutLeaf(_sessionId, Xout, _indexIn, _Zin1, _Zin2, _proofZin);
-  }
-
-  function _complainAboutLeaf(
-    bytes32 _sessionId,
-    bytes32 _Xout,
-    uint _indexIn,
-    bytes32[] calldata _Zin1,
-    bytes32[] calldata _Zin2,
-    bytes32[] calldata _proofZin
-  ) private {
     require(
       _proofZin[sessions[_sessionId].depth - 1] ==
         sha256(abi.encodePacked(_Zin2))
     );
 
     if (
-      _Xout !=
+      Xout !=
       sha256(
         abi.encode(
           cryptLarge(_sessionId, _indexIn, _Zin1),
@@ -210,11 +209,15 @@ contract FairSwap {
     ) {
       transferFunds(sessions[_sessionId].receiver, sessions[_sessionId].price);
       sessions[_sessionId].phase = Stage.finished;
+      delete sessions[_sessionId];
+      return true;
     }
+
+    return false;
   }
 
   // function complain about wrong hash of two inputs
-  function complainAboutNode(
+  function _complainAboutNode(
     bytes32 _sessionId,
     uint _indexOut,
     uint _indexIn,
@@ -226,27 +229,17 @@ contract FairSwap {
   )
     internal
     allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+    returns (bool)
   {
-    require(vrfy(_sessionId, _indexOut, _Zout, _proofZout));
+    require(vrfy(_sessionId, _indexOut, _Zout, _proofZout), "Not in encoding");
     bytes32 Xout = cryptSmall(_sessionId, _indexOut, _Zout);
 
-    require(vrfy(_sessionId, _indexIn, _Zin1, _proofZin));
+    require(vrfy(_sessionId, _indexIn, _Zin1, _proofZin), "Not in encoding");
 
-    _complainAboutNode(_sessionId, Xout, _indexIn, _Zin1, _Zin2, _proofZin);
-  }
-
-  function _complainAboutNode(
-    bytes32 _sessionId,
-    bytes32 _Xout,
-    uint _indexIn,
-    bytes32 _Zin1,
-    bytes32 _Zin2,
-    bytes32[] calldata _proofZin
-  ) private {
     require(_proofZin[sessions[_sessionId].depth - 1] == _Zin2);
 
     if (
-      _Xout !=
+      Xout !=
       sha256(
         abi.encode(
           cryptSmall(_sessionId, _indexIn, _Zin1),
@@ -256,7 +249,11 @@ contract FairSwap {
     ) {
       transferFunds(sessions[_sessionId].receiver, sessions[_sessionId].price);
       sessions[_sessionId].phase = Stage.finished;
+      delete sessions[_sessionId];
+      return true;
     }
+
+    return false;
   }
 
   // refund function is called in case some party did not contribute in time
@@ -265,9 +262,11 @@ contract FairSwap {
     if (sessions[_sessionId].phase == Stage.accepted) {
       transferFunds(sessions[_sessionId].receiver, sessions[_sessionId].price);
       sessions[_sessionId].phase = Stage.finished;
+      delete sessions[_sessionId];
     } else if (sessions[_sessionId].phase >= Stage.keyRevealed) {
       transferFunds(sessions[_sessionId].sender, sessions[_sessionId].price);
       sessions[_sessionId].phase = Stage.finished;
+      delete sessions[_sessionId];
     }
   }
 
@@ -276,7 +275,7 @@ contract FairSwap {
     bytes32 _sessionId,
     uint _index,
     bytes32[] memory _ciphertext
-  ) public view returns (bytes32[] memory) {
+  ) private view returns (bytes32[] memory) {
     _index = _index * sessions[_sessionId].length;
     for (uint i = 0; i < sessions[_sessionId].length; i++) {
       _ciphertext[i] =
@@ -292,7 +291,7 @@ contract FairSwap {
     bytes32 _sessionId,
     uint _index,
     bytes32 _ciphertext
-  ) public view returns (bytes32) {
+  ) private view returns (bytes32) {
     return
       sha256(
         abi.encode(sessions[_sessionId].n + _index, sessions[_sessionId].key)
@@ -305,7 +304,7 @@ contract FairSwap {
     uint _index,
     bytes32 _value,
     bytes32[] calldata _proof
-  ) public view returns (bool) {
+  ) private view returns (bool) {
     for (uint i = 0; i < sessions[_sessionId].depth; i++) {
       if ((_index & (1 << i)) >> i == 1)
         _value = sha256(
@@ -319,7 +318,7 @@ contract FairSwap {
     return (_value == sessions[_sessionId].ciphertextRoot);
   }
 
-  function transferFunds(address _receiver, uint256 _amount) internal {
+  function transferFunds(address _receiver, uint256 _amount) private {
     (bool success, ) = payable(_receiver).call{value: _amount}(""); // solhint-disable-line avoid-low-level-calls
     require(success, "Transfer failed");
   }

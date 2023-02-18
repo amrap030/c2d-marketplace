@@ -56,17 +56,12 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     bytes32 sessionId
   );
 
-  event OrderAccepted(
-    address indexed sender,
-    address indexed receiver,
-    address indexed nftAddress,
-    address algorithm,
-    uint256 price,
-    bytes32 sessionId
-  );
+  event OrderAccepted(bytes32 sessionId);
 
-  event OrderFulfilled();
-  event OrderCancelled();
+  event OrderRevealed(bytes32 key, bytes32 sessionId);
+
+  event OrderFulfilled(bytes32 sessionId);
+  event OrderCancelled(bytes32 sessionId);
 
   struct G1Point {
     uint X;
@@ -123,10 +118,10 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     address _algorithm,
     string memory _pkAddress
   ) external {
-    uint256 price = offers[_nftAddress][_algorithm]; // how to efficiently get offer???
+    uint256 price = offers[_nftAddress][_algorithm];
     address sender = IERC721(_nftAddress).ownerOf(1);
 
-    bytes32 sessionId = createFileSession(
+    bytes32 sessionId = _createFileSession(
       payable(sender),
       payable(msg.sender),
       _nftAddress,
@@ -166,7 +161,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     Proof calldata _proof
   ) external nonReentrant {
     FileSaleSession memory session = sessions[_sessionId];
-    require(session.phase == Stage.created, "Already initialized");
     require(msg.sender == session.sender, "Not the sender");
 
     bytes memory payload = abi.encodeWithSignature(
@@ -199,8 +193,8 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     bytes32 _keyCommit,
     bytes32 _ciphertextRoot,
     bytes32 _fileRoot
-  ) private nonReentrant {
-    initializeFileSession(
+  ) private {
+    _initializeFileSession(
       _sessionId,
       _depth,
       _length,
@@ -223,19 +217,83 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     );
   }
 
-  function buy(bytes32 _sessionId) external {
-    accept(_sessionId);
+  function buy(bytes32 _sessionId) external payable {
+    _accept(_sessionId);
 
-    FileSaleSession memory session = sessions[_sessionId];
+    emit OrderAccepted(_sessionId);
+  }
 
-    emit OrderAccepted(
-      session.sender,
-      session.receiver,
-      session.nftAddress,
-      session.algorithm,
-      session.price,
-      _sessionId
+  function reveal(bytes32 _sessionId, bytes32 _key) external {
+    _revealKey(_sessionId, _key);
+
+    emit OrderRevealed(_key, _sessionId);
+  }
+
+  function complainAboutRoot(
+    bytes32 _sessionId,
+    bytes32 _Zm,
+    bytes32[] calldata _proofZm
+  )
+    external
+    allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+  {
+    bool success = _complainAboutRoot(_sessionId, _Zm, _proofZm);
+
+    if (success) emit OrderCancelled(_sessionId);
+  }
+
+  function complainAboutNode(
+    bytes32 _sessionId,
+    uint _indexOut,
+    uint _indexIn,
+    bytes32 _Zout,
+    bytes32 _Zin1,
+    bytes32 _Zin2,
+    bytes32[] calldata _proofZout,
+    bytes32[] calldata _proofZin
+  )
+    external
+    allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+  {
+    bool success = _complainAboutNode(
+      _sessionId,
+      _indexOut,
+      _indexIn,
+      _Zout,
+      _Zin1,
+      _Zin2,
+      _proofZout,
+      _proofZin
     );
+
+    if (success) emit OrderCancelled(_sessionId);
+  }
+
+  function complainAboutLeaf(
+    bytes32 _sessionId,
+    uint _indexOut,
+    uint _indexIn,
+    bytes32 _Zout,
+    bytes32[] calldata _Zin1,
+    bytes32[] calldata _Zin2,
+    bytes32[] calldata _proofZout,
+    bytes32[] calldata _proofZin
+  )
+    public
+    allowed(_sessionId, sessions[_sessionId].receiver, Stage.keyRevealed)
+  {
+    bool success = _complainAboutLeaf(
+      _sessionId,
+      _indexOut,
+      _indexIn,
+      _Zout,
+      _Zin1,
+      _Zin2,
+      _proofZout,
+      _proofZin
+    );
+
+    if (success) emit OrderCancelled(_sessionId);
   }
 
   receive() external payable {
