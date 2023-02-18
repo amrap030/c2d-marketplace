@@ -10,8 +10,6 @@ pragma solidity ^0.8.17;
  * @dev CloneFactory allows to create minimal proxy contracts.
  */
 contract CloneFactory {
-  // event InstanceDeployed(address instance);
-
   function createClone(address _logic) internal returns (address instance) {
     // used from https://github.com/optionality/clone-factory/blob/32782f82dfc5a00d103a7e61a17a5dedbd1e8e9d/contracts/CloneFactory.sol
     bytes20 targetBytes = bytes20(_logic);
@@ -28,6 +26,5 @@ contract CloneFactory {
       )
       instance := create(0, clone, 0x37)
     }
-    // emit InstanceDeployed(address(instance));
   }
 }
