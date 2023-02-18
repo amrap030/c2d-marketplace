@@ -63,6 +63,7 @@ contract Marketplace is ReentrancyGuard, FairSwap {
   event OrderFulfilled(bytes32 sessionId);
   event OrderCancelled(bytes32 sessionId);
 
+  // elliptic curve points for proof verification
   struct G1Point {
     uint X;
     uint Y;
@@ -88,6 +89,14 @@ contract Marketplace is ReentrancyGuard, FairSwap {
 
   uint256 constant TIMEOUT_INTERVAL = 1 hours;
 
+  /**
+   * @dev Creates a new offer as a sender, i.e. storing a pair of algorithm addresses
+   *      and prices with a link to the dataset's nft address.
+   *
+   * @param _nftAddress address Address of the dataset nft
+   * @param _algorithms address[] array of addresses for computation algorithms
+   * @param _prices uint256[] array of prices for each computation algorithm
+   */
   function createOffer(
     address _nftAddress,
     address[] calldata _algorithms,
@@ -112,6 +121,27 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     }
   }
 
+  /**
+   * @dev Creates a new order as a receiver which creates a new FileSaleSession
+   *      that serves as a sales agreement between sender and receiver.
+   *
+   * [IMPORTANT]
+   * ====
+   * The receiver doesn't have to pay anything at this point, because he got no
+   * data so far. This means, that the sender has to send the result of the computation
+   * to the receiver upfront, before receiving any money. However, the result is hashed,
+   * so the plain result is invisible to the receiver at this point. This is a countermeasure
+   * against the sender not sending data after making the purchase. The only downside of this
+   * is, that the sender has to waste unnecessary compute power in case the receiver won't
+   * accept the purchase later. However, there could be a punishment mechanism in place, so
+   * that receivers, who continously won't pay, will get blocked on the marketplace.
+   * ====
+   *
+   * @param _nftAddress address address of the dataset nft
+   * @param _verifier address address of the proof verification smart contract
+   * @param _algorithm address address of the chosen computation algorithm
+   * @param _pkAddress string url of the proving key
+   */
   function createOrder(
     address _nftAddress,
     address _verifier,
@@ -149,6 +179,23 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     );
   }
 
+  /**
+   * @dev Proves the correct execution of the off-chain zero-knowledge program,
+   *      so that the receiver can be sure about the result of the computation.
+   *      On success, the FileSaleSession will be updated with all the
+   *      necessary information for a potential Proof of Misbehavior (PoM) by
+   *      the receiver.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   * @param _depth uint256 depth of the merkletree
+   * @param _length uint256 length of the plain data
+   * @param _n uint256 amount of slices of the plain data
+   * @param _keyCommit bytes32 hashed encryption key
+   * @param _ciphertextRoot bytes32 root hash of the encoding
+   * @param _fileRoot bytes32 root hash of the plain data
+   * @param _input uint256 public inputs of the zero knowledge proof
+   * @param _proof Proof zero knowledge proof
+   */
   function proofComputation(
     bytes32 _sessionId,
     uint256 _depth,
@@ -217,18 +264,45 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     );
   }
 
+  /**
+   * @dev Accept the file sale and commit to the received data as a receiver.
+   *      The price of the order in turn is locked in the marketplace, before
+   *      the exchange is fulfilled.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   */
   function buy(bytes32 _sessionId) external payable {
     _accept(_sessionId);
 
     emit OrderAccepted(_sessionId);
   }
 
+  /**
+   * @dev Reveals the plain encryption key to the receiver, so that the receiver
+   *      can decrypt the encoding to check it's validity. If everything is
+   *      valid at this point, the protocol stops and the receiver got untampered
+   *      data. If it is invalid, the receiver will compute a PoM and complains, to
+   *      get back his funds.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   * @param _key bytes32 plain encryption key
+   */
   function reveal(bytes32 _sessionId, bytes32 _key) external {
     _revealKey(_sessionId, _key);
 
     emit OrderRevealed(_key, _sessionId);
   }
 
+  /**
+   * @dev Receiver complains either about a wrong decryption key or wrongly
+   *      encrypted plain data. If the call is successful, the protocol stops
+   *      and the receiver gets back his funds. The FileSaleSession will be
+   *      deleted subsequently. If the call is not successful, nothing happens.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   * @param _Zm bytes32
+   * @param _proofZm bytes32[]
+   */
   function complainAboutRoot(
     bytes32 _sessionId,
     bytes32 _Zm,
@@ -242,6 +316,21 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     if (success) emit OrderCancelled(_sessionId);
   }
 
+  /**
+   * @dev Receiver complains about a intentional modification of a hash value in
+   *      a non-leaf node. If the call is successful, the protocol stops
+   *      and the receiver gets back his funds. The FileSaleSession will be
+   *      deleted subsequently. If the call is not successful, nothing happens.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   * @param _indexOut bytes32
+   * @param _indexIn bytes32
+   * @param _Zout bytes32
+   * @param _Zin1 bytes32
+   * @param _Zin2 bytes32
+   * @param _proofZout bytes32[]
+   * @param _proofZin bytes32[]
+   */
   function complainAboutNode(
     bytes32 _sessionId,
     uint _indexOut,
@@ -269,6 +358,21 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     if (success) emit OrderCancelled(_sessionId);
   }
 
+  /**
+   * @dev Receiver complains about a intentional modification of leaf value.
+   *      If the call is successful, the protocol stops and the receiver gets back
+   *      his funds. The FileSaleSession will be deleted subsequently. If the call
+   *      is not successful, nothing happens.
+   *
+   * @param _sessionId bytes32 session id of FileSaleSession
+   * @param _indexOut bytes32
+   * @param _indexIn bytes32
+   * @param _Zout bytes32
+   * @param _Zin1 bytes32[]
+   * @param _Zin2 bytes32[]
+   * @param _proofZout bytes32[]
+   * @param _proofZin bytes32[]
+   */
   function complainAboutLeaf(
     bytes32 _sessionId,
     uint _indexOut,
@@ -296,6 +400,10 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     if (success) emit OrderCancelled(_sessionId);
   }
 
+  /**
+   * fallback function so nobody can send funds to the marketplace without
+   * fulfilling a data exchange trade.
+   */
   receive() external payable {
     revert("Only if computations are sold");
   }
