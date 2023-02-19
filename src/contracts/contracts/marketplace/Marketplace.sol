@@ -25,13 +25,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
   event OfferUpdated();
   event OfferRemoved();
 
-  event ComputationVerified(
-    address indexed sender,
-    address indexed receiver,
-    address indexed nftAddress,
-    address algorithm
-  );
-
   event OrderCreated(
     Stage phase,
     address indexed sender,
