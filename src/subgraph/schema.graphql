@@ -2,11 +2,8 @@ type Token @entity {
   "The contract address"
   id: ID!
 
-  "Kind of the token (one of <dataset, algorithm>)"
-  kind: String!
-
-  # "The collection the token was created in"
-  # collection: Collection!
+  "Kind of the token"
+  kind: BigInt!
 
   "The transaction hash the token was created at"
   transactionHash: String!
@@ -56,53 +53,102 @@ type Token @entity {
   "The paused state of the token"
   paused: Boolean
 
-  "The transfers of the Media"
-  transfers: [Transfer!] @derivedFrom(field: "token")
-
   "The offerings of the Media"
-  items: [Item!] @derivedFrom(field: "token")
+  offers: [Offer!] @derivedFrom(field: "dataset")
+
+  "The file sessions of the token"
+  sessions: [FileSaleSession!] @derivedFrom(field: "dataset")
+
+  "All events of the media"
+  events: [Event!]
 }
 
 type Account @entity {
   "The account address"
   id: ID!
 
-  "Users that have been granted `ApprovalForAll` token of the User's tokens"
-  authorizedUsers: [Account!]
+  # "Users that have been granted `ApprovalForAll` token of the User's tokens"
+  # authorizedUsers: [Account!]
 
   "The Media the User owns"
-  ownings: [Token!]! @derivedFrom(field: "owner")
+  possessions: [Token!]! @derivedFrom(field: "owner")
 
   "The Media the User created"
   creations: [Token!]! @derivedFrom(field: "creator")
 
-  # "The receiving from another user"
-  # transfers: [Transfer!]! @derivedFrom(field: "from")
+  # "The transfers to another user"
+  # transfers: [Transfer!]! @derivedFrom(field: "to")
 
-  "The transfers to another user"
-  transfers: [Transfer!]! @derivedFrom(field: "to")
+  "The purchases of a user"
+  purchases: [FileSaleSession!]! @derivedFrom(field: "receiver")
+
+  "The sales of a user"
+  sales: [FileSaleSession!]! @derivedFrom(field: "sender")
+
+  "The activities of a user"
+  activities: [Event!]! @derivedFrom(field: "from")
 }
 
-type Transfer @entity {
-  "<tokenId>-<transactionHash>-<logIndex>"
+# type Transfer @entity {
+#   "<tokenId>-<transactionHash>-<logIndex>"
+#   id: ID!
+
+#   "Transaction hash for the transfer"
+#   transactionHash: String!
+
+#   "The Media associated with the Transfer"
+#   token: Token!
+
+#   "The User transferring the Media"
+#   from: Account!
+
+#   "The User receiving the Media"
+#   to: Account!
+
+#   "The timestamp of the block the Transfer was created in"
+#   createdAtTimestamp: BigInt!
+
+#   "The number of the block the Transfer was created in"
+#   createdAtBlockNumber: BigInt!
+
+#   "The gas price for the transaction"
+#   gasPrice: BigInt!
+
+#   "The price of the transaction"
+#   value: BigInt!
+# }
+
+enum EventType {
+  Approval
+  ApprovalForAll
+  Transfer
+  Paused
+  Unpaused
+  MetadataUpdated
+  ERC721Created
+  OfferCreated
+  OrderCreated
+  OrderInitialized
+  OrderAccepted
+  OrderRevealed
+  OrderFulfilled
+  OrderCancelled
+}
+
+type Event @entity {
+  "<transactionHash>-<logIndex"
   id: ID!
 
-  "Transaction hash for the transfer"
-  transactionHash: String!
-
-  "The Media associated with the Transfer"
-  token: Token!
-
-  "The User transferring the Media"
+  "The User or Contract who initiated the transaction"
   from: Account!
 
-  "The User receiving the Media"
-  to: Account!
+  "The Contract who receives the transaction"
+  to: String!
 
-  "The timestamp of the block the Transfer was created in"
+  "The timestamp of the block the transaction was created in"
   createdAtTimestamp: BigInt!
 
-  "The number of the block the Transfer was created in"
+  "The number of the block the transaction was created in"
   createdAtBlockNumber: BigInt!
 
   "The gas price for the transaction"
@@ -110,23 +156,107 @@ type Transfer @entity {
 
   "The price of the transaction"
   value: BigInt!
+
+  "The type of the event"
+  type: EventType!
 }
 
-type Item @entity {
+type Offer @entity {
   "The item id"
   id: ID!
 
   "The current owner of the token"
-  seller: Account!
+  sender: Account!
 
   "The creator of the token"
   price: BigInt!
 
-  "The Media associated with the Transfer"
-  token: Token!
+  "The corresponding algorithm token"
+  algorithm: Token!
+
+  "The corresponding dataset token"
+  dataset: Token!
+
+  "The timestamp of the block the offer was created"
+  createdAtTimestamp: BigInt!
+
+  "The number of the block the offer was created"
+  createdAtBlockNumber: BigInt!
+
+  "The timestamp of the block the offer was updated"
+  updatedAtTimestamp: BigInt!
+
+  "The number of the block the offer was updated"
+  updatedAtBlockNumber: BigInt!
 }
 
-type Order @entity {
-  "The order id"
+type FileSaleSession @entity {
+  "The item id"
   id: ID!
+
+  "The phase of a file sale session (one of created, initialized, accepted, keyRevealed, finished)"
+  phase: BigInt!
+
+  "The sender of a computation"
+  sender: Account!
+
+  "The receiver of a computation"
+  receiver: Account!
+
+  "The token entity of a dataset"
+  dataset: Token!
+
+  "The token entity of an algorithm"
+  algorithm: Token!
+
+  "The address of the proof verification smart contract"
+  verifier: String!
+
+  "The url of the proving key"
+  pkUrl: String!
+
+  "The depth of the merkle tree"
+  depth: BigInt!
+
+  "The length of the plain data"
+  length: BigInt!
+
+  "The number of slices of the plain data"
+  n: BigInt!
+
+  "The time until funds are locked in the marketplace"
+  timeout: BigInt!
+
+  "The timeout interval for locked funds"
+  timeoutInterval: BigInt!
+
+  "The price of a computation"
+  price: BigInt!
+
+  "The hashed symmetric encryption key"
+  keyCommit: String!
+
+  "The plain symmetric encryption key"
+  key: String!
+
+  "The root hash of the plain data"
+  fileRoot: String!
+
+  "The root hash of the encoding"
+  ciphertextRoot: String!
+
+  "The timestamp of the block the session was created"
+  createdAtTimestamp: BigInt!
+
+  "The number of the block the session was created"
+  createdAtBlockNumber: BigInt!
+
+  "The timestamp of the block the session was updated"
+  updatedAtTimestamp: BigInt!
+
+  "The number of the block the session was updated"
+  updatedAtBlockNumber: BigInt!
+
+  "All events of the session"
+  events: [Event!]
 }

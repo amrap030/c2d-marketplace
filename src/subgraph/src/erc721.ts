@@ -8,7 +8,7 @@ import {
   MetadataUpdated,
 } from "../generated/templates/ERC721Template/ERC721Template";
 import { log } from "@graphprotocol/graph-ts";
-import { createTransfer, findOrCreateUser, ZERO_ADDRESS } from "./helpers";
+import { findOrCreateUser, ZERO_ADDRESS, createEvent } from "./helpers";
 
 /**
  * Handler called when the `Transfer` Event is called
@@ -34,25 +34,25 @@ export function handleTransfer(event: Transfer): void {
   token.prevOwner = from.id;
   token.owner = to.id;
   token.approved = null;
-  token.save();
 
-  let transferId = tokenId
-    .concat("-")
-    .concat(event.transaction.hash.toHexString())
+  let eventId = event.transaction.hash
+    .toHexString()
     .concat("-")
     .concat(event.transactionLogIndex.toString());
 
-  createTransfer(
-    transferId,
-    event.transaction.hash.toHexString(),
-    token,
-    from.id,
-    to.id,
+  let transferEvent = createEvent(
+    eventId,
+    event.transaction.from.toHexString(),
+    event.address.toHexString(),
     event.block.timestamp,
     event.block.number,
     event.transaction.gasPrice,
     event.transaction.value,
+    "Transfer",
   );
+
+  token.events = [transferEvent.id];
+  token.save();
 
   log.info(
     `Completed handler for Transfer Event of tokenId: {}, from: {}. to: {}`,

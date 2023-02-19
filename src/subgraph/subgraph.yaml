@@ -23,11 +23,12 @@ dataSources:
       eventHandlers:
         - event: ERC721Created(indexed address,indexed address,indexed address,address,string,string,string,uint8)
           handler: handleERC721Created
+
   - kind: ethereum/contract
     name: Marketplace
     network: mainnet
     source:
-      address: "0xcf7ed3acca5a467e9e704c703e8d87f634fb0fc9"
+      address: "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707"
       abi: Marketplace
     mapping:
       kind: ethereum/events
@@ -44,12 +45,20 @@ dataSources:
         - name: Marketplace
           file: ./abi/Marketplace.json
       eventHandlers:
-        - event: ItemCreated(indexed address,indexed address,(address,uint256))
-          handler: handleItemCreated
-        # - event: OrderCreated(indexed address,indexed address,indexed address,string,uint256)
-        #   handler: handleOrderCreated
-        # - event: ComputationVerified(indexed address,indexed address,indexed address,address)
-        #   handler: handleOrderCreated
+        - event: OfferCreated(indexed address,indexed address,indexed address,uint256)
+          handler: handleOfferCreated
+        - event: OrderCreated(uint8,indexed address,indexed address,indexed address,address,address,string,uint256,uint256,uint256,bytes32)
+          handler: handleOrderCreated
+        - event: OrderInitialized(uint256,uint256,uint256,bytes32,bytes32,bytes32,bytes32)
+          handler: handleOrderInitialized
+        - event: OrderAccepted(bytes32)
+          handler: handleOrderAccepted
+        - event: OrderRevealed(bytes32,bytes32)
+          handler: handleOrderRevealed
+        - event: OrderFulfilled(bytes32)
+          handler: handleOrderFulfilled
+        - event: OrderCancelled(bytes32)
+          handler: handleOrderCancelled
 
 templates:
   - name: ERC721Template
@@ -82,18 +91,3 @@ templates:
           handler: handleUnpaused
         - event: MetadataUpdated(indexed address,string,uint256,uint256)
           handler: handleMetadataUpdated
-  # - name: TokenMetadata
-  #   kind: file/ipfs
-  #   mapping:
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     file: ./src/handleMetadata.ts
-  #     handler: handleMetadata
-  #     entities:
-  #       - TokenMetadata
-  #       - Token
-  #     abis:
-  #       - name: ERC721Template
-  #         file: ./abi/ERC721Template.json
-  #       - name: ERC721
-  #         file: ./abi/ERC721.json

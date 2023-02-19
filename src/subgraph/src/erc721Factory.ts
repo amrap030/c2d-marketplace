@@ -10,7 +10,7 @@ import { handleMint } from "./helpers";
  */
 export function handleERC721Created(event: ERC721Created): void {
   log.info(
-    `Starting handler for ERC721Created Event of token: {}, owner: {}, creator: {}, name: {}, symbol: {}, template: {}, metadataURI: {}`,
+    `Starting handler for ERC721Created Event of token: {}, owner: {}, creator: {}, name: {}, symbol: {}, template: {}, metadataURI: {}, kind: {}`,
     [
       event.params.tokenAddress.toHexString(),
       event.params.owner.toHexString(),
@@ -19,7 +19,8 @@ export function handleERC721Created(event: ERC721Created): void {
       event.params.tokenSymbol,
       event.params.templateAddress.toHexString(),
       event.params.metadataURI,
-    ]
+      event.params.kind.toString(),
+    ],
   );
   let context = new DataSourceContext();
   context.setString("template", event.params.templateAddress.toHexString());
