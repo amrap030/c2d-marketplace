@@ -97,6 +97,7 @@ export function handleMint(event: ERC721Created): void {
     event.transaction.gasPrice,
     event.transaction.value,
     "ERC721Created",
+    event.transaction.hash.toHexString(),
   );
 
   if (token.events == null) {
@@ -183,6 +184,7 @@ export function createEvent(
   gasPrice: BigInt,
   value: BigInt,
   type: string,
+  hash: string,
 ): Event {
   let event = new Event(id);
 
@@ -193,6 +195,7 @@ export function createEvent(
   event.gasPrice = gasPrice;
   event.value = value;
   event.type = type;
+  event.transactionHash = hash;
 
   event.save();
   return event;

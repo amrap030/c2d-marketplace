@@ -159,6 +159,9 @@ type Event @entity {
 
   "The type of the event"
   type: EventType!
+
+  "Transaction hash for the event"
+  transactionHash: String!
 }
 
 type Offer @entity {
