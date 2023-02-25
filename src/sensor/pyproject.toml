@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "sensor"
+version = "0.1.0"
+description = ""
+authors = ["Kevin Hertwig <kevin.hertwig@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+zokrates-pycrypto = "^0.3.0"
+web3 = "^5.31.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
