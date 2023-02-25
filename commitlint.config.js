@@ -8,6 +8,7 @@ const scopes = [
   "compute",
   "frontend",
   "contracts",
+  "sensor",
   "subgraph",
   "gateway",
   "zokrates",
