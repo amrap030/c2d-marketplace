@@ -28,7 +28,7 @@ dataSources:
     name: Marketplace
     network: mainnet
     source:
-      address: "0x5fc8d32690cc91d4c39d9d3abcbd16989f875707"
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
       abi: Marketplace
     mapping:
       kind: ethereum/events
