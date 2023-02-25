@@ -30,8 +30,9 @@ const config: HardhatUserConfig = {
   networks: {
     local: {
       url: "http://127.0.0.1:8545",
-      blockGasLimit: 30000000,
       gas: 10000000,
+      blockGasLimit: 300000,
+      allowUnlimitedContractSize: true,
     },
     goerli: {
       url:
@@ -41,6 +42,7 @@ const config: HardhatUserConfig = {
         process.env.ETH_ACCOUNT_PRIVATE_KEY !== undefined
           ? [process.env.ETH_ACCOUNT_PRIVATE_KEY]
           : [],
+      allowUnlimitedContractSize: true,
     },
   },
   gasReporter: {
