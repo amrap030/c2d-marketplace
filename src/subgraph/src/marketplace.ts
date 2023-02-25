@@ -113,6 +113,7 @@ export function handleOrderCreated(event: OrderCreated): void {
         event.transaction.gasPrice,
         event.transaction.value,
         "OrderCreated",
+        event.transaction.hash.toHexString(),
       );
 
       let events = fileSaleSession.events;
@@ -173,6 +174,7 @@ export function handleOrderInitialized(event: OrderInitialized): void {
       event.transaction.gasPrice,
       event.transaction.value,
       "OrderInitialized",
+      event.transaction.hash.toHexString(),
     );
 
     let events = fileSaleSession.events;
@@ -223,6 +225,7 @@ export function handleOrderAccepted(event: OrderAccepted): void {
       event.transaction.gasPrice,
       event.transaction.value,
       "OrderAccepted",
+      event.transaction.hash.toHexString(),
     );
 
     let events = fileSaleSession.events;
@@ -274,6 +277,7 @@ export function handleOrderRevealed(event: OrderRevealed): void {
       event.transaction.gasPrice,
       event.transaction.value,
       "OrderRevealed",
+      event.transaction.hash.toHexString(),
     );
 
     let events = fileSaleSession.events;
@@ -324,6 +328,7 @@ export function handleOrderFulfilled(event: OrderFulfilled): void {
       event.transaction.gasPrice,
       event.transaction.value,
       "OrderFulfilled",
+      event.transaction.hash.toHexString(),
     );
 
     let events = fileSaleSession.events;
@@ -374,6 +379,7 @@ export function handleOrderCancelled(event: OrderCancelled): void {
       event.transaction.gasPrice,
       event.transaction.value,
       "OrderCancelled",
+      event.transaction.hash.toHexString(),
     );
 
     let events = fileSaleSession.events;

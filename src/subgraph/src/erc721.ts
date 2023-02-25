@@ -49,6 +49,7 @@ export function handleTransfer(event: Transfer): void {
     event.transaction.gasPrice,
     event.transaction.value,
     "Transfer",
+    event.transaction.hash.toHexString(),
   );
 
   token.events = [transferEvent.id];
