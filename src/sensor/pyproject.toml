@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.10"
 zokrates-pycrypto = "^0.3.0"
 web3 = "^5.31.3"
+argparse = "^1.4.0"
 
 
 [build-system]

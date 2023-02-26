@@ -43,6 +43,3 @@ def write_signature_for_zokrates_cli(pk, sig, msg):
     b1 = [str(int(M1[i:i+8], 16)) for i in range(0,len(M1), 8)]
     args = args + " " + " ".join(b0 + b1)
     return args
-
-output = write_zokrates_input([0,4294967295,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4294967295,0,0,0,0,0,0,0,0,0,0,0,0,0,4294967295])
-print(" ".join(output))
