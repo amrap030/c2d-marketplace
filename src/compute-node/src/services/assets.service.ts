@@ -1,4 +1,4 @@
-import { minioClient } from "@/db/minio";
+import { minioClient } from "@/db/minio.db";
 import { HttpException } from "@/exceptions/HttpException";
 import { Blob } from "buffer";
 import mime from "mime-types";
@@ -31,7 +31,7 @@ export const getAssets = async (folder: string): Promise<Blob> => {
           return reject(err);
         }
         const type = mime.lookup(assets[0].name);
-        dataStream.on("data", function(chunk) {
+        dataStream.on("data", function (chunk) {
           size = size + chunk.length;
           file = new Blob([chunk], { type });
         });
