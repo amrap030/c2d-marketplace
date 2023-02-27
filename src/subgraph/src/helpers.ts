@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts/index";
+import { BigInt, Bytes, ethereum, ipfs } from "@graphprotocol/graph-ts/index";
 import { ERC721Created } from "../generated/ERC721Factory/ERC721Factory";
 import { Token, Account, Event, FileSaleSession } from "../generated/schema";
 import { ERC721 } from "../generated/templates/ERC721Template/ERC721";
@@ -66,46 +66,52 @@ export function handleMint(event: ERC721Created): void {
   let erc721 = ERC721.bind(event.params.tokenAddress);
   let supportsERC721Metadata = supportsInterface(erc721, "5b5e139f"); // ERC721Metadata
 
-  let token = createToken(
-    event.params.tokenAddress.toHexString(),
-    event.transaction.hash.toHexString(),
-    owner.id,
-    creator.id,
-    ZERO_ADDRESS,
-    event.params.metadataURI,
-    event.block.timestamp,
-    event.block.number,
-    supportsERC721Metadata,
-    event.params.tokenName,
-    event.params.tokenSymbol,
-    event.params.templateAddress.toHexString(),
-    false,
-    BigInt.fromI32(event.params.kind),
-  );
+  let hash = event.params.metadataURI.toString().slice(7);
+  let data = ipfs.cat(hash);
 
-  let eventId = event.transaction.hash
-    .toHexString()
-    .concat("-")
-    .concat(event.transactionLogIndex.toString());
+  if (data) {
+    let token = createToken(
+      event.params.tokenAddress.toHexString(),
+      event.transaction.hash.toHexString(),
+      owner.id,
+      creator.id,
+      ZERO_ADDRESS,
+      event.params.metadataURI,
+      event.block.timestamp,
+      event.block.number,
+      supportsERC721Metadata,
+      event.params.tokenName,
+      event.params.tokenSymbol,
+      event.params.templateAddress.toHexString(),
+      false,
+      BigInt.fromI32(event.params.kind),
+      data.toString(),
+    );
 
-  createEvent(
-    eventId,
-    event.transaction.from.toHexString(),
-    event.address.toHexString(),
-    event.block.timestamp,
-    event.block.number,
-    event.transaction.gasPrice,
-    event.transaction.value,
-    "ERC721Created",
-    event.transaction.hash.toHexString(),
-  );
+    let eventId = event.transaction.hash
+      .toHexString()
+      .concat("-")
+      .concat(event.transactionLogIndex.toString());
 
-  if (token.events == null) {
-    token.events = [];
+    createEvent(
+      eventId,
+      event.transaction.from.toHexString(),
+      event.address.toHexString(),
+      event.block.timestamp,
+      event.block.number,
+      event.transaction.gasPrice,
+      event.transaction.value,
+      "ERC721Created",
+      event.transaction.hash.toHexString(),
+    );
+
+    if (token.events == null) {
+      token.events = [];
+    }
+    token.events!.push(eventId);
+
+    token.save();
   }
-  token.events!.push(eventId);
-
-  token.save();
 }
 
 /**
@@ -142,6 +148,7 @@ export function createToken(
   template: string,
   paused: boolean,
   kind: BigInt,
+  metadata: string,
 ): Token {
   let token = new Token(id);
   token.owner = owner;
@@ -159,6 +166,7 @@ export function createToken(
   token.template = template;
   token.paused = paused;
   token.kind = kind;
+  token.metadata = metadata;
 
   return token;
 }

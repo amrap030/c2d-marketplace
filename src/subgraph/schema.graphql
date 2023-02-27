@@ -41,6 +41,9 @@ type Token @entity {
   "The token name"
   name: String!
 
+  "Metadata of token"
+  metadata: String
+
   "The token symbol"
   symbol: String!
 
