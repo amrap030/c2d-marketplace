@@ -3,19 +3,23 @@ _transform: true
 
 services:
   - host: host.docker.internal
-    name: compute-node
+    name: compute-service
     port: 3000
     protocol: http
+    path: /v1
     routes:
-      - name: algorithms
+      - name: api
         paths:
-          - /v1/algorithms
-        strip_path: false
-      - name: assets
+          - /api
+        strip_path: true
+
+  - host: host.docker.internal
+    name: subgraph-service
+    port: 8000
+    protocol: http
+    path: /subgraphs/name/c2d-trading/subgraph
+    routes:
+      - name: subgraph
         paths:
-          - /v1/assets
-        strip_path: false
-      - name: computations
-        paths:
-          - /v1/computations
-        strip_path: false
+          - /subgraph
+        strip_path: true
