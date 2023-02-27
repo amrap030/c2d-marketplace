@@ -7,13 +7,15 @@ import hpp from "hpp";
 import morgan from "morgan";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import { PORT, LOG_FORMAT } from "@config";
 import errorMiddleware from "@middlewares/error.middleware";
+import { PORT, LOG_FORMAT } from "@config";
 import { logger, stream } from "@utils/logger";
+import { setupBullBoard } from "@/queues";
+import { listenToEvents } from "@/events";
 
 const app = express();
 
-const listen = () => {
+const listen = async () => {
   app.listen(PORT, () => {
     logger.info(`=================================`);
     logger.info(`🚀 App listening on the port ${PORT}`);
@@ -59,9 +61,11 @@ const initializeErrorHandling = () => {
 };
 
 export const startApp = (routes: Router[]) => {
+  setupBullBoard(app);
   initializeMiddlewares();
   initializeRoutes(routes);
   initializeSwagger();
   initializeErrorHandling();
   listen();
+  listenToEvents();
 };

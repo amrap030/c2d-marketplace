@@ -1,5 +1,5 @@
 import { startApp } from "@/app";
 import AssetsRouter from "@routes/assets.route";
-import ComputeRouter from "@/routes/computations.route";
+import SetupRouter from "@/routes/setup.route";
 
-startApp([AssetsRouter(), ComputeRouter()]);
+startApp([AssetsRouter(), SetupRouter()]);
