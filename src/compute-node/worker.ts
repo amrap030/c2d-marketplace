@@ -9,13 +9,10 @@ import {
 } from "@/utils/zokrates";
 import { logger } from "@/utils/logger";
 import { create } from "ipfs-http-client";
-import fs from "fs";
+import { proofComputation, getMetadataUri } from "@/contracts";
 import solc from "solc";
-import { ethers } from "ethers";
-import { SENDER_PRIVATE_KEY, MARKETPLACE_ADDRESS } from "@/config";
-import { abi } from "@/abi/Marketplace.json";
-import { abi as erc721Abi } from "@/abi/ERC721Template.json";
 import all from "it-all";
+import fs from "fs";
 
 const createInput = (program: string) => {
   return {
@@ -35,6 +32,16 @@ const createInput = (program: string) => {
   };
 };
 
+const updateJob = async (job: Job, percent: number) => {
+  job.queueName;
+  await job.updateProgress(percent);
+  logger.info(
+    `${job.queueName} Queue: ${job.id} - Progress: ${percent}%  [${"#".repeat(
+      percent / 10,
+    )}${" ".repeat(20 - percent / 10)}]`,
+  );
+};
+
 const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
 
 const createDir = (path: string) => fs.mkdirSync(path, { recursive: true });
@@ -51,41 +58,25 @@ const setupWorker = new Worker(
       const raw = content.toString();
 
       logger.info(`Setup Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-      await job.updateProgress(0);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress:  0%  [##                  ]`,
-      );
 
       const path = `./${job.data.receiver}`;
 
       createDir(path);
       writeProgram(path, raw);
 
-      await job.updateProgress(20);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress: 20%  [###                 ]`,
-      );
+      updateJob(job, 20);
 
       await compile(path, job);
 
-      await job.updateProgress(40);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress: 40%  [######              ]`,
-      );
+      updateJob(job, 40);
 
       await setup(path, job);
 
-      await job.updateProgress(60);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress: 60%  [##########          ]`,
-      );
+      updateJob(job, 60);
 
       await exportVerifier(path, job);
 
-      await job.updateProgress(80);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress: 80%  [################    ]`,
-      );
+      updateJob(job, 80);
 
       const pKey = fs.readFileSync(`${path}/proving.key`);
 
@@ -101,10 +92,8 @@ const setupWorker = new Worker(
 
       const verifierCid = await ipfs.add(verifier);
 
-      await job.updateProgress(100);
-      logger.info(
-        `Setup Queue: ${job.id} - Progress: 100% [####################]`,
-      );
+      updateJob(job, 100);
+
       logger.info(
         `Setup Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );
@@ -113,12 +102,10 @@ const setupWorker = new Worker(
         solc.compile(JSON.stringify(createInput(verifier))),
       );
 
-      const abiCid = await ipfs.add(
-        JSON.stringify(output.contracts["verifier.sol"].Verifier.abi),
-      );
-      const byteCodeCid = await ipfs.add(
-        output.contracts["verifier.sol"].Verifier.evm.bytecode.object,
-      );
+      const [abiCid, byteCodeCid] = await Promise.all([
+        ipfs.add(JSON.stringify(output.contracts["verifier.sol"].Verifier.abi)),
+        ipfs.add(output.contracts["verifier.sol"].Verifier.evm.bytecode.object),
+      ]);
 
       return {
         pkUrl: `ipfs://${pKeyCid.path}`,
@@ -132,22 +119,6 @@ const setupWorker = new Worker(
   },
   { connection: CONNECTION, concurrency: CONCURRENCY },
 );
-
-const n = 2;
-const length = 32;
-const depth = 2;
-
-const keyCommit =
-  "0x4833fd0df81fe66248fa7a7a858ace1eb6cda67d46db68de29d210f9811fbac3";
-
-const cipherTextRoot =
-  "0xaabc52bbd65f0df6af50c828af1c299d0406898d34ad08b270e31eb4769cd4ec";
-const plainDataRoot =
-  "0xb1ea444fe88a2ab4f6add48eda24ce89497ced4dee1bf978f818853f35252939";
-
-const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-const signer = new ethers.Wallet(SENDER_PRIVATE_KEY as string, provider);
-const marketplace = new ethers.Contract(MARKETPLACE_ADDRESS, abi, signer);
 
 const witnessInput = [
   "0",
@@ -212,55 +183,32 @@ const orderWorker = new Worker(
     const { receiver, algorithm, pkAddress, sessionId } = job.data;
 
     try {
-      const algorithmContract = new ethers.Contract(
-        algorithm,
-        erc721Abi,
-        signer,
-      );
-
-      const metadataUri = await algorithmContract.tokenURI(1);
+      const metadataUri = await getMetadataUri(algorithm);
 
       const content = Buffer.concat(await all(ipfs.cat(metadataUri.slice(7))));
       const raw = content.toString();
 
       logger.info(`Order Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-      await job.updateProgress(0);
-      logger.info(
-        `Order Queue: ${job.id} - Progress:  0%  [##                  ]`,
-      );
 
       const path = `./${receiver}`;
 
       createDir(path);
       writeProgram(path, raw);
 
-      await job.updateProgress(20);
-      logger.info(
-        `Order Queue: ${job.id} - Progress: 20%  [###                 ]`,
-      );
+      updateJob(job, 20);
 
       await compile(path, job);
 
-      await job.updateProgress(40);
-      logger.info(
-        `Order Queue: ${job.id} - Progress: 40%  [######              ]`,
-      );
+      updateJob(job, 40);
 
       const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
-
       fs.writeFileSync(`${path}/proving.key`, data);
 
-      await job.updateProgress(60);
-      logger.info(
-        `Order Queue: ${job.id} - Progress: 60%  [##########          ]`,
-      );
+      updateJob(job, 60);
 
       await computeWitness(witnessInput, path, job);
 
-      await job.updateProgress(80);
-      logger.info(
-        `Order Queue: ${job.id} - Progress: 80%  [################    ]`,
-      );
+      updateJob(job, 80);
 
       await generateProof(path, job);
 
@@ -268,30 +216,10 @@ const orderWorker = new Worker(
         fs.readFileSync(`${path}/proof.json`).toString(),
       );
 
-      // transaction
-      const tx = await marketplace
-        .connect(signer)
-        .proofComputation(
-          sessionId,
-          depth,
-          length,
-          n,
-          keyCommit,
-          cipherTextRoot,
-          plainDataRoot,
-          inputs,
-          proof,
-          {
-            gasLimit: 30000000,
-          },
-        );
+      await proofComputation({ sessionId, inputs, proof });
 
-      await tx.wait();
+      updateJob(job, 100);
 
-      await job.updateProgress(100);
-      logger.info(
-        `Order Queue: ${job.id} - Progress: 100% [####################]`,
-      );
       logger.info(
         `Order Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );

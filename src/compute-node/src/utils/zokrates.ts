@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import { logger } from "@/utils/logger";
-import fs from "fs";
 import { Job } from "bullmq";
+import fs from "fs";
 
 const isProgramExisting = (dir: string) => fs.existsSync(`${dir}/main.zok`);
 
@@ -9,8 +9,6 @@ const isCompilationExisting = (dir: string) =>
   fs.existsSync(`${dir}/out`) &&
   fs.existsSync(`${dir}/out.r1cs`) &&
   fs.existsSync(`${dir}/abi.json`);
-
-const isProofExisting = (dir: string) => fs.existsSync(`${dir}/proof.json`);
 
 const areKeysExisting = (dir: string) =>
   fs.existsSync(`${dir}/proving.key`) &&
