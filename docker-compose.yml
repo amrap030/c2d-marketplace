@@ -38,9 +38,9 @@ services:
     image: c2d-kong
     container_name: kong
     ports:
-      - "8000:8000"
-      - "8001:8001"
-      - "8442:8443"
+      - "8060:8060"
+      - "8070:8070"
+      - "8443:8443"
       - "8444:8444"
     volumes:
       - ./src/api-gateway/configuration/:/usr/local/kong/declarative
@@ -52,8 +52,8 @@ services:
       KONG_ADMIN_ACCESS_LOG: /dev/stdout
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_ADMIN_ERROR_LOG: /dev/stderr
-      KONG_PROXY_LISTEN: 0.0.0.0:8000, 0.0.0.0:8443 ssl
-      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+      KONG_PROXY_LISTEN: 0.0.0.0:8060, 0.0.0.0:8443 ssl
+      KONG_ADMIN_LISTEN: 0.0.0.0:8070, 0.0.0.0:8444 ssl
     restart: unless-stopped
     networks:
       - kong
@@ -63,48 +63,96 @@ services:
       timeout: 10s
       retries: 3
 
+  graph-node:
+    image: graphprotocol/graph-node
+    container_name: graph-node
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8020:8020"
+      - "8030:8030"
+      - "8040:8040"
+    depends_on:
+      - ipfs
+      - postgres
+    restart: unless-stopped
+    environment:
+      postgres_host: postgres
+      postgres_user: graph-node
+      postgres_pass: let-me-in
+      postgres_db: graph-node
+      ipfs: "ipfs:5001"
+      ethereum: "mainnet:http://host.docker.internal:8545"
+      GRAPH_LOG: info
+      GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: true
+
   ipfs:
-    image: "ipfs/go-ipfs"
+    image: ipfs/go-ipfs:latest
     container_name: ipfs
     ports:
-      - 5001:5001 # ipfs api
-      - 8081:8080 # ipfs gateway
-      - 4001:4001 # ipfs swarm - expose if needed/wanted
+      - "5001:5001"
+      - "8081:8080"
+    volumes:
+      - "./src/subgraph/cors.sh:/cors.sh"
+      - "./src/subgraph/start_ipfs.sh:/start_ipfs.sh"
+    entrypoint: /bin/sh
+    command: /start_ipfs.sh
     restart: unless-stopped
 
-  influxdb:
-    image: influxdb:2.1.1
-    volumes:
-      - influxdb-storage:/var/lib/influxdb2:rw
-    env_file:
-      - .influxenv
-    entrypoint: ["./entrypoint.sh"]
-    restart: on-failure:10
+  postgres:
+    image: postgres:latest
     ports:
-      - ${DOCKER_INFLUXDB_INIT_PORT}:8086
+      - "5432:5432"
+    container_name: graph-db
+    command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
+    environment:
+      POSTGRES_USER: graph-node
+      POSTGRES_PASSWORD: let-me-in
+      POSTGRES_DB: graph-node
 
-  telegraf:
-    image: telegraf:1.19
-    volumes:
-      - ./telegraf.conf:/etc/telegraf/telegraf.conf:rw
-    env_file:
-      - .influxenv
-    depends_on:
-      - influxdb
-
-  grafana:
-    image: grafana/grafana-oss:8.4.3
-    volumes:
-      - grafana-storage:/var/lib/grafana:rw
-    depends_on:
-      - influxdb
+  redis:
+    image: "redis:alpine"
+    restart: always
+    container_name: redis
+    command: redis-server --save 20 1 --loglevel warning --requirepass password
     ports:
-      - ${GRAFANA_PORT}:3000
+      - "6379:6379"
+    #volumes:
+    #  - ./data/postgres:/var/lib/postgresql/data
+
+  # influxdb:
+  #   image: influxdb:2.1.1
+  #   volumes:
+  #     - influxdb-storage:/var/lib/influxdb2:rw
+  #   env_file:
+  #     - .influxenv
+  #   entrypoint: ["./entrypoint.sh"]
+  #   restart: on-failure:10
+  #   ports:
+  #     - ${DOCKER_INFLUXDB_INIT_PORT}:8086
+
+  # telegraf:
+  #   image: telegraf:1.19
+  #   volumes:
+  #     - ./telegraf.conf:/etc/telegraf/telegraf.conf:rw
+  #   env_file:
+  #     - .influxenv
+  #   depends_on:
+  #     - influxdb
+
+  # grafana:
+  #   image: grafana/grafana-oss:8.4.3
+  #   volumes:
+  #     - grafana-storage:/var/lib/grafana:rw
+  #   depends_on:
+  #     - influxdb
+  #   ports:
+  #     - ${GRAFANA_PORT}:3000
 
 volumes:
   minio_storage:
-  grafana-storage:
-  influxdb-storage:
+  # grafana-storage:
+  # influxdb-storage:
 
 networks:
   kong:
