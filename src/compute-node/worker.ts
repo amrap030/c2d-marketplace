@@ -37,8 +37,8 @@ const updateJob = async (job: Job, percent: number) => {
   await job.updateProgress(percent);
   logger.info(
     `${job.queueName} Queue: ${job.id} - Progress: ${percent}%  [${"#".repeat(
-      percent / 10,
-    )}${" ".repeat(20 - percent / 10)}]`,
+      percent / 5,
+    )}${" ".repeat(20 - percent / 5)}]`,
   );
 };
 
@@ -64,19 +64,19 @@ const setupWorker = new Worker(
       createDir(path);
       writeProgram(path, raw);
 
-      updateJob(job, 20);
+      await updateJob(job, 20);
 
       await compile(path, job);
 
-      updateJob(job, 40);
+      await updateJob(job, 40);
 
       await setup(path, job);
 
-      updateJob(job, 60);
+      await updateJob(job, 60);
 
       await exportVerifier(path, job);
 
-      updateJob(job, 80);
+      await updateJob(job, 80);
 
       const pKey = fs.readFileSync(`${path}/proving.key`);
 
@@ -92,7 +92,7 @@ const setupWorker = new Worker(
 
       const verifierCid = await ipfs.add(verifier);
 
-      updateJob(job, 100);
+      await updateJob(job, 100);
 
       logger.info(
         `Setup Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
@@ -195,20 +195,20 @@ const orderWorker = new Worker(
       createDir(path);
       writeProgram(path, raw);
 
-      updateJob(job, 20);
+      await updateJob(job, 20);
 
       await compile(path, job);
 
-      updateJob(job, 40);
+      await updateJob(job, 40);
 
       const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
       fs.writeFileSync(`${path}/proving.key`, data);
 
-      updateJob(job, 60);
+      await updateJob(job, 60);
 
       await computeWitness(witnessInput, path, job);
 
-      updateJob(job, 80);
+      await updateJob(job, 80);
 
       await generateProof(path, job);
 
@@ -218,7 +218,7 @@ const orderWorker = new Worker(
 
       await proofComputation({ sessionId, inputs, proof });
 
-      updateJob(job, 100);
+      await updateJob(job, 100);
 
       logger.info(
         `Order Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,

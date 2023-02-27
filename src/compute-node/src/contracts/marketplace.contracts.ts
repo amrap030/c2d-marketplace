@@ -4,7 +4,12 @@ import { abi } from "@/contracts/abi/Marketplace.json";
 
 const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
 const signer = new ethers.Wallet(SENDER_PRIVATE_KEY as string, provider);
-const marketplace = new ethers.Contract(MARKETPLACE_ADDRESS, abi, signer);
+
+export const marketplace = new ethers.Contract(
+  MARKETPLACE_ADDRESS,
+  abi,
+  signer,
+);
 
 const n = 2;
 const length = 32;

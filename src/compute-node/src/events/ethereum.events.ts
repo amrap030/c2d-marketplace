@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import abi from "../abi/Marketplace.json";
+import abi from "@/contracts/abi/Marketplace.json";
 import { MARKETPLACE_ADDRESS } from "@/config";
 
 const web3ProviderUrl = "ws://127.0.0.1:8545";
