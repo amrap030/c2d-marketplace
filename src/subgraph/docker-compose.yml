@@ -21,6 +21,7 @@ services:
       ipfs: "ipfs:5001"
       ethereum: "mainnet:http://host.docker.internal:8545"
       GRAPH_LOG: info
+      GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: true
 
   ipfs:
     image: ipfs/go-ipfs:latest
@@ -28,14 +29,18 @@ services:
     ports:
       - "5001:5001"
       - "8081:8080"
-    #volumes:
+    volumes:
+      - "./cors.sh:/cors.sh"
+      - "./start_ipfs.sh:/start_ipfs.sh"
+    entrypoint: /bin/sh
+    command: /start_ipfs.sh
     #  - ./data/ipfs:/data/ipfs
 
   postgres:
     image: postgres:latest
     ports:
       - "5432:5432"
-    container_name: ipfs-db
+    container_name: graph-db
     command: ["postgres", "-cshared_preload_libraries=pg_stat_statements"]
     environment:
       POSTGRES_USER: graph-node
