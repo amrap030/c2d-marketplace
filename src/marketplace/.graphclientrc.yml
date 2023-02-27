@@ -1,0 +1,8 @@
+sources:
+  - name: C2D
+    handler:
+      graphql:
+        endpoint: http://localhost:8000/subgraphs/name/c2d-trading/subgraph
+
+documents:
+  - ./src/graphql/queries.ts
