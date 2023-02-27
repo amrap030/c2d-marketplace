@@ -15,14 +15,12 @@
     "test": "hardhat test",
     "test-coverage": "hardhat coverage",
     "test-and-coverage": "hardhat test && hardhat coverage",
-    "deploy-template": "hardhat run --network localhost scripts/01-deploy-template.ts",
-    "deploy-factory": "hardhat run --network localhost scripts/02-deploy-factory.ts",
-    "deploy-marketplace": "hardhat run --network localhost scripts/03-deploy-marketplace.ts",
-    "create-offer": "hardhat run --network localhost scripts/04-create-offer.ts",
-    "create-order": "hardhat run --network localhost scripts/05-create-order.ts",
-    "proof-computation": "hardhat run --network localhost scripts/06-proof-computation.ts",
-    "accept-order": "hardhat run --network localhost scripts/07-accept-order.ts",
-    "reveal-key": "hardhat run --network localhost scripts/08-reveal-key.ts"
+    "deploy": "hardhat run --network localhost scripts/01-deploy.ts",
+    "create-offer": "hardhat run --network localhost scripts/02-create-offer.ts",
+    "create-order": "hardhat run --network localhost scripts/03-create-order.ts",
+    "proof-computation": "hardhat run --network localhost scripts/04-proof-computation.ts",
+    "accept-order": "hardhat run --network localhost scripts/05-accept-order.ts",
+    "reveal-key": "hardhat run --network localhost scripts/06-reveal-key.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
