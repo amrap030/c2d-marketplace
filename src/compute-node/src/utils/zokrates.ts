@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
-import { logger } from "@utils/logger";
+import { logger } from "@/utils/logger";
 import fs from "fs";
+import { Job } from "bullmq";
 
 const isProgramExisting = (dir: string) => fs.existsSync(`${dir}/main.zok`);
 
@@ -70,19 +71,18 @@ const execProcess = async (command: string[], cwd: string) => {
  *
  * @param {String} dir - Path of the zokrates program
  */
-export const compile = async (dir: string) => {
+export const compile = async (dir = "./zokrates", job: Job) => {
   try {
     if (!isProgramExisting(dir))
       throw new Error("Program doesn't exist. Aborting compilation.");
 
-    logger.info("Compilation started");
+    logger.info(`[Compiler] id=${job.id} [In Progress]`);
     const start = Date.now();
 
     await execProcess(["compile", "-i", "main.zok"], dir);
 
     const end = Date.now();
-    logger.info("Compilation finished.");
-    logger.info(`Compilation elapsed time: ${end - start} ms.`);
+    logger.info(`[Compiler] id=${job.id}, time=${end - start} ms [OK]`);
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -97,19 +97,18 @@ export const compile = async (dir: string) => {
  *
  * @param {String} dir - Path of the zokrates artifacts
  */
-export const setup = async (dir: string) => {
+export const setup = async (dir: string, job: Job) => {
   try {
     if (!isCompilationExisting(dir))
       throw new Error("Compiled files don't exist. Aborting trusted setup.");
 
-    logger.info("Trusted setup started");
+    logger.info(`[Setup] id=${job.id} [In Progress]`);
     const start = Date.now();
 
     await execProcess(["setup"], dir);
 
     const end = Date.now();
-    logger.info("Trusted setup finished.");
-    logger.info(`Trusted setup elapsed time: ${end - start} ms.`);
+    logger.info(`[Setup] id=${job.id}, time=${end - start} ms [OK]`);
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -124,21 +123,24 @@ export const setup = async (dir: string) => {
  *
  * @param {String} dir - Path of the zokrates artifacts
  */
-export const computeWitness = async (input: string[], dir: string) => {
+export const computeWitness = async (
+  input: string[],
+  dir = "./zokrates",
+  job: Job,
+) => {
   try {
     if (!isCompilationExisting(dir))
       throw new Error(
         "Compiled files don't exist. Aborting witness computation.",
       );
 
-    logger.info("Witness computation started");
+    logger.info(`[Witness] id=${job.id} [In Progress]`);
     const start = Date.now();
 
     await execProcess(["compute-witness", "-a", ...input], dir);
 
     const end = Date.now();
-    logger.info("Witness computation finished.");
-    logger.info(`Witness computation elapsed time: ${end - start} ms.`);
+    logger.info(`[Witness] id=${job.id}, time=${end - start} ms [OK]`);
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -153,19 +155,18 @@ export const computeWitness = async (input: string[], dir: string) => {
  *
  * @param {String} dir - Path of the zokrates artifacts
  */
-export const generateProof = async (dir: string) => {
+export const generateProof = async (dir = "./zokrates", job: Job) => {
   try {
     if (!isCompilationExisting(dir) || !isWitnessExisting(dir))
       throw new Error("Compiled files don't exist. Aborting proof generation.");
 
-    logger.info("Proof generation started");
+    logger.info(`[Proof] id=${job.id} [In Progress]`);
     const start = Date.now();
 
     await execProcess(["generate-proof"], dir);
 
     const end = Date.now();
-    logger.info("Proof generation finished.");
-    logger.info(`Proof generation elapsed time: ${end - start} ms.`);
+    logger.info(`[Proof] id=${job.id}, time=${end - start} ms [OK]`);
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -180,26 +181,20 @@ export const generateProof = async (dir: string) => {
  *
  * @param {String} dir - Path of the zokrates artifacts
  */
-export const exportVerifier = async (dir: string) => {
+export const exportVerifier = async (dir: string, job: Job) => {
   try {
-    if (
-      !isCompilationExisting(dir) ||
-      !isWitnessExisting(dir) ||
-      !areKeysExisting(dir) ||
-      !isProofExisting(dir)
-    )
+    if (!isCompilationExisting(dir) || !areKeysExisting(dir))
       throw new Error(
         "Compiled files don't exist. Aborting smart contract export generation.",
       );
 
-    logger.info("Smart contract export started");
+    logger.info(`[Verifier] id=${job.id} [In Progress]`);
     const start = Date.now();
 
     await execProcess(["export-verifier"], dir);
 
     const end = Date.now();
-    logger.info("Smart contract export finished.");
-    logger.info(`Smart contract export elapsed time: ${end - start} ms.`);
+    logger.info(`[Verifier] id=${job.id}, time=${end - start} ms [OK]`);
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
