@@ -1,127 +1,137 @@
 :root {
-    /* CUSTOMIZE THE COLOR  PALLETTE */
-    --onboard-white: theme(colors.neutral.50);
-    --onboard-black: theme(colors.black);
-    --onboard-primary-1: theme(colors.blue.DEFAULT);
-    --onboard-primary-100: theme(colors.blue.200);
-    --onboard-primary-200: theme(colors.blue.300);
-    --onboard-primary-300: theme(colors.blue.400);
-    --onboard-primary-400: theme(colors.blue.600);
-    --onboard-primary-500: theme(colors.blue.700);
-    --onboard-primary-600: theme(colors.blue.800);
-    --onboard-primary-700: theme(colors.blue.900);
-    --onboard-gray-100: theme(colors.neutral.100);
-    --onboard-gray-200: theme(colors.neutral.200);
-    --onboard-gray-300: theme(colors.neutral.300);
-    --onboard-gray-400: theme(colors.neutral.400);
-    --onboard-gray-500: theme(colors.neutral.700);
-    --onboard-gray-600: theme(colors.neutral.800);
-    --onboard-gray-700: theme(colors.neutral.900);
-    --onboard-success-100: theme(colors.green.300);
-    --onboard-success-200: theme(colors.green.400);
-    --onboard-success-300: theme(colors.green.500);
-    --onboard-success-400: theme(colors.green.600);
-    --onboard-success-500: theme(colors.green.700);
-    --onboard-success-600: theme(colors.green.800);
-    --onboard-success-700: theme(colors.green.900);
-    --onboard-danger-100: theme(colors.red.300);
-    --onboard-danger-200: theme(colors.red.400);
-    --onboard-danger-300: theme(colors.red.500);
-    --onboard-danger-400: theme(colors.red.600);
-    --onboard-danger-500: theme(colors.red.700);
-    --onboard-danger-600: theme(colors.red.800);
-    --onboard-danger-700: theme(colors.red.900);
-    --onboard-warning-100: theme(colors.orange.300);;
-    --onboard-warning-200: theme(colors.orange.400);;
-    --onboard-warning-300: theme(colors.orange.500);;
-    --onboard-warning-400: theme(colors.orange.600);;
-    --onboard-warning-500: theme(colors.orange.700);;
-    --onboard-warning-600: theme(colors.orange.800);;
-    --onboard-warning-700: theme(colors.orange.900);
+  /* CUSTOMIZE THE COLOR  PALLETTE */
+  /*
+  --onboard-white: theme(colors.neutral.50);
+  --onboard-black: theme(colors.black);
+  --onboard-primary-1: theme(colors.blue.DEFAULT);
+  --onboard-primary-100: theme(colors.blue.200);
+  --onboard-primary-200: theme(colors.blue.300);
+  --onboard-primary-300: theme(colors.blue.400);
+  --onboard-primary-400: theme(colors.blue.600);
+  --onboard-primary-500: theme(colors.blue.700);
+  --onboard-primary-600: theme(colors.blue.800);
+  --onboard-primary-700: theme(colors.blue.900);
+  --onboard-gray-100: theme(colors.neutral.100);
+  --onboard-gray-200: theme(colors.neutral.200);
+  --onboard-gray-300: theme(colors.neutral.300);
+  --onboard-gray-400: theme(colors.neutral.400);
+  --onboard-gray-500: theme(colors.neutral.700);
+  --onboard-gray-600: theme(colors.neutral.800);
+  --onboard-gray-700: theme(colors.neutral.900);
+  --onboard-success-100: theme(colors.green.300);
+  --onboard-success-200: theme(colors.green.400);
+  --onboard-success-300: theme(colors.green.500);
+  --onboard-success-400: theme(colors.green.600);
+  --onboard-success-500: theme(colors.green.700);
+  --onboard-success-600: theme(colors.green.800);
+  --onboard-success-700: theme(colors.green.900);
+  --onboard-danger-100: theme(colors.red.300);
+  --onboard-danger-200: theme(colors.red.400);
+  --onboard-danger-300: theme(colors.red.500);
+  --onboard-danger-400: theme(colors.red.600);
+  --onboard-danger-500: theme(colors.red.700);
+  --onboard-danger-600: theme(colors.red.800);
+  --onboard-danger-700: theme(colors.red.900);
+  --onboard-warning-100: theme(colors.orange.300);
+  --onboard-warning-200: theme(colors.orange.400);
+  --onboard-warning-300: theme(colors.orange.500);
+  --onboard-warning-400: theme(colors.orange.600);
+  --onboard-warning-500: theme(colors.orange.700);
+  --onboard-warning-600: theme(colors.orange.800);
+  --onboard-warning-700: theme(colors.orange.900);*/
 
-    /* CUSTOMIZE SECTIONS OF THE CONNECT MODAL */
-    --onboard-connect-sidebar-background: var(--onboard-gray-600);
-    --onboard-connect-header-color: var(--onboard-gray-700);
-    --onboard-connect-sidebar-color: var(--onboard-white);
-    --onboard-connect-header-background: var(--onboard-gray-700);
-    --onboard-connect-header-color: var(--onboard-white);
-    --onboard-connect-sidebar-progress-background: var(--onboard-gray-200);
-    --onboard-connect-sidebar-progress-color: var(--onboard-primary-1);
-    --onboard-main-scroll-container-background: var(--onboard-gray-700);
-    --onboard-wallet-button-background: var(--onboard-gray-600);
-    --onboard-wallet-button-background-hover: var(--onboard-gray-700);
-    --onboard-wallet-button-color: var(--onboard-white);
-    --onboard-wallet-button-color-hover: var(--onboard-white);
-    --onboard-wallet-app-icon-border-color: transparent;
-    --onboard-wallet-button-border-color: var(--onboard-gray-500);
-    --onboard-wallet-button-border-radius: var(--onboard-border-radius-2);
-    --onboard-close-button-background: transparent;
-    --onboard-close-button-color: var(--onboard-gray-400);
-    --onboard-wallet-button-box-shadow: none;
+  /* CUSTOMIZE SECTIONS OF THE CONNECT MODAL */
+  /*
+  --onboard-connect-sidebar-background: var(--onboard-gray-600);
+  --onboard-connect-header-color: var(--onboard-gray-700);
+  --onboard-connect-sidebar-color: var(--onboard-white);
+  --onboard-connect-header-background: var(--onboard-gray-700);
+  --onboard-connect-header-color: var(--onboard-white);
+  --onboard-connect-sidebar-progress-background: var(--onboard-gray-200);
+  --onboard-connect-sidebar-progress-color: var(--onboard-primary-1);
+  --onboard-main-scroll-container-background: var(--onboard-gray-700);
+  --onboard-wallet-button-background: var(--onboard-gray-600);
+  --onboard-wallet-button-background-hover: var(--onboard-gray-700);
+  --onboard-wallet-button-color: var(--onboard-white);
+  --onboard-wallet-button-color-hover: var(--onboard-white);
+  --onboard-wallet-app-icon-border-color: transparent;
+  --onboard-wallet-button-border-color: var(--onboard-gray-500);
+  --onboard-wallet-button-border-radius: var(--onboard-border-radius-2);
+  --onboard-close-button-background: transparent;
+  --onboard-close-button-color: var(--onboard-gray-400);
+  --onboard-wallet-button-box-shadow: none;*/
 
-    /* CUSTOMIZE THE SHARED MODAL */
-    --onboard-modal-background: var(--onboard-gray-700);
-    --onboard-modal-color: var(--onboard-black);
+  /* CUSTOMIZE THE SHARED MODAL */
+  /*
+  --onboard-modal-background: var(--onboard-gray-700);
+  --onboard-modal-color: var(--onboard-black);*/
 
-    /* FONTS */
-    --onboard-font-family-normal: theme(fontFamily.sans);
-    --onboard-font-family-semibold: theme(fontFamily.sans);
-    --onboard-font-family-light: theme(fontFamily.sans);
+  /* FONTS */
+  /*
+  --onboard-font-family-normal: theme(fontFamily.sans);
+  --onboard-font-family-semibold: theme(fontFamily.sans);
+  --onboard-font-family-light: theme(fontFamily.sans);
 
-    --onboard-font-size-1: theme(spacing.12);
-    --onboard-font-size-2: theme(spacing.10);
-    --onboard-font-size-3: theme(spacing.8);
-    --onboard-font-size-4: theme(spacing.6);
-    --onboard-font-size-5: theme(spacing.4);
-    --onboard-font-size-6: theme(spacing.4);;
-    --onboard-font-size-7: theme(spacing.3);
+  --onboard-font-size-1: theme(spacing.12);
+  --onboard-font-size-2: theme(spacing.10);
+  --onboard-font-size-3: theme(spacing.8);
+  --onboard-font-size-4: theme(spacing.6);
+  --onboard-font-size-5: theme(spacing.4);
+  --onboard-font-size-6: theme(spacing.4);
+  --onboard-font-size-7: theme(spacing.3);
+    */
+  /* SPACING */
+  /*
+  --onboard-spacing-1: theme(spacing.16);
+  --onboard-spacing-2: theme(spacing.8);
+  --onboard-spacing-3: theme(spacing.6);
+  --onboard-spacing-4: theme(spacing.4);
+  --onboard-spacing-5: theme(spacing.4);*/
 
-    /* SPACING */
-    --onboard-spacing-1: theme(spacing.16);
-    --onboard-spacing-2: theme(spacing.8);
-    --onboard-spacing-3: theme(spacing.6);
-    --onboard-spacing-4: theme(spacing.4);
-    --onboard-spacing-5: theme(spacing.4);
+  /* BORDER RADIUS */
+  /*
+  --onboard-border-radius-1: theme(spacing.16);
+  --onboard-border-radius-2: theme(spacing.4);
+  --onboard-border-radius-3: theme(spacing.1);
+*/
+  /* SHADOWS */
+  /*
+  --onboard-shadow-0: none;
+  --onboard-shadow-1: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  --onboard-shadow-2: inset 0px -1px 0px rgba(0, 0, 0, 0.1);*/
 
-    /* BORDER RADIUS */
-    --onboard-border-radius-1: theme(spacing.16);
-    --onboard-border-radius-2: theme(spacing.4);
-    --onboard-border-radius-3: theme(spacing.1);
+  /* MAIN MODAL POSITIONING */
+  --onboard-modal-z-index: 60;
 
-    /* SHADOWS */
-    --onboard-shadow-0: none;
-    --onboard-shadow-1: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    --onboard-shadow-2: inset 0px -1px 0px rgba(0, 0, 0, 0.1);
+  /* HARDWARE WALLET STYLES  */
+  /* *if not set will fallback to variables with `--onboard` prefix shown above */
 
-    /* MAIN MODAL POSITIONING */
-    --onboard-modal-z-index: 60;
+  /* COLORS */
+  /*
+  --account-select-modal-white: white;
+  --account-select-modal-black: black;
+  --account-select-modal-primary-100: #eff1fc;
+  --account-select-modal-primary-200: #d0d4f7;
+  --account-select-modal-primary-300: #b1b8f2;
+  --account-select-modal-primary-500: #6370e5;
+  --account-select-modal-primary-600: #454ea0;
+  --account-select-modal-gray-100: #ebebed;
+  --account-select-modal-gray-200: #c2c4c9;
+  --account-select-modal-gray-300: #999ca5;
+  --account-select-modal-gray-500: #33394b;
+  --account-select-modal-gray-700: #1a1d26;
+  --account-select-modal-danger-500: #ff4f4f;*/
 
-    /* HARDWARE WALLET STYLES  */
-    /* *if not set will fallback to variables with `--onboard` prefix shown above */
-
-    /* COLORS */
-    --account-select-modal-white: white;
-    --account-select-modal-black: black;
-    --account-select-modal-primary-100: #eff1fc;
-    --account-select-modal-primary-200: #d0d4f7;
-    --account-select-modal-primary-300: #b1b8f2;
-    --account-select-modal-primary-500: #6370e5;
-    --account-select-modal-primary-600: #454ea0;
-    --account-select-modal-gray-100: #ebebed;
-    --account-select-modal-gray-200: #c2c4c9;
-    --account-select-modal-gray-300: #999ca5;
-    --account-select-modal-gray-500: #33394b;
-    --account-select-modal-gray-700: #1a1d26;
-    --account-select-modal-danger-500: #ff4f4f;
-
-    /* FONTS */
-    --account-select-modal-font-family-normal: theme(fontFamily.sans);
-    --account-select-modal-font-family-light: theme(fontFamily.sans);
-    --account-select-modal-font-size-5: 1rem;
-    --account-select-modal-font-size-7: .75rem;
-    --account-select-modal-font-line-height-1: 2rem;
-
-    /* SPACING */
-    --account-select-modal-margin-4: theme(spacing.8);
-    --account-select-modal-margin-5: theme(spacing.4);
+  /* FONTS */
+  /*
+  --account-select-modal-font-family-normal: theme(fontFamily.sans);
+  --account-select-modal-font-family-light: theme(fontFamily.sans);
+  --account-select-modal-font-size-5: 1rem;
+  --account-select-modal-font-size-7: 0.75rem;
+  --account-select-modal-font-line-height-1: 2rem;
+*/
+  /* SPACING */
+  /*
+  --account-select-modal-margin-4: theme(spacing.8);
+  --account-select-modal-margin-5: theme(spacing.4);*/
 }

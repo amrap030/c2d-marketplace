@@ -1,17 +1,7 @@
-import LayoutDefault from "@/layouts/default/LayoutDefault.vue";
-
-// export default {
-//   setup() {
-//     return () => (
-//       <router-view>
-//         <LayoutDefault />
-//       </router-view>
-//     );
-//   },
-// };
+import LayoutDefault from "@/layouts/default/LayoutDefault.vue"; // export
 
 export const App = () => (
   <router-view>
-    <LayoutDefault />
+    {({ Component }) => <LayoutDefault is={Component} />}
   </router-view>
 );

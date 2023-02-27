@@ -1,7 +1,7 @@
 import { inject, ref } from "vue";
 import type { Ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
-import { TOKEN_HOUR_DATAS } from "@/graphql/queries";
+import { TOKEN_HOUR_DATAS } from "@/graphql/currency";
 import type { ApolloError } from "@apollo/client";
 import { clientIdUniswapV3 } from "@/graphql";
 

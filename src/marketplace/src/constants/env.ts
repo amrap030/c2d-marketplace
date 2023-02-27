@@ -1,10 +1,11 @@
 import { getChain } from "evm-chains";
 
 const uniswapV3PolygonSubgraph = `https://api.thegraph.com/subgraphs/name/ianlapham/uniswap-v3-polygon`;
+const c2dSubgraph = "http://localhost:8000/subgraphs/name/c2d-trading/subgraph";
 
 const localChain = {
   name: "Hardhat Local Chain",
-  chainId: 1337,
+  chainId: 31337,
   shortName: "hh",
   chain: "ETH",
   network: "hardhat",
@@ -24,7 +25,15 @@ const chain =
     ? localChain
     : getChain(Number(import.meta.env["VUE_APP_CHAIN_ID"]));
 
+const TEMPLATE_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const FACTORY_ADDRESS = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+const MARKETPLACE_ADDRESS = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+
 export const env = {
   uniswapV3PolygonSubgraph,
+  c2dSubgraph,
   chain,
+  TEMPLATE_ADDRESS,
+  FACTORY_ADDRESS,
+  MARKETPLACE_ADDRESS,
 };

@@ -22,17 +22,17 @@ const ButtonSizeIcon: Indexable<string> = {
 };
 
 const ButtonSizeDefault: Indexable<string> = {
-  xs: "text-xs",
-  sm: "text-sm",
-  md: "text-md",
-  lg: "text-lg",
+  xs: "h-6 text-xs",
+  sm: "h-8 text-sm",
+  md: "h-10 text-md",
+  lg: "h-12 text-lg",
 };
 
 const ButtonSpacing: Indexable<string> = {
-  xs: "py-1 px-2 space-x-2",
-  sm: "py-2 px-4 space-x-2",
-  md: "py-3 px-6 space-x-2",
-  lg: "py-4 px-8 space-x-2",
+  xs: "px-2 space-x-2",
+  sm: "px-4 space-x-2",
+  md: "px-6 space-x-2",
+  lg: "px-8 space-x-2",
 };
 
 const ButtonRounded: Indexable<string> = {
@@ -63,7 +63,7 @@ export default defineComponent({
       default: "base",
     },
     size: {
-      type: String as () => "xxs" | "xs" | "sm" | "md" | "lg",
+      type: String as () => "xs" | "sm" | "md" | "lg",
       default: "md",
     },
     fullWidth: {

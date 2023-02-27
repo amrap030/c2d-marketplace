@@ -1,12 +1,29 @@
 <template>
-  <div class="sticky top-0 z-40 flex-none w-full lg:z-50">
-    <header class="mx-auto max-w-7xl">
+  <div
+    class="sticky top-0 z-20 flex-none w-full border-b supports-backdrop-blur:bg-white/60 backdrop-blur shadow-[0_1px_3px_rgba(15,23,42,0.08)]"
+  >
+    <header
+      class="flex flex-col items-center justify-center w-full py-4 mx-auto max-w-7xl"
+    >
       <nav
-        class="relative flex items-center justify-start flex-1 w-full px-8 mx-auto space-x-4 lg:px-12 md:space-x-8"
+        class="relative flex items-center justify-start w-full mx-auto space-x-8"
       >
-        <router-link class="block pointer-events-auto !mr-auto" to="/">
-          Icon
+        <router-link
+          class="mr-auto text-lg font-bold pointer-events-auto"
+          to="/"
+        >
+          C2D <span class="font-normal">Marketplace</span>
         </router-link>
+        <ul class="flex space-x-8" v-if="routes">
+          <li v-for="{ to, name, icon } in routes" :key="name">
+            <router-link
+              :to="to"
+              class="flex items-center gap-2 cursor-pointer text-md hover:text-neutral-500"
+              ><component :is="icon" class="w-6 h-6"></component>
+              {{ name }}</router-link
+            >
+          </li>
+        </ul>
         <AppButton
           class="pointer-events-auto !background-blur-sm"
           size="md"
@@ -22,8 +39,22 @@
 
 <script lang="ts" setup>
 import AppButton from "@/components/app/AppButton";
+import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/vue/24/solid";
 import { useUserStore } from "@/store/modules/user";
 
 const user = useUserStore();
-const { connect, disconnectConnectedWallet, isConnected } = user;
+const { connect } = user;
+
+const routes = [
+  {
+    name: "Explore",
+    to: "/explore",
+    icon: MagnifyingGlassIcon,
+  },
+  {
+    name: "Create",
+    to: "/create",
+    icon: PlusIcon,
+  },
+];
 </script>

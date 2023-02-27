@@ -12,6 +12,14 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
+    path: "/create",
+    name: "create",
+    component: () =>
+      import(
+        /* webpackChunkName: "create-token" */ "@/views/create/CreateView.vue"
+      ),
+  },
+  {
     path: "/:pathMatch(.*)*",
     redirect: "/",
   },

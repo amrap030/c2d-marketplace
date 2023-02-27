@@ -1,55 +1,78 @@
 import gql from "graphql-tag";
 
-export const CONTRACT = gql`
-  query contract($id: String) {
-    contract(id: $id) {
+export const GET_ALGORITHMS = gql`
+  query GetAlgorithms($kind: BigInt = "1") {
+    tokens(where: { kind: $kind }) {
       id
-      name
-      paused
-      symbol
-      maxSupply
-      maxReserved
-      totalSupply
-    }
-  }
-`;
-
-export const TOKENS_FROM_BLOCK = gql`
-  query tokensFromBlock($address: String = "", $block: Int = 0) {
-    tokens(where: { owner: $address, createdAtBlockNumber: $block }) {
-      id
+      kind
+      metadataURI
+      metadata
       owner {
         id
       }
-      contract {
+      offers {
+        price
         id
+        updatedAtBlockNumber
+        updatedAtTimestamp
+        createdAtTimestamp
+        createdAtBlockNumber
       }
-      metadataURI
-      createdAtTimestamp
-      createdAtBlockNumber
-      transactionHash
+      name
+      symbol
     }
   }
 `;
 
-export const TOKEN_HOUR_DATAS = gql`
-  query tokenHourDatas(
-    $first: Int! = 1
-    $skip: Int! = 0
-    $address: String! = "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270"
-  ) {
-    tokenHourDatas(
-      first: $first
-      where: { token: $address }
-      skip: $skip
-      orderBy: periodStartUnix
-      orderDirection: desc
-    ) {
-      periodStartUnix
-      high
-      low
-      open
-      close
+export const GET_DATASETS = gql`
+  query GetDatasets($kind: BigInt = "0") {
+    tokens(where: { kind: $kind }) {
+      id
+      kind
+      metadataURI
+      metadata
+      owner {
+        id
+      }
+      offers {
+        id
+        price
+        dataset {
+          id
+          metadata
+        }
+        algorithm {
+          id
+          metadata
+        }
+      }
+      name
+      symbol
+    }
+  }
+`;
+
+export const GET_ORDERS = gql`
+  query GetOrders {
+    fileSaleSessions {
+      ciphertextRoot
+      createdAtBlockNumber
+      createdAtTimestamp
+      depth
+      fileRoot
+      id
+      key
+      keyCommit
+      length
+      n
+      phase
+      pkUrl
+      price
+      timeout
+      timeoutInterval
+      updatedAtBlockNumber
+      updatedAtTimestamp
+      verifier
     }
   }
 `;

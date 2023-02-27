@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { App } from "./App";
 import "@/assets/styles/app.css";
+import "@/assets/styles/web3-onboard.css";
 
 import { gsap } from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
