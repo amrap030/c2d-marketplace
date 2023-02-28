@@ -13,6 +13,7 @@ import { proofComputation, getMetadataUri } from "@/contracts";
 import solc from "solc";
 import all from "it-all";
 import fs from "fs";
+import { addAssets } from "@/services/assets.service";
 
 const createInput = (program: string) => {
   return {
@@ -199,6 +200,14 @@ const orderWorker = new Worker(
 
       await compile(path, job);
 
+      const out = fs.readFileSync(`${path}/out`);
+      const outR1CS = fs.readFileSync(`${path}/out.r1cs`);
+
+      await Promise.all([
+        addAssets("sales", `${receiver}/${algorithm}/out`, out),
+        addAssets("sales", `${receiver}/${algorithm}/out.r1cs`, outR1CS),
+      ]);
+
       await updateJob(job, 40);
 
       const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
@@ -208,12 +217,25 @@ const orderWorker = new Worker(
 
       await computeWitness(witnessInput, path, job);
 
+      const witness = fs.readFileSync(`${path}/witness`);
+      const outWitness = fs.readFileSync(`${path}/out.wtns`);
+
+      await Promise.all([
+        addAssets("sales", `${receiver}/${algorithm}/witness`, witness),
+        addAssets("sales", `${receiver}/${algorithm}/out.wtns`, outWitness),
+      ]);
+
       await updateJob(job, 80);
 
       await generateProof(path, job);
 
-      const { proof, inputs } = JSON.parse(
-        fs.readFileSync(`${path}/proof.json`).toString(),
+      const generatedProof = fs.readFileSync(`${path}/proof.json`).toString();
+      const { proof, inputs } = JSON.parse(generatedProof);
+
+      await addAssets(
+        "sales",
+        `${receiver}/${algorithm}/proof.json`,
+        generatedProof,
       );
 
       await proofComputation({ sessionId, inputs, proof });

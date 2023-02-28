@@ -31,7 +31,7 @@ export const getAssets = async (folder: string): Promise<Blob> => {
           return reject(err);
         }
         const type = mime.lookup(assets[0].name);
-        dataStream.on("data", function (chunk) {
+        dataStream.on("data", function(chunk) {
           size = size + chunk.length;
           file = new Blob([chunk], { type });
         });
@@ -50,20 +50,15 @@ export const getAssets = async (folder: string): Promise<Blob> => {
   }
 };
 
-export const addAssets = async (folder: string, file: any) => {
+export const addAssets = async (bucket: string, dir: string, file: any) => {
   try {
     return await new Promise((resolve, reject) => {
-      minioClient.putObject(
-        PATH,
-        `${folder}/${file.originalname}`,
-        file.buffer,
-        (err, objInfo) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(objInfo);
-        },
-      );
+      minioClient.putObject(bucket, `${dir}`, file, (err, objInfo) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(objInfo);
+      });
     });
   } catch (e) {
     throw new HttpException(400, e.toString());
