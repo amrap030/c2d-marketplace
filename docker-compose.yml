@@ -26,10 +26,11 @@ services:
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-changeme}
     networks:
       - kong
-    entrypoint: >
+    entrypoint: > # see: https://github.com/minio/minio/issues/4769
       /bin/sh -c "
-      /usr/bin/mc config host add myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-      /usr/bin/mc mb myminio/assets;
+      /usr/bin/mc config host add myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+      /usr/bin/mc mb myminio/sales;
+      /usr/bin/mc mb myminio/purchases;
       exit 0;
       "
 
