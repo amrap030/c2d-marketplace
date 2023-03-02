@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 import type { Indexable } from "@types";
 
 const ButtonColor: Indexable<string> = {
-  primary: "bg-blue text-creme border border-blue hover:opacity-90",
+  primary: "bg-slate-700 text-creme hover:opacity-90",
   secondary: "bg-creme text-neutral-900 border border-creme hover:opacity-90",
   outline:
     "bg-neutral-900 text-current border border-transparent hover:opacity-80",

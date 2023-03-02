@@ -2226,6 +2226,20 @@ export async function getMeshOptions(): Promise<GetMeshOptions> {
           },
           location: "GetOrdersDocument.graphql",
         },
+        {
+          document: GetFileSessionsDocument,
+          get rawSDL() {
+            return printWithCache(GetFileSessionsDocument);
+          },
+          location: "GetFileSessionsDocument.graphql",
+        },
+        {
+          document: GetTokensWithOffersDocument,
+          get rawSDL() {
+            return printWithCache(GetTokensWithOffersDocument);
+          },
+          location: "GetTokensWithOffersDocument.graphql",
+        },
       ];
     },
     fetchFn,
@@ -2351,6 +2365,89 @@ export type GetOrdersQuery = {
   >;
 };
 
+export type GetFileSessionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetFileSessionsQuery = {
+  fileSaleSessions: Array<
+    Pick<
+      FileSaleSession,
+      | "ciphertextRoot"
+      | "createdAtBlockNumber"
+      | "createdAtTimestamp"
+      | "depth"
+      | "fileRoot"
+      | "id"
+      | "key"
+      | "keyCommit"
+      | "length"
+      | "n"
+      | "phase"
+      | "pkUrl"
+      | "price"
+      | "timeout"
+      | "timeoutInterval"
+      | "updatedAtBlockNumber"
+      | "updatedAtTimestamp"
+      | "verifier"
+    > & {
+      events?: Maybe<
+        Array<
+          Pick<
+            Event,
+            | "createdAtBlockNumber"
+            | "createdAtTimestamp"
+            | "gasPrice"
+            | "id"
+            | "to"
+            | "transactionHash"
+            | "type"
+            | "value"
+          >
+        >
+      >;
+    }
+  >;
+};
+
+export type GetTokensWithOffersQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetTokensWithOffersQuery = {
+  tokens: Array<
+    Pick<
+      Token,
+      | "id"
+      | "kind"
+      | "managers"
+      | "metadataURI"
+      | "name"
+      | "paused"
+      | "supportsMetadata"
+      | "symbol"
+      | "template"
+      | "transactionHash"
+      | "updatedAtBlockNumber"
+      | "updatedAtTimestamp"
+      | "createdAtTimestamp"
+      | "createdAtBlockNumber"
+    > & {
+      offers?: Maybe<
+        Array<
+          Pick<
+            Offer,
+            | "createdAtBlockNumber"
+            | "createdAtTimestamp"
+            | "id"
+            | "price"
+            | "updatedAtBlockNumber"
+            | "updatedAtTimestamp"
+          > & { algorithm: Pick<Token, "id"> & { owner: Pick<Account, "id"> } }
+        >
+      >;
+      owner: Pick<Account, "id">;
+    }
+  >;
+};
+
 export const GetAlgorithmsDocument = gql`
   query GetAlgorithms($kind: BigInt = "1") {
     tokens(where: { kind: $kind }) {
@@ -2425,6 +2522,83 @@ export const GetOrdersDocument = gql`
     }
   }
 ` as unknown as DocumentNode<GetOrdersQuery, GetOrdersQueryVariables>;
+export const GetFileSessionsDocument = gql`
+  query GetFileSessions {
+    fileSaleSessions {
+      ciphertextRoot
+      createdAtBlockNumber
+      createdAtTimestamp
+      depth
+      fileRoot
+      id
+      key
+      keyCommit
+      length
+      n
+      phase
+      pkUrl
+      price
+      timeout
+      timeoutInterval
+      updatedAtBlockNumber
+      updatedAtTimestamp
+      verifier
+      events(orderBy: createdAtBlockNumber) {
+        createdAtBlockNumber
+        createdAtTimestamp
+        gasPrice
+        id
+        to
+        transactionHash
+        type
+        value
+      }
+    }
+  }
+` as unknown as DocumentNode<
+  GetFileSessionsQuery,
+  GetFileSessionsQueryVariables
+>;
+export const GetTokensWithOffersDocument = gql`
+  query GetTokensWithOffers {
+    tokens {
+      id
+      kind
+      managers
+      metadataURI
+      name
+      paused
+      supportsMetadata
+      symbol
+      template
+      transactionHash
+      updatedAtBlockNumber
+      updatedAtTimestamp
+      createdAtTimestamp
+      createdAtBlockNumber
+      offers {
+        createdAtBlockNumber
+        createdAtTimestamp
+        id
+        price
+        updatedAtBlockNumber
+        updatedAtTimestamp
+        algorithm {
+          id
+          owner {
+            id
+          }
+        }
+      }
+      owner {
+        id
+      }
+    }
+  }
+` as unknown as DocumentNode<
+  GetTokensWithOffersQuery,
+  GetTokensWithOffersQueryVariables
+>;
 
 export type Requester<C = {}, E = unknown> = <R, V>(
   doc: DocumentNode,
@@ -2462,6 +2636,29 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
         variables,
         options,
       ) as Promise<GetOrdersQuery>;
+    },
+    GetFileSessions(
+      variables?: GetFileSessionsQueryVariables,
+      options?: C,
+    ): Promise<GetFileSessionsQuery> {
+      return requester<GetFileSessionsQuery, GetFileSessionsQueryVariables>(
+        GetFileSessionsDocument,
+        variables,
+        options,
+      ) as Promise<GetFileSessionsQuery>;
+    },
+    GetTokensWithOffers(
+      variables?: GetTokensWithOffersQueryVariables,
+      options?: C,
+    ): Promise<GetTokensWithOffersQuery> {
+      return requester<
+        GetTokensWithOffersQuery,
+        GetTokensWithOffersQueryVariables
+      >(
+        GetTokensWithOffersDocument,
+        variables,
+        options,
+      ) as Promise<GetTokensWithOffersQuery>;
     },
   };
 }

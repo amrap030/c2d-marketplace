@@ -1,4 +1,9 @@
+/*! purgecss start ignore */
+@import "prism.css";
+/*! purgecss end ignore */
+
 @tailwind base;
+
 @tailwind components;
 @tailwind utilities;
 
@@ -60,8 +65,16 @@
 }
 
 @layer base {
+  .dark {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply dark;
+  }
+
   body {
-    @apply bg-white text-neutral-800 selection:text-neutral-50 selection:bg-blue;
+    @apply bg-slate-900 text-neutral-200;
   }
 
   section {
@@ -70,5 +83,14 @@
 
   p {
     @apply text-justify text-neutral-300/70;
+  }
+}
+
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none !important;
+    }
   }
 }

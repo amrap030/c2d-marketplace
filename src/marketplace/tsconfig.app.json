@@ -5,11 +5,11 @@
     "src/**/*",
     "src/**/*.vue",
     "src/**/*.json",
-    "../contracts/**/*.json"
+    "../contracts/**/*.json",
+    "package.json"
   ],
   "exclude": ["src/**/__tests__/*"],
   "compilerOptions": {
-    "composite": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],

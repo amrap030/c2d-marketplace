@@ -2,9 +2,13 @@
 // eslint-disable-next-line no-undef
 module.exports = {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
+        code: {
+          highlight: "rgb(125 211 252 / 0.1)",
+        },
         discord: "#5865F2",
         blue: {
           DEFAULT: "#1E22AA",
@@ -49,5 +53,13 @@ module.exports = {
     },
   },
   // eslint-disable-next-line no-undef
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    // eslint-disable-next-line no-undef
+    require("@tailwindcss/forms"),
+    function ({ addVariant }) {
+      addVariant("scrollbar", "&::-webkit-scrollbar");
+      addVariant("scrollbar-track", "&::-webkit-scrollbar-track");
+      addVariant("scrollbar-thumb", "&::-webkit-scrollbar-thumb");
+    },
+  ],
 };

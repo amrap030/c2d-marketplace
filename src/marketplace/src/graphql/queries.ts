@@ -76,3 +76,76 @@ export const GET_ORDERS = gql`
     }
   }
 `;
+
+export const GET_FILE_SESSIONS = gql`
+  query GetFileSessions {
+    fileSaleSessions {
+      ciphertextRoot
+      createdAtBlockNumber
+      createdAtTimestamp
+      depth
+      fileRoot
+      id
+      key
+      keyCommit
+      length
+      n
+      phase
+      pkUrl
+      price
+      timeout
+      timeoutInterval
+      updatedAtBlockNumber
+      updatedAtTimestamp
+      verifier
+      events(orderBy: createdAtBlockNumber) {
+        createdAtBlockNumber
+        createdAtTimestamp
+        gasPrice
+        id
+        to
+        transactionHash
+        type
+        value
+      }
+    }
+  }
+`;
+
+export const GET_TOKENS_WITH_OFFERS = gql`
+  query GetTokensWithOffers {
+    tokens {
+      id
+      kind
+      managers
+      metadataURI
+      name
+      paused
+      supportsMetadata
+      symbol
+      template
+      transactionHash
+      updatedAtBlockNumber
+      updatedAtTimestamp
+      createdAtTimestamp
+      createdAtBlockNumber
+      offers {
+        createdAtBlockNumber
+        createdAtTimestamp
+        id
+        price
+        updatedAtBlockNumber
+        updatedAtTimestamp
+        algorithm {
+          id
+          owner {
+            id
+          }
+        }
+      }
+      owner {
+        id
+      }
+    }
+  }
+`;

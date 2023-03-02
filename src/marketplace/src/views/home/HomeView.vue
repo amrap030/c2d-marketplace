@@ -1,84 +1,96 @@
 <template>
-  <div class="flex items-center gap-4">
-    <AppButton :fullWidth="false" @click.prevent="mintAlgorithm">
+  <div class="flex flex-col gap-4">
+    <Terminal :loading="false" :code="zokratesSum32" filename="main.zok" />
+    <Terminal
+      :loading="false"
+      :code="JSON.stringify(sum32, null, 2)"
+      filename="abi.json"
+    />
+    <AppButton
+      class="ml-auto"
+      :fullWidth="false"
+      @click.prevent="mintAlgorithm"
+    >
       Mint Algorithm
     </AppButton>
-    <AppButton :fullWidth="false" @click.prevent="mintDataset">
+    <Terminal
+      :loading="algorithmLoading"
+      :code="algorithmMetadata"
+      filename="algorithm-metadata.json"
+    />
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="mintDataset">
       Mint Dataset
     </AppButton>
-    <AppButton :fullWidth="false" @click.prevent="makeOffer">
+    <Terminal
+      :loading="datasetLoading"
+      :code="datasetMetadata"
+      filename="dataset-metadata.json"
+    />
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="makeOffer">
       Make Offer
     </AppButton>
-    <AppButton :fullWidth="false" @click.prevent="prepareOrder">
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="fetchOffers">
+      Get Offer
+    </AppButton>
+    <Terminal
+      :loading="offersLoading"
+      :code="offers || ''"
+      filename="offer.json"
+    />
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="prepareOrder">
       Prepare Order
     </AppButton>
-    <AppButton :fullWidth="false" @click.prevent="makeOrder">
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="makeOrder">
       Make Order
     </AppButton>
-    <AppButton :fullWidth="false" @click.prevent="buy">
+    <Terminal
+      :loading="bytecodeLoading"
+      :code="bytecode || ''"
+      filename="bytecode.json"
+    />
+    <AppButton
+      class="ml-auto"
+      :fullWidth="false"
+      @click.prevent="fetchFileSessions"
+    >
+      Get File Session
+    </AppButton>
+    <Terminal
+      :loading="fileSessionLoading"
+      :code="fileSession || ''"
+      filename="file-session.json"
+    />
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="buy">
       Accept Order
     </AppButton>
   </div>
 </template>
 
 <script lang="ts" setup>
-import AppButton from "@/components/app/AppButton";
 import { useMarketplace } from "@/composables/useMarketplace";
 import { useIpfs } from "@/composables/useIpfs";
 import { metadata } from "@/utils";
 import { ethers } from "ethers";
-import sum32 from "@/constants/abi/sum32/abi.json";
 import {
   GetAlgorithmsDocument,
   GetDatasetsDocument,
   GetOrdersDocument,
+  GetFileSessionsDocument,
+  GetTokensWithOffersDocument,
 } from "@/../.graphclient";
 import { useApolloClient } from "@vue/apollo-composable";
 import { ref } from "vue";
+import { env } from "@/constants";
+import sum32 from "@/constants/abi/sum32/abi.json";
+import Terminal from "@/components/app/AppTerminal.vue";
+import AppButton from "@/components/app/AppButton";
+import { zokratesSum32 } from "@/constants/programs";
+import { utils } from "@/utils";
 
 const { resolveClient } = useApolloClient();
 const client = resolveClient();
 
 const setupJob = ref();
-
-const program = `import "hashes/sha256/1024bitPadded.code" as sha256_1024;
-import "hashes/sha256/512bitPadded.code" as sha256_512;
-import "hashes/sha256/256bitPadded.code" as sha256_256;
-import "signatures/verifyEddsa.code" as verifyEddsa;
-import "ecc/babyjubjubParams.code" as context;
-import "utils/pack/u32/nonStrictUnpack256.code" as unpack;
-import "utils/pack/u32/pack256.code" as pack256;
-import "utils/casts/u32_to_field.code" as u32_to_field;
-from "ecc/babyjubjubParams" import BabyJubJubParams;
-
-def main(private u32[32] values, private field nonce, private field[2] R, private field S, field[2] A, u32[8] M0, u32[8] M1) -> (bool, bool, field) {
-    // verify signature
-    BabyJubJubParams context = context();
-    bool isVerified = verifyEddsa(R, S, A, M0, M1, context);
-    assert(isVerified);
-
-    // calculate hash of input values from dataset
-    u32[8] hash = sha256_1024(values[0..8],values[8..16],values[16..24],values[24..32]);
-
-    // check integrity of input values
-    bool isHashMatching = hash == M0 && hash == M1;
-    assert(isHashMatching);
-
-    // computation of sum
-    field mut sum = 0;
-    for u32 i in 0..32 {
-        sum = sum + u32_to_field(values[i]);
-    }
-
-    // create merkle tree
-    u32[8] h_computation = sha256_256(unpack(sum));
-    u32[8] h_nonce = sha256_256(unpack(nonce));
-
-    field result = pack256(sha256_512(h_computation, h_nonce));
-
-    return (isVerified, isHashMatching, result);
-}
-`;
 
 const { addToIpfs } = useIpfs();
 const {
@@ -91,21 +103,27 @@ const {
   account,
 } = useMarketplace();
 
+const algorithmMetadata = ref("");
+const algorithmLoading = ref(false);
+
 const mintAlgorithm = async () => {
   const createdAt = new Date().toISOString();
   const updatedAt = createdAt;
+
   try {
-    const programCID = await addToIpfs(program);
+    algorithmLoading.value = true;
+    await utils.delay(2000);
+
+    const programCID = await addToIpfs(zokratesSum32);
     const abiCID = await addToIpfs(sum32);
 
-    console.log(abiCID);
     const data = metadata.createAlgorithmMetadata({
       programUri: programCID.path,
       programSize: programCID.size,
       programCreatedAt: createdAt,
       programUpdatedAt: updatedAt,
       programChecksum: ethers.utils
-        .sha256(ethers.utils.toUtf8Bytes(program))
+        .sha256(ethers.utils.toUtf8Bytes(zokratesSum32))
         .slice(2),
       abiUri: abiCID.path,
       abiSize: abiCID.size,
@@ -116,22 +134,31 @@ const mintAlgorithm = async () => {
         .slice(2),
     });
 
+    algorithmMetadata.value = JSON.stringify(data, null, 2);
+    algorithmLoading.value = false;
+
     const metadataCid = await addToIpfs(data);
-    console.log(metadataCid);
     await createAlgorithm(metadataCid.path);
   } catch (e) {
     console.log(e);
   }
 };
 
+const datasetMetadata = ref("");
+const datasetLoading = ref(false);
+
 const mintDataset = async () => {
   try {
+    datasetLoading.value = true;
+    await utils.delay(2000);
     const data = metadata.createDatasetMetadata({
       rows: 100,
     });
 
     const metadataCid = await addToIpfs(data);
 
+    datasetMetadata.value = JSON.stringify(data, null, 2);
+    datasetLoading.value = false;
     await createDataset(metadataCid.path);
   } catch (e) {
     console.log(e);
@@ -141,18 +168,14 @@ const mintDataset = async () => {
 const makeOffer = async () => {
   try {
     const [{ data: algorithms }, { data: datasets }] = await Promise.all([
-      client.query({ query: GetAlgorithmsDocument }),
-      client.query({ query: GetDatasetsDocument }),
+      client.query({ query: GetAlgorithmsDocument, fetchPolicy: "no-cache" }),
+      client.query({ query: GetDatasetsDocument, fetchPolicy: "no-cache" }),
     ]);
-
-    console.log({
-      ...algorithms.tokens[0],
-      metadata: JSON.parse(datasets.tokens[0].metadata),
-    });
 
     if (datasets && algorithms) {
       const dataset = datasets.tokens[0];
       const algorithm = algorithms.tokens[0];
+
       await createOffer({
         nftAddress: dataset.id,
         algorithms: [algorithm.id],
@@ -164,22 +187,44 @@ const makeOffer = async () => {
   }
 };
 
+const offers = ref();
+const offersLoading = ref(false);
+
+const fetchOffers = async () => {
+  try {
+    offersLoading.value = true;
+
+    const { data } = await client.query({
+      query: GetTokensWithOffersDocument,
+      fetchPolicy: "no-cache",
+    });
+
+    offersLoading.value = false;
+
+    if (data) {
+      const token = data.tokens.find(token => {
+        if (token.offers) return token.offers.length > 0;
+      });
+      offers.value = JSON.stringify(token, null, 2);
+    }
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const prepareOrder = async () => {
-  console.log("test");
   try {
     const { data: datasets } = await client.query({
       query: GetDatasetsDocument,
       fetchPolicy: "no-cache",
     });
-    console.log(datasets);
     const offers = datasets.tokens[0].offers;
 
     if (offers && offers.length) {
       const offer = offers[0];
-
       const metadata = JSON.parse(offer.algorithm.metadata as string);
 
-      const res = await fetch("http://localhost:3000/v1/setup", {
+      const res = await fetch(`${env.API_GATEWAY}/api/setup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -193,39 +238,64 @@ const prepareOrder = async () => {
       });
 
       setupJob.value = await res.json();
-      console.log(setupJob.value);
     }
   } catch (e) {
     console.log(e);
   }
 };
 
+const fileSession = ref();
+const fileSessionLoading = ref(false);
+
+const fetchFileSessions = async () => {
+  try {
+    fileSessionLoading.value = true;
+    const { data } = await client.query({
+      query: GetFileSessionsDocument,
+      fetchPolicy: "no-cache",
+    });
+
+    fileSessionLoading.value = false;
+    if (data)
+      fileSession.value = JSON.stringify(data.fileSaleSessions[0], null, 2);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const bytecode = ref();
+const bytecodeLoading = ref(false);
+
 const makeOrder = async () => {
   try {
-    console.log();
-    const res = await fetch(`http://localhost:3000/v1/setup/${1}`, {
-      method: "GET",
-    });
+    const res = await fetch(
+      `${env.API_GATEWAY}/api/setup/${setupJob.value.id}`,
+      {
+        method: "GET",
+      },
+    );
 
     const result = await res.json();
 
-    console.log(result.returnvalue.abi.slice(7));
-    const abiRes = await fetch(
-      `http://localhost:8081/ipfs/${result.returnvalue.abi.slice(7)}`,
-      {
-        method: "GET",
-      },
-    );
+    bytecodeLoading.value = true;
 
-    const byteCodeRes = await fetch(
-      `http://localhost:8081/ipfs/${result.returnvalue.byteCode.slice(7)}`,
-      {
+    const [abiRes, byteCodeRes] = await Promise.all([
+      fetch(`http://localhost:8081/ipfs/${result.returnvalue.abi.slice(7)}`, {
         method: "GET",
-      },
-    );
+      }),
+      fetch(
+        `http://localhost:8081/ipfs/${result.returnvalue.byteCode.slice(7)}`,
+        {
+          method: "GET",
+        },
+      ),
+    ]);
 
     const abi = await abiRes.json();
     const program = await byteCodeRes.text();
+    bytecode.value = JSON.stringify({ abi, bytecode: program }, null, 2);
+
+    bytecodeLoading.value = false;
 
     const verifierAddress = await deployVerifier(program, abi);
 
@@ -259,7 +329,6 @@ const buy = async () => {
     });
 
     const order = orders.fileSaleSessions[0];
-    console.log(order);
 
     await acceptOrder(order.id, order.price);
   } catch (e) {
