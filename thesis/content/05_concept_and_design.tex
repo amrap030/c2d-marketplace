@@ -1,12 +1,14 @@
 \chapter{Concept \& Design}
 \label{cha:cod}
 
+USE CASE BESCHREIBEN
+
 \section{Application Architecture}
 \label{section:software_architecture}
 
 BASED ON ZERO_TRUST PRINCIPLES NENNEN?!?! DAPP NENNEN?, SERVICE ORIENTED ARCHITECTURE, MICROSERVICES
 
-This section defines the main architectural components of the proposed decentralized, blockchain-based data marketplace. Although it can be run by any central party or deployed on any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates trust in central servers and ensures great control over the data, as it never leaves the operator's premises. It also provides excellent flexibility, as each operator can scale its own infrastructure independently, deploying only the components he or she needs. The complete software stack, as shown in figure \ref{fig:arch}, consists of a full Ethereum node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway.
+This section defines the main components of the proposed decentralized, blockchain-based data marketplace. Although it can be run by any central party or deployed on any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates trust in central servers and ensures great control over the data, as it never leaves the operator's premises. It also provides excellent flexibility, as each operator can scale its own infrastructure independently, deploying only the components he or she needs. The complete software stack, as shown in figure \ref{fig:arch}, consists of a full Ethereum node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway.
 
 %This section defines the main software components of our decentralized blockchain-based data marketplace. Although it can be run by any central party or deployed to any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates the trust in central servers and ensures great control over data as it never has to leave the operator's boundaries. Furthermore, it ensures high flexibility since every operator can independently scale their own infrastructure and only needs to deploy the necessary components according to their needs. The full software stack as depicted in figure \ref{fig:arch} is composed of an Ethereum full node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway. The following sections describe those components in more detail.
 
@@ -63,18 +65,18 @@ The \acrfull{ipfs} is a decentralized peer-to-peer hypermedia protocol for stori
             
 \subsection{Compute Service}
 \label{subsec:compute}
-        
-The original idea was to store all datasets on IPFS. However, IPFS is a public peer-to-peer network with no access control, where every Taia-X consumer could access datasets without a purchase. Hence, no data provider would ever adopt Taia-X. To overcome this problem, it is possible to publish only encrypted datasets in IPFS. Nonetheless, data providers would still have no chance to revoke permissions to access datasets and no chance to remove data from the network. Once it is propagated through the IPFS network, it is nearly impossible to remove.
-            
-With Taia-X, every provider stores their datasets on their own backend component on the file system. This gives data providers full control over their assets. For this reason, the backend exposes an API to upload datasets, which is only accessible from the on-premise internal network. This prevents malicious actors to upload arbitrary and harmful data on the provider's file system from an external network. Additionally, the backend exposes a publicly available download API, to download purchased datasets as a consumer. Since this API endpoint is publicly exposed, it is secured by a cryptographic access control mechanism, which is described in section \ref{subsec:access_control_backend}.
 
-\subsection{Message Queue}
-\label{subsec:mq}
+The compilation of zero-knowledge programs, the trusted setup, and the proof generation with ZoKrates is a computationally and memory-intensive process, especially for large amounts of data. Accordingly, it may be necessary to have a dedicated, powerful machine with enough CPU cores and memory to perform these computations. This is ensured by a dedicated compute microservice that can be scaled either horizontally or vertically to meet individual compute requirements. In order to make the microservice API non-blocking, jobs are sent to a message queue. Workers then accept and execute jobs in the background in a separate process on the machine to run in parallel and to be individually scalable. In addition, ZoKrates is executed in another child process on the machine to make better use of the underlying hardware, rather than being implemented as a library. When a job is finished, clients are notified by the compute microservice.
+
+\subsection{S3 Storage}
+\label{subsec:s3}
+
+Because computations in the compute service are very expensive in terms of memory and CPU usage, as well as time-consuming, it is beneficial to avoid unnecessary computations. Therefore, compiled constraint systems, witnesses, and generated proofs belonging to a sale or a purchase are stored in the seller's and consumer's own S3 instance. In this way, recurring computations can be avoided by first verifying if a computation has already been done and if assets already exist in the associated S3 bucket.
 
 \subsection{API Gateway}
 \label{subsec:api_gw}
 
-In the proposed marketplace, raw datasets never leave the seller's boundaries to protect PII and confidential data. Instead, buyers can only receive computational results. This data exchange must take place through a secure public channel, i.e. the API gateway. Unlike all other components, the API gateway sits on the public subnet to be accessible by any other marketplace participant. It is the single entry point to the seller's infrastructure, acting as a reverse proxy to route incoming requests to the appropriate microservices on the private subnet. In the proposed marketplace, the API gateway has routes to the compute service, the crypto service, and the blockchain indexer. In addition to routing, it also performs request rate limiting and authorization decisions in a dedicated sidecar container close to the API gateway to avoid latency-intensive network calls
+In the proposed marketplace, raw datasets never leave the seller's boundaries to protect PII and confidential data. Instead, buyers can only receive computational results. This data exchange must take place through a secure public channel, i.e. the API gateway. Unlike all other components, the API gateway sits on the public subnet to be accessible by any other marketplace participant. It is the single entry point to the seller's infrastructure, acting as a reverse proxy to route incoming requests to the appropriate microservices on the private subnet. In the proposed marketplace, the API gateway has routes to the compute service, the crypto service, and the blockchain indexer. In addition to routing, it also performs request rate limiting and authorization decisions in a dedicated sidecar container close to the API gateway to avoid internal latency-intensive network calls
 
 \subsection{Crypto Service}
 \label{subsec:crypto}
@@ -85,8 +87,16 @@ In the proposed marketplace, raw datasets never leave the seller's boundaries to
 \section{Exchange Flow}
 \label{section:exchange}
 
-\section{Order Lifecycle}
-\label{section:lifecycle}
+\subsection{Order Lifecycle}
+\label{subsection:lifecycle}
+
+\subsection{Abbruchbedingungen}
+\label{subsection:cancel}
+
+\subsection{FairSwap}
+\label{subsection:fairswap}
+
+FairSwap bzw. crypto stuff erklären
 
 \section{Stakeholders}
 \label{section:stakeholders}
