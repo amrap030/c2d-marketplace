@@ -6,14 +6,14 @@ USE CASE BESCHREIBEN
 \section{Application Architecture}
 \label{section:software_architecture}
 
-BASED ON ZERO_TRUST PRINCIPLES NENNEN?!?! DAPP NENNEN?, SERVICE ORIENTED ARCHITECTURE, MICROSERVICES
+BASED ON ZERO_TRUST PRINCIPLES NENNEN?!?! DAPP NENNEN?, SERVICE ORIENTED ARCHITECTURE, MICROSERVICES, DECOUPLING
 
 This section defines the main components of the proposed decentralized, blockchain-based data marketplace. Although it can be run by any central party or deployed on any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates trust in central servers and ensures great control over the data, as it never leaves the operator's premises. It also provides excellent flexibility, as each operator can scale its own infrastructure independently, deploying only the components he or she needs. The complete software stack, as shown in figure \ref{fig:arch}, consists of a full Ethereum node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway.
 
 %This section defines the main software components of our decentralized blockchain-based data marketplace. Although it can be run by any central party or deployed to any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates the trust in central servers and ensures great control over data as it never has to leave the operator's boundaries. Furthermore, it ensures high flexibility since every operator can independently scale their own infrastructure and only needs to deploy the necessary components according to their needs. The full software stack as depicted in figure \ref{fig:arch} is composed of an Ethereum full node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway. The following sections describe those components in more detail.
 
 %Accordingly, our main objectives were to make the platform as available, scalable, and decentralized as possible, while maintaining the highest level of security. The former is achieved by forcing each user of Taia-X to deploy the entire platform on their own local infrastructure. This eliminates the need for a centralized server. The latter aspect is realized by keeping the entry points to our platform as minimal as possible and secured by an access control mechanism. Our platform consists of a Tezos full node, blockchain indexers, a frontend, a backend, and a node, as shown in Figure 5.1. A more detailed diagram of the final architecture, including the technologies, can be found in Figure 2. The following sections describe the components in more detail.
-        
+
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=14cm]{images/arch.png}
@@ -32,27 +32,21 @@ The implementation of own Ethereum full nodes aligns well with zero trust princi
 %A blockchain full node typically stores an entire copy of the distributed ledger and validates transactions and blocks. To be able to interact with the blockchain, decentralized applications usually leverage RPC calls to send transactions to - and receive data from a node. However, most decentralized applications connect via community-run\footnote{https://tezostaquito.io/docs/rpc\_nodes/} nodes, which are publicly available. Unfortunately, these nodes can be considered as trustful central entities. A user essentially trusts these nodes not to modify their requests, as well as not to censor operations. Additionally, community-run nodes can be unavailable in case of network partitioning. Hence, every deployment of Taia-X includes its own Tezos Full Node.
             
 %Firstly, it helps the network to grow and implicitly makes it more secure by following the network's protocol. Secondly, users of Taia-X don't have to trust public servers to handle transactions to - and queries from the blockchain correctly. Thirdly, it keeps the user's privacy safe, because transactions are not broadcasted to a central server that can leak the user's address. Lastly, it is not complicated and very affordable to deploy a Tezos Full Node.
-            
-\subsection{Blockchain Indexer}
-\label{subsec:indexer}
-            
-%Every decentralized application relies heavily on information from the blockchain. Due to the natural transparency of public permissionless blockchains, it is possible to inspect every information from the decentralized ledger. However, the ledger is a time-ordered append-only data structure, which makes it highly inefficient to filter, search, paginate, aggregate, or in general query it. Unfortunately, this should be the bare minimum functionality of every marketplace, to easily find items of interest. Filtering is for example necessary in the user profile of Taia-X, to view collected and created tokens of specific Tezos account addresses. In a typical query, the application would try to find this information across many blocks by traversing the ledger and most probably visit a majority of irrelevant blocks. This is highly inefficient and time-consuming, which is critical in times, where users are used to fast response times in a Web 2.0 space.
-            
-%We solve this problem, by implementing two Blockchain Indexers in the architecture of Taia-X. Blockchain Indexers typically provide a protocol, to extract raw data from a blockchain node, process the data and store it into a relational database, as soon as a new block is written to the ledger. Additionally, Blockchain Indexers expose an \acrshort{api}, to provide high efficient and fast access to blockchain data with filtering, searching, paginating and aggregating capabilities. This doesn't only have a huge impact on the user experience, but also the developer experience, allowing to conduct queries more easily, with typical API operations or SQL queries, they are already used to.
-
-%However, the majority of decentralized applications leverage publicly available Blockchain Indexers from a centralized server. This makes it a single point of failure in case of network partitioning, an attack vector for fraudulent users, and a less scalable and less performant service in case of high traffic. With Taia-X, every user is responsible for operating their own Blockchain Indexers, which are connected to their own Blockchain Full Node. This doesn't only eliminate all aforementioned aspects, but also eliminates trusting a public centralized service, by reading every information from their own nodes.
-            
-%The first Blockchain Indexer we introduce is TzKT\footnote{https://github.com/baking-bad/tzkt}. It is directly connected to the Tezos Full Node and reads, processes and stores raw data from \emph{every} newly created block. TzKT serves as the input for the second \emph{selective} Blockchain Indexer, created with DipDup\footnote{https://github.com/dipdup-net/dipdup-py}. This indexer only indexes information of specific smart contracts, which is the marketplace smart contract of Taia-X in our case. We primarily use it to provide Token Metadata, historic data, as well as information regarding accounts, sells and purchases, by exposing an API to achieve near real-time queries from the UI of Taia-X. The selective indexer records information from every newly created block exactly to our needs. This means, we can model our own database and are able to update specific database records, if the state changes over time. Next to that, it allows us to query off-chain token metadata from IPFS and save it directly into the database record of the token. All in all, our Blockchain Indexers result into highly efficient and fast queries from the frontend.
 
 \subsection{Decentralized Application}
 
 A \acrfull{dapp} is an application, that relies on decentralized networks, such as a blockchain, to execute backend application logic and to persist data. In this thesis, the \acrshort{dapp} consists of a frontend user interface that is connected to smart contracts on the Ethereum blockchain, more specifically the \acrshort{evm}. All smart contracts are responsible for executing the protocols in the marketplace in a trustless and censorship-resistant manner with full data integrity, as data stored on the blockchain is immutable. However, it only stores a minimum necessary amount of data to avoid blockchain bloating. Larger amounts of data are stored on other immutable decentralized storages such as IPFS, as described in section \ref{subsec:ipfs}, while leaving a related pointer on the blockchain according to the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017}
 
 The user interface is the main component for users to interact with the marketplace, i.e. creating computation algorithms, offering computations on private datasets, browsing and filtering the marketplace for interesting offerings as well as making purchases. It is responsible for providing a holistic seamless user experience, however, this is harder to engineer compared to traditional user interfaces, as it introduces a steep learning curve for end-users to understand wallets, transactions, or gas fees among others. In the real world, it is often seen that the frontend part of a \acrshort{dapp} is hosted on centralized cloud servers. However, to be fully decentralized, \acrshort{dapp}s can also be hosted on decentralized \acrshort{p2p} networks such as IPFS, but, the initial loading time could be negatively affected, resulting in a poor user experience. In the proposed marketplace, it is not necessary to host the frontend on IPFS, as each operator hosts its own version of the frontend and doesn't need to trust any centralized servers. %It is even possible to customize the appearance of each user interface.
-
-%Unlike most other blockchain-based marketplaces, our frontend is not hosted on a public centralized server, but deployed on-premise with the rest of Taia-X. It is also imaginable to deploy the frontend on IPFS to keep it decentralized, but the initial loading time with IPFS is mostly too high, resulting into bad user experience and the rejection of Taia-X. For communication, the frontend implements 4 client interfaces to interact with the Blockchain Indexer, the Backend, the IPFS Node and the Wallet.
             
-%Since Taia-X is an open source project under the MIT license, it is possible for everyone to modify, add and remove functionality and UI components from the frontend to build a custom version of the UI. However, it is still necessary to adhere to the protocols for communication. The current implementation therefore provides only the basic functionality according to our requirements.
+\subsection{Blockchain Indexer}
+\label{subsec:indexer}
+
+Public permissionless blockchains like Ethereum are completely transparent and readable by anyone. It is a ledger of multiple transactions in a time-ordered, append-only data structure that is highly inefficient to query, filter, search, paginate, and aggregate. However, this is the bare minimum of functionality for an application to be useful. For example, in the proposed marketplace, consumers want to find interesting offers and apply filters by tags to reduce the number of results. To find this information on-chain, the application would have to traverse millions of blocks on the ledger. This is highly inefficient and time-consuming, leading to poor user experience, as users are used to rapid response times in regular applications.
+
+The proposed marketplace solves this problem by implementing a blockchain indexer. This indexer listens to each newly created block and extracts raw data from a blockchain node, processes it, and stores it in a relational database. It then provides access to token metadata, offers, orders, accounts, and all sorts of marketplace events. The indexer is even able to store IPFS data directly within entities of the database, which eliminates additional network roundtrips on the client. Data is exposed via a standard API to provide highly efficient and fast access to on-chain data with all the required querying, filtering, searching, pagination, and aggregation capabilities. This not only improves the user experience but also the development experience, as developers are used to standard APIs rather than querying the blockchain or writing SQL queries.
+
+However, the majority of \acrshort{dapp}'s are connected to public centralized blockchain indexers, which may be unavailable in the event of network partitioning. In addition, public blockchain indexers typically receive huge amounts of traffic, resulting in throttled performance and high response times to a client. They are also a trusted third party and a \acrfull{spof}, as they are easily attacked by fraudulent parties. In the proposed marketplace, each deployment includes its own blockchain indexer to eliminate the aforementioned aspects without trusting any public centralized service.
             
 \subsection{IPFS Node}
 \label{subsec:ipfs}
@@ -73,16 +67,18 @@ The compilation of zero-knowledge programs, the trusted setup, and the proof gen
 
 Because computations in the compute service are very expensive in terms of memory and CPU usage, as well as time-consuming, it is beneficial to avoid unnecessary computations. Therefore, compiled constraint systems, witnesses, and generated proofs belonging to a sale or a purchase are stored in the seller's and consumer's own S3 instance. In this way, recurring computations can be avoided by first verifying if a computation has already been done and if assets already exist in the associated S3 bucket.
 
+\subsection{Crypto Service}
+\label{subsec:crypto}
+
+The fair exchange protocol in the proposed marketplace must handle proofs of misbehavior, which require the construction and reconstruction of Merkle trees, as well as the generation of Merkle tree inclusion proofs. It also needs to encrypt computation results before a consumer accepts an order, and decrypt them when the consumer pays the price for a computation. All this is done by a dedicated crypto service that exposes an API to the client.
+
 \subsection{API Gateway}
 \label{subsec:api_gw}
 
 In the proposed marketplace, raw datasets never leave the seller's boundaries to protect PII and confidential data. Instead, buyers can only receive computational results. This data exchange must take place through a secure public channel, i.e. the API gateway. Unlike all other components, the API gateway sits on the public subnet to be accessible by any other marketplace participant. It is the single entry point to the seller's infrastructure, acting as a reverse proxy to route incoming requests to the appropriate microservices on the private subnet. In the proposed marketplace, the API gateway has routes to the compute service, the crypto service, and the blockchain indexer. In addition to routing, it also performs request rate limiting and authorization decisions in a dedicated sidecar container close to the API gateway to avoid internal latency-intensive network calls
 
-\subsection{Crypto Service}
-\label{subsec:crypto}
-
-\section{Smart Contract}
-\label{section:smart contract}
+\section{Smart Contracts}
+\label{section:smartcontracts}
 
 \section{Exchange Flow}
 \label{section:exchange}
@@ -112,12 +108,12 @@ FairSwap bzw. crypto stuff erklären
 
 %The proposed blockchain-based data trading platform is designed for two party relationships between a buyer \emph{B} and seller \emph{S}. The current high-level protocol for a trade between \emph{B} and \emph{S} on the proposed platform is described by the following exemplary use case and shown in the subsequent Figure \ref{fig:usecase}, without technical details.
 
-\begin{figure}[!htb]
-    \centering
-    \includegraphics[width=14cm]{images/protocol.png}
-    \caption{Proposed protocol for a blockchain-based data trading platform with Compute-to-Data and Verifiable Off-chain Computation for verifiable statistical queries on private datasets. The marketplace between a buyer \emph{B} and seller \emph{S} is highly abstracted into storage, Blockchain and application components, which are necessary for the entire data marketplace ecosystem.}
-    \label{fig:usecase}
-\end{figure}
+%\begin{figure}[!htb]
+%    \centering
+%    \includegraphics[width=14cm]{images/protocol.png}
+%    \caption{Proposed protocol for a blockchain-based data trading platform with Compute-to-Data and Verifiable Off-chain Computation for verifiable statistical queries on private datasets. The marketplace between a buyer \emph{B} and seller \emph{S} is highly abstracted into storage, Blockchain and application components, which are necessary for the entire data marketplace ecosystem.}
+%    \label{fig:usecase}
+%\end{figure}
 
 %\subsubsection{Example}
 
