@@ -57,32 +57,19 @@ const setupWorker = new Worker(
         await all(ipfs.cat(job.data.algorithm.slice(7))),
       );
       const raw = content.toString();
-
       logger.info(`Setup Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-
       const path = `./${job.data.receiver}`;
-
       createDir(path);
       writeProgram(path, raw);
-
       await updateJob(job, 20);
-
       await compile(path, job);
-
       await updateJob(job, 40);
-
       await setup(path, job);
-
       await updateJob(job, 60);
-
       await exportVerifier(path, job);
-
       await updateJob(job, 80);
-
       const pKey = fs.readFileSync(`${path}/proving.key`);
-
       const pKeyCid = await ipfs.add(pKey);
-
       const verifier = fs
         .readFileSync(`${path}/verifier.sol`)
         .toString()
@@ -90,24 +77,18 @@ const setupWorker = new Worker(
           /Proof memory proof, uint[[0-9]*] memory input/g,
           "Proof memory proof, uint[] memory input",
         );
-
       const verifierCid = await ipfs.add(verifier);
-
       await updateJob(job, 100);
-
       logger.info(
         `Setup Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );
-
       const output = JSON.parse(
         solc.compile(JSON.stringify(createInput(verifier))),
       );
-
       const [abiCid, byteCodeCid] = await Promise.all([
         ipfs.add(JSON.stringify(output.contracts["verifier.sol"].Verifier.abi)),
         ipfs.add(output.contracts["verifier.sol"].Verifier.evm.bytecode.object),
       ]);
-
       return {
         pkUrl: `ipfs://${pKeyCid.path}`,
         verifier: `ipfs://${verifierCid.path}`,
@@ -185,67 +166,45 @@ const orderWorker = new Worker(
 
     try {
       const metadataUri = await getMetadataUri(algorithm);
-
       const content = Buffer.concat(await all(ipfs.cat(metadataUri.slice(7))));
       const raw = content.toString();
-
       logger.info(`Order Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-
       const path = `./${receiver}`;
-
       createDir(path);
       writeProgram(path, raw);
-
       await updateJob(job, 20);
-
       await compile(path, job);
-
       const out = fs.readFileSync(`${path}/out`);
       const outR1CS = fs.readFileSync(`${path}/out.r1cs`);
-
       await Promise.all([
         addAssets("sales", `${receiver}/${algorithm}/out`, out),
         addAssets("sales", `${receiver}/${algorithm}/out.r1cs`, outR1CS),
       ]);
-
       await updateJob(job, 40);
-
       const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
       fs.writeFileSync(`${path}/proving.key`, data);
-
       await updateJob(job, 60);
-
       await computeWitness(witnessInput, path, job);
-
       const witness = fs.readFileSync(`${path}/witness`);
       const outWitness = fs.readFileSync(`${path}/out.wtns`);
-
       await Promise.all([
         addAssets("sales", `${receiver}/${algorithm}/witness`, witness),
         addAssets("sales", `${receiver}/${algorithm}/out.wtns`, outWitness),
       ]);
-
       await updateJob(job, 80);
-
       await generateProof(path, job);
-
       const generatedProof = fs.readFileSync(`${path}/proof.json`).toString();
       const { proof, inputs } = JSON.parse(generatedProof);
-
       await addAssets(
         "sales",
         `${receiver}/${algorithm}/proof.json`,
         generatedProof,
       );
-
       await proofComputation({ sessionId, inputs, proof });
-
       await updateJob(job, 100);
-
       logger.info(
         `Order Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );
-
       return {
         status: 200,
         message: "OK",
