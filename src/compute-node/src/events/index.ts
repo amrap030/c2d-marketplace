@@ -4,7 +4,7 @@ import { logger } from "@/utils/logger";
 import { marketplace } from "@/contracts";
 
 const key =
-  "0x9eec88b55d9295bb2ac6d35562a2ca5cebfe4e64feb234c2a8dde95d1b6cd2a2";
+  "0x000000000000000000000000000000000000000000000000000000000000007b";
 
 export const listenToEvents = () => {
   ethereum.on("OrderCreated", async event => {

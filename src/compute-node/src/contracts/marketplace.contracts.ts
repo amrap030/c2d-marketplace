@@ -16,12 +16,12 @@ const length = 32;
 const depth = 2;
 
 const keyCommit =
-  "0x4833fd0df81fe66248fa7a7a858ace1eb6cda67d46db68de29d210f9811fbac3";
+  "0x661ffbd00de5aea14a1cdfb143127566abdc469ffe1160b006acc5eacb0f0ead";
 
 const cipherTextRoot =
-  "0xaabc52bbd65f0df6af50c828af1c299d0406898d34ad08b270e31eb4769cd4ec";
+  "0xa5215d05f9f454d2395e8604813ff4667435e1308d6781a9f437a51a6dd853f1";
 const plainDataRoot =
-  "0xb1ea444fe88a2ab4f6add48eda24ce89497ced4dee1bf978f818853f35252939";
+  "0x20f948130ae3957beaeaa9b97c39a76b95be3ce8b2d6e45049a86c7cc7cedcad";
 
 export const proofComputation = async ({ sessionId, inputs, proof }) => {
   try {
