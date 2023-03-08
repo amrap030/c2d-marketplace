@@ -67,7 +67,7 @@ describe("Marketplace", async () => {
     firstSessionId: string,
     secondSessionId: string;
 
-  before(async function() {
+  before(async function () {
     [, receiver, sender] = await ethers.getSigners();
 
     const Marketplace = await ethers.getContractFactory("Marketplace");
@@ -108,13 +108,14 @@ describe("Marketplace", async () => {
 
   it("create first order", async () => {
     const oneHour = 60 * 60;
+
+    const currentBlock = await ethers.provider.getBlockNumber();
+    const block = await ethers.provider.getBlock(currentBlock);
+
     firstSessionId = ethers.utils.soliditySha256(
       ["address", "address", "address"],
       [sender.address, receiver.address, algorithmTokenOne.address],
     );
-
-    const currentBlock = await ethers.provider.getBlockNumber();
-    const block = await ethers.provider.getBlock(currentBlock);
 
     await expect(
       marketplace
@@ -370,10 +371,9 @@ describe("Marketplace", async () => {
   });
 
   it("successful withdraw as sender for successful trade", async () => {
-    await time.increase(3800);
+    await time.increase(10800);
 
     const tx = await marketplace.connect(sender).refund(firstSessionId);
-
     await tx.wait();
 
     expect(await marketplace.provider.getBalance(marketplace.address)).equal(0);

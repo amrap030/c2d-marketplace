@@ -50,9 +50,7 @@ contract Marketplace is ReentrancyGuard, FairSwap {
   );
 
   event OrderAccepted(bytes32 sessionId);
-
   event OrderRevealed(bytes32 key, bytes32 sessionId);
-
   event OrderFulfilled(bytes32 sessionId);
   event OrderCancelled(bytes32 sessionId);
 
@@ -75,8 +73,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
 
   /// @notice nftAddress -> offers -> price
   mapping(address => mapping(address => uint256)) private offers;
-  /// @notice receiverAddress -> fileSaleSession
-  mapping(address => bytes32) private orders;
 
   bytes4 private constant INTERFACE_ID_ERC721 = 0x80ac58cd;
 
@@ -147,27 +143,23 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     bytes32 sessionId = _createFileSession(
       payable(sender),
       payable(msg.sender),
-      _nftAddress,
-      _algorithm,
       _verifier,
-      _pkAddress,
+      _algorithm,
       TIMEOUT_INTERVAL,
       price
     );
 
-    FileSaleSession memory session = sessions[sessionId];
-
     emit OrderCreated(
-      session.phase,
-      session.sender,
-      session.receiver,
-      session.nftAddress,
-      session.algorithm,
-      session.verifier,
-      session.pkAddress,
-      session.timeout,
-      session.timeoutInterval,
-      session.price,
+      Stage.created,
+      sender,
+      msg.sender,
+      _nftAddress,
+      _algorithm,
+      _verifier,
+      _pkAddress,
+      block.timestamp + TIMEOUT_INTERVAL,
+      TIMEOUT_INTERVAL,
+      price,
       sessionId
     );
   }
@@ -201,7 +193,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     Proof calldata _proof
   ) external nonReentrant {
     FileSaleSession memory session = sessions[_sessionId];
-    require(msg.sender == session.sender, "Not the sender");
 
     bytes memory payload = abi.encodeWithSignature(
       "verifyTx(((uint256,uint256),(uint256[2],uint256[2]),(uint256,uint256)),uint256[])",

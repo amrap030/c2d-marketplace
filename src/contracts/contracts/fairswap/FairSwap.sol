@@ -15,10 +15,7 @@ contract FairSwap {
     Stage phase;
     address payable sender;
     address payable receiver;
-    address nftAddress;
-    address algorithm;
     address verifier;
-    string pkAddress;
     uint depth;
     uint length;
     uint n;
@@ -56,10 +53,8 @@ contract FairSwap {
   function _createFileSession(
     address payable _sender,
     address payable _receiver,
-    address _nftAddress,
-    address _algorithm,
     address _verifier,
-    string memory _pkAddress,
+    address _algorithm,
     uint _timeoutInterval,
     uint _price
   ) internal returns (bytes32) {
@@ -71,10 +66,7 @@ contract FairSwap {
       Stage.created,
       payable(_sender),
       payable(_receiver),
-      _nftAddress,
-      _algorithm,
       _verifier,
-      _pkAddress,
       0,
       0,
       0,
