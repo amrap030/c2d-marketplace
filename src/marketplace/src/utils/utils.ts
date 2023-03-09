@@ -2,6 +2,7 @@ export const delay = (time: number) => {
   return new Promise(resolve => setTimeout(resolve, time));
 };
 
+// https://levelup.gitconnected.com/i-re-wrote-these-10-single-lines-of-javascript-code-the-team-lead-praised-the-code-for-being-668ade4fea71
 export const removeDuplicateStrings = (array: any[]) => {
   const uniqueValues = [];
   const seenMap = {} as any;
