@@ -177,7 +177,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
    * @param _n uint256 amount of slices of the plain data
    * @param _keyCommit bytes32 hashed encryption key
    * @param _ciphertextRoot bytes32 root hash of the encoding
-   * @param _fileRoot bytes32 root hash of the plain data
    * @param _input uint256 public inputs of the zero knowledge proof
    * @param _proof Proof zero knowledge proof
    */
@@ -188,7 +187,6 @@ contract Marketplace is ReentrancyGuard, FairSwap {
     uint256 _n,
     bytes32 _keyCommit,
     bytes32 _ciphertextRoot,
-    bytes32 _fileRoot,
     uint256[] calldata _input,
     Proof calldata _proof
   ) external nonReentrant {
@@ -212,7 +210,7 @@ contract Marketplace is ReentrancyGuard, FairSwap {
       _n,
       _keyCommit,
       _ciphertextRoot,
-      _fileRoot
+      bytes32(_input[_input.length - 1])
     );
   }
 

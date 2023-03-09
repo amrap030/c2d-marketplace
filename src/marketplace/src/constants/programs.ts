@@ -8,7 +8,7 @@ import "utils/pack/u32/pack256.code" as pack256;
 import "utils/casts/u32_to_field.code" as u32_to_field;
 from "ecc/babyjubjubParams" import BabyJubJubParams;
 
-def main(private u32[32] values, private field nonce, private field[2] R, private field S, field[2] A, u32[8] M0, u32[8] M1) -> (bool, bool, field) {
+def main(private u32[32] values, private field nonce, private field[2] R, private field S, field[2] A, u32[8] M0, u32[8] M1) -> field {
     // verify signature
     BabyJubJubParams context = context();
     bool isVerified = verifyEddsa(R, S, A, M0, M1, context);
@@ -33,5 +33,5 @@ def main(private u32[32] values, private field nonce, private field[2] R, privat
 
     field result = pack256(sha256_512(h_computation, h_nonce));
 
-    return (isVerified, isHashMatching, result);
+    return result;
 }`;

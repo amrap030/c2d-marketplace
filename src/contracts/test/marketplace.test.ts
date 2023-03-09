@@ -16,24 +16,24 @@ const length = 32;
 const depth = 2;
 
 const keyCommit =
-  "0x4833fd0df81fe66248fa7a7a858ace1eb6cda67d46db68de29d210f9811fbac3";
+  "0x661ffbd00de5aea14a1cdfb143127566abdc469ffe1160b006acc5eacb0f0ead";
 const key =
-  "0x9eec88b55d9295bb2ac6d35562a2ca5cebfe4e64feb234c2a8dde95d1b6cd2a2";
+  "0x000000000000000000000000000000000000000000000000000000000000007b";
 const fakeKeyCommit =
   "0xc6c6fd4c742e3f2b985047de939c1045901b5fc445f4436e5322623c001eebdc";
 const fakeKey =
   "0xddc7b15845dcabf17870858845a4e5c3f091f8dc831fd04503abb2331fb7f376";
 
 const cipherTextRoot =
-  "0xaabc52bbd65f0df6af50c828af1c299d0406898d34ad08b270e31eb4769cd4ec";
+  "0xa5215d05f9f454d2395e8604813ff4667435e1308d6781a9f437a51a6dd853f1";
 const plainDataRoot =
-  "0xb1ea444fe88a2ab4f6add48eda24ce89497ced4dee1bf978f818853f35252939";
+  "0x20f948130ae3957beaeaa9b97c39a76b95be3ce8b2d6e45049a86c7cc7cedcad";
 
 const complainRootData = {
   correctLeaf:
-    "0x84e68d3d42bf62961ab1a3ca38631ba089c4178aa0eab5c355f4ee761dcd6e6a",
+    "0xe53974cbacd1f311587e5eb095adab49f116832949d86ac74cfcc055d4b822db",
   correctProof: [
-    "0x5464455ff0684b4442b81a53889452ca094534f8c92dec57b4980d49d20ecba6",
+    "0xbb6b2c6f73b6fafa09c2d00871d921604ffc378f21cc8a88e8a8be95b4e7f5ea",
     "0x0000000000000000000000000000000000000000000000000000000000000000",
   ],
 };
@@ -154,7 +154,6 @@ describe("Marketplace", async () => {
         n,
         keyCommit,
         cipherTextRoot,
-        plainDataRoot,
         [proof.inputs[0].replace(/c/g, "b"), ...proof.inputs.slice(1)],
         proof.proof as any, // eslint-disable-line
       ),
@@ -170,7 +169,6 @@ describe("Marketplace", async () => {
         n,
         keyCommit,
         cipherTextRoot,
-        plainDataRoot,
         proof.inputs,
         proof.proof as any, // eslint-disable-line
       ),
@@ -314,7 +312,6 @@ describe("Marketplace", async () => {
         n,
         fakeKeyCommit,
         cipherTextRoot,
-        plainDataRoot,
         proof.inputs,
         proof.proof as any, // eslint-disable-line
       ),

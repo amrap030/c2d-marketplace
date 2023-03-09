@@ -20,10 +20,11 @@ const keyCommit =
 
 const cipherTextRoot =
   "0xa5215d05f9f454d2395e8604813ff4667435e1308d6781a9f437a51a6dd853f1";
-const plainDataRoot =
-  "0x20f948130ae3957beaeaa9b97c39a76b95be3ce8b2d6e45049a86c7cc7cedcad";
 
 export const proofComputation = async ({ sessionId, inputs, proof }) => {
+  console.log(inputs);
+  console.log(proof);
+
   try {
     const tx = await marketplace
       .connect(signer)
@@ -34,7 +35,6 @@ export const proofComputation = async ({ sessionId, inputs, proof }) => {
         n,
         keyCommit,
         cipherTextRoot,
-        plainDataRoot,
         inputs,
         proof,
         {
