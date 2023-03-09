@@ -16,6 +16,20 @@ import fs from "fs";
 import { addAssets } from "@/services/assets.service";
 import crypto from "crypto";
 
+const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
+
+const getFromIpfs = async (
+  cid: string,
+  type = "string",
+): Promise<string | any> => {
+  const content = Buffer.concat(
+    await all(ipfs.cat(cid.startsWith("ipfs://") ? cid.slice(7) : cid)),
+  );
+  if (type === "buffer") return content;
+  if (type === "object") return JSON.parse(content.toString());
+  return content.toString();
+};
+
 const createInput = (program: string) => {
   return {
     language: "Solidity",
@@ -35,7 +49,6 @@ const createInput = (program: string) => {
 };
 
 const updateJob = async (job: Job, percent: number) => {
-  job.queueName;
   await job.updateProgress(percent);
   logger.info(
     `${job.queueName} Queue: ${job.id} - Progress: ${percent}%  [${"#".repeat(
@@ -44,24 +57,21 @@ const updateJob = async (job: Job, percent: number) => {
   );
 };
 
-const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
-
 const createDir = (path: string) => fs.mkdirSync(path, { recursive: true });
 const writeProgram = (path: string, program: string) =>
   fs.writeFileSync(`${path}/main.zok`, program);
+const readFile = (path: string) => fs.readFileSync(path);
 
 new Worker(
   "Setup",
   async (job: Job) => {
+    const path = `./${job.data.receiver}`;
     try {
-      const content = Buffer.concat(
-        await all(ipfs.cat(job.data.algorithm.slice(7))),
-      );
-      const raw = content.toString();
       logger.info(`Setup Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-      const path = `./${job.data.receiver}`;
+
+      const algorithm = await getFromIpfs(job.data.algorithm);
       createDir(path);
-      writeProgram(path, raw);
+      writeProgram(path, algorithm);
       await updateJob(job, 20);
       await compile(path, job);
       await updateJob(job, 40);
@@ -69,10 +79,9 @@ new Worker(
       await updateJob(job, 60);
       await exportVerifier(path, job);
       await updateJob(job, 80);
-      const pKey = fs.readFileSync(`${path}/proving.key`);
+      const pKey = readFile(`${path}/proving.key`);
       const pKeyCid = await ipfs.add(pKey);
-      const verifier = fs
-        .readFileSync(`${path}/verifier.sol`)
+      const verifier = readFile(`${path}/verifier.sol`)
         .toString()
         .replace(
           /Proof memory proof, uint[[0-9]*] memory input/g,
@@ -179,20 +188,18 @@ new Worker(
   "Order",
   async (job: Job) => {
     const { receiver, algorithm, pkAddress, sessionId } = job.data;
+    const start = Date.now();
+    const path = `./${receiver}`;
 
     try {
-      const start = Date.now();
-      const metadataUri = await getMetadataUri(algorithm);
-      const metadata = JSON.parse(
-        Buffer.concat(await all(ipfs.cat(metadataUri.slice(7)))).toString(),
-      );
-      const program = metadata.assets.find(asset => asset.type == "program");
-      const content = Buffer.concat(await all(ipfs.cat(program.uri.slice(7))));
-      const raw = content.toString();
       logger.info(`Order Queue: ${job.id} - status changed: CREATED => ACTIVE`);
-      const path = `./${receiver}`;
+
+      const metadataUri = await getMetadataUri(algorithm);
+      const metadata = await getFromIpfs(metadataUri, "object");
+      const program = metadata?.assets?.find(asset => asset.type == "program");
+      const rawProgram = await getFromIpfs(program.uri);
       createDir(path);
-      writeProgram(path, raw);
+      writeProgram(path, rawProgram);
       await updateJob(job, 20);
       const { constraints } = await compile(path, job);
       const out = fs.readFileSync(`${path}/out`);
@@ -202,7 +209,7 @@ new Worker(
         addAssets("sales", `${receiver}/${algorithm}/out.r1cs`, outR1CS),
       ]);
       await updateJob(job, 40);
-      const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
+      const data = await getFromIpfs(pkAddress, "buffer");
       fs.writeFileSync(`${path}/proving.key`, data);
       await updateJob(job, 60);
       const { computationStdout } = await computeWitness(
@@ -210,26 +217,30 @@ new Worker(
         path,
         job,
       );
-      const witness = fs.readFileSync(`${path}/witness`);
-      const outWitness = fs.readFileSync(`${path}/out.wtns`);
+      const witness = readFile(`${path}/witness`);
+      const outWitness = readFile(`${path}/out.wtns`);
       await Promise.all([
         addAssets("sales", `${receiver}/${algorithm}/witness`, witness),
         addAssets("sales", `${receiver}/${algorithm}/out.wtns`, outWitness),
       ]);
       await updateJob(job, 80);
       await generateProof(path, job);
-      const generatedProof = fs.readFileSync(`${path}/proof.json`).toString();
+      const generatedProof = readFile(`${path}/proof.json`).toString();
       const { proof, inputs } = JSON.parse(generatedProof);
-      await addAssets(
-        "sales",
-        `${receiver}/${algorithm}/proof.json`,
-        generatedProof,
-      );
-      await proofComputation({ sessionId, inputs, proof });
+      await Promise.all([
+        addAssets(
+          "sales",
+          `${receiver}/${algorithm}/proof.json`,
+          generatedProof,
+        ),
+        proofComputation({ sessionId, inputs, proof }),
+      ]);
       await updateJob(job, 100);
+
       logger.info(
         `Order Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );
+
       const end = Date.now();
       const createdAt = new Date().toISOString();
       const log = createLog({
@@ -244,6 +255,7 @@ new Worker(
         constraints,
         createdAt,
       });
+
       await addAssets(
         "sales",
         `${receiver}/${algorithm}/receipt.json`,
