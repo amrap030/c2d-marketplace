@@ -26,6 +26,8 @@ const isWitnessExisting = (dir: string) => fs.existsSync(`${dir}/witness`);
  * @param {String} cwd - Context (directory) in which shell commands should be executed
  */
 const execProcess = async (command: string[], cwd: string) => {
+  let output = "";
+
   await new Promise((resolve, reject) => {
     const child = spawn(
       process.env.NODE_ENV === "development" ? "zokrates" : "/app/zokrates",
@@ -40,8 +42,6 @@ const execProcess = async (command: string[], cwd: string) => {
         },
       },
     );
-
-    let output = "";
 
     child.stdout.on("data", data => {
       output = output + data;
@@ -59,6 +59,8 @@ const execProcess = async (command: string[], cwd: string) => {
       resolve(output);
     });
   });
+
+  return output;
 };
 
 /**
@@ -77,10 +79,16 @@ export const compile = async (dir = "./zokrates", job: Job) => {
     logger.info(`[Compiler] id=${job.id} [In Progress]`);
     const start = Date.now();
 
-    await execProcess(["compile", "-i", "main.zok"], dir);
+    const stdout = await execProcess(
+      ["compile", "--debug", "-i", "main.zok"],
+      dir,
+    );
 
     const end = Date.now();
     logger.info(`[Compiler] id=${job.id}, time=${end - start} ms [OK]`);
+
+    const [constraints] = stdout.match(/\d+/g);
+    return { constraints, start, end };
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -107,6 +115,7 @@ export const setup = async (dir: string, job: Job) => {
 
     const end = Date.now();
     logger.info(`[Setup] id=${job.id}, time=${end - start} ms [OK]`);
+    return { start, end };
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -135,10 +144,16 @@ export const computeWitness = async (
     logger.info(`[Witness] id=${job.id} [In Progress]`);
     const start = Date.now();
 
-    await execProcess(["compute-witness", "-a", ...input], dir);
+    const stdout = await execProcess(
+      ["compute-witness", "--verbose", "-a", ...input],
+      dir,
+    );
 
     const end = Date.now();
     logger.info(`[Witness] id=${job.id}, time=${end - start} ms [OK]`);
+
+    const [computationStdout, witnessStdout] = stdout.match(/\d+/g);
+    return { computationStdout, witnessStdout, start, end };
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -165,6 +180,7 @@ export const generateProof = async (dir = "./zokrates", job: Job) => {
 
     const end = Date.now();
     logger.info(`[Proof] id=${job.id}, time=${end - start} ms [OK]`);
+    return { start, end };
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());
@@ -193,6 +209,7 @@ export const exportVerifier = async (dir: string, job: Job) => {
 
     const end = Date.now();
     logger.info(`[Verifier] id=${job.id}, time=${end - start} ms [OK]`);
+    return { start, end };
   } catch (e) {
     logger.error(e.toString());
     throw new Error(e.toString());

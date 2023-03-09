@@ -1,6 +1,5 @@
 import ethereum from "@/events/ethereum.events";
 import { ordersQueue } from "@/queues/orders.queue";
-import { logger } from "@/utils/logger";
 import { marketplace } from "@/contracts";
 
 const key =
@@ -9,13 +8,12 @@ const key =
 export const listenToEvents = () => {
   ethereum.on("OrderCreated", async event => {
     const { receiver, algorithm, pkAddress, sessionId } = event.returnValues;
-    const job = await ordersQueue.add("Order", {
+    await ordersQueue.add("Order", {
       receiver,
       algorithm,
       pkAddress,
       sessionId,
     });
-    logger.info(`Order Queue: ${job.id} - status changed: CREATED => WAITING`);
   });
 
   ethereum.on("OrderAccepted", async event => {

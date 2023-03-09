@@ -14,6 +14,7 @@ import solc from "solc";
 import all from "it-all";
 import fs from "fs";
 import { addAssets } from "@/services/assets.service";
+import crypto from "crypto";
 
 const createInput = (program: string) => {
   return {
@@ -49,7 +50,7 @@ const createDir = (path: string) => fs.mkdirSync(path, { recursive: true });
 const writeProgram = (path: string, program: string) =>
   fs.writeFileSync(`${path}/main.zok`, program);
 
-const setupWorker = new Worker(
+new Worker(
   "Setup",
   async (job: Job) => {
     try {
@@ -159,21 +160,41 @@ const witnessInput = [
   "976631939",
 ];
 
-const orderWorker = new Worker(
+const createLog = ({ encoding, program, duration, constraints, createdAt }) => {
+  return {
+    program,
+    result: {
+      encoding,
+      duration,
+      constraints,
+      createdAt,
+      updatedAt: createdAt,
+    },
+  };
+};
+
+const nonce = crypto.randomBytes(32).toString("hex");
+
+new Worker(
   "Order",
   async (job: Job) => {
     const { receiver, algorithm, pkAddress, sessionId } = job.data;
 
     try {
+      const start = Date.now();
       const metadataUri = await getMetadataUri(algorithm);
-      const content = Buffer.concat(await all(ipfs.cat(metadataUri.slice(7))));
+      const metadata = JSON.parse(
+        Buffer.concat(await all(ipfs.cat(metadataUri.slice(7)))).toString(),
+      );
+      const program = metadata.assets.find(asset => asset.type == "program");
+      const content = Buffer.concat(await all(ipfs.cat(program.uri.slice(7))));
       const raw = content.toString();
       logger.info(`Order Queue: ${job.id} - status changed: CREATED => ACTIVE`);
       const path = `./${receiver}`;
       createDir(path);
       writeProgram(path, raw);
       await updateJob(job, 20);
-      await compile(path, job);
+      const { constraints } = await compile(path, job);
       const out = fs.readFileSync(`${path}/out`);
       const outR1CS = fs.readFileSync(`${path}/out.r1cs`);
       await Promise.all([
@@ -184,7 +205,11 @@ const orderWorker = new Worker(
       const data = Buffer.concat(await all(ipfs.cat(pkAddress.slice(7))));
       fs.writeFileSync(`${path}/proving.key`, data);
       await updateJob(job, 60);
-      await computeWitness(witnessInput, path, job);
+      const { computationStdout } = await computeWitness(
+        witnessInput,
+        path,
+        job,
+      );
       const witness = fs.readFileSync(`${path}/witness`);
       const outWitness = fs.readFileSync(`${path}/out.wtns`);
       await Promise.all([
@@ -205,10 +230,26 @@ const orderWorker = new Worker(
       logger.info(
         `Order Queue: ${job.id} - status changed: ACTIVE => COMPLETED`,
       );
-      return {
-        status: 200,
-        message: "OK",
-      };
+      const end = Date.now();
+      const createdAt = new Date().toISOString();
+      const log = createLog({
+        program,
+        encoding: [
+          "622aaa70db32069b6fb23b30bf78d3a020ce25f97c7544d18ae7ab49c84ee309",
+          "08257cda3d290a4d1d1f0d40efe1583acc678cb3b16f3570408b269a14357a6d",
+          "fe314db7be9736f0e56335def444b4d718abb5334ad8848ac9a6ab45f3b5d1d7",
+          "0000000000000000000000000000000000000000000000000000000000000000",
+        ],
+        duration: end - start,
+        constraints,
+        createdAt,
+      });
+      await addAssets(
+        "sales",
+        `${receiver}/${algorithm}/receipt.json`,
+        JSON.stringify(log),
+      );
+      return log;
     } catch (e) {
       console.log(e);
     }

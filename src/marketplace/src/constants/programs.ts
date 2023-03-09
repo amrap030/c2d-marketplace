@@ -26,6 +26,7 @@ def main(private u32[32] values, private field nonce, private field[2] R, privat
     for u32 i in 0..32 {
         sum = sum + u32_to_field(values[i]);
     }
+    log("[Witness] result={}", sum);
 
     // create merkle tree
     u32[8] h_computation = sha256_256(unpack(sum));
