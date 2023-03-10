@@ -30,7 +30,7 @@ services:
     entrypoint: > # see: https://github.com/minio/minio/issues/4769
       /bin/sh -c "
       /usr/bin/mc config host add myminio http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
-      /usr/bin/mc mb myminio/sales;
+      /usr/bin/mc mb myminio/orders;
       /usr/bin/mc mb myminio/purchases;
       exit 0;
       "
@@ -40,7 +40,7 @@ services:
     image: crypto-service
     container_name: crypto-service
     ports:
-      - "7777:8000"
+      - "7777:7777"
     restart: unless-stopped
     networks:
       - kong
@@ -97,6 +97,8 @@ services:
       ethereum: "mainnet:http://host.docker.internal:8545"
       GRAPH_LOG: info
       GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: true
+    networks:
+      - kong
 
   ipfs:
     image: ipfs/go-ipfs:latest
@@ -110,6 +112,8 @@ services:
     entrypoint: /bin/sh
     command: /start_ipfs.sh
     restart: unless-stopped
+    networks:
+      - kong
 
   postgres:
     image: postgres:latest
@@ -121,6 +125,8 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
+    networks:
+      - kong
 
   redis:
     image: "redis:alpine"

@@ -13,7 +13,7 @@ services:
           - /api
         strip_path: true
 
-  - host: host.docker.internal
+  - host: graph-node
     name: subgraph-service
     port: 8000
     protocol: http
@@ -24,13 +24,13 @@ services:
           - /subgraph
         strip_path: true
 
-  - host: host.docker.internal
-    name: subgraph-service
+  - host: crypto
+    name: crypto-service
     port: 7777
     protocol: http
     path: /api
     routes:
-      - name: subgraph
+      - name: crypto
         paths:
           - /crypto
         strip_path: true
