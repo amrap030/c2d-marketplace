@@ -19,6 +19,7 @@ services:
 
   createbuckets:
     image: minio/mc
+    container_name: createbuckets
     depends_on:
       - minio
     environment:
@@ -33,6 +34,16 @@ services:
       /usr/bin/mc mb myminio/purchases;
       exit 0;
       "
+
+  crypto:
+    build: ./src/crypto-service
+    image: crypto-service
+    container_name: crypto-service
+    ports:
+      - "7777:8000"
+    restart: unless-stopped
+    networks:
+      - kong
 
   kong:
     build: ./src/api-gateway
