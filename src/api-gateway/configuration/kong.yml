@@ -23,3 +23,14 @@ services:
         paths:
           - /subgraph
         strip_path: true
+
+  - host: host.docker.internal
+    name: subgraph-service
+    port: 7777
+    protocol: http
+    path: /api
+    routes:
+      - name: subgraph
+        paths:
+          - /crypto
+        strip_path: true
