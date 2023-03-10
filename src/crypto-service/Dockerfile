@@ -60,10 +60,10 @@ ENV PATH="${VENV_PATH}/bin:${PATH}"
 
 USER nonroot
 
-EXPOSE 8000/tcp
+EXPOSE 7777/tcp
 
 STOPSIGNAL SIGINT
 
 ENTRYPOINT ["crypto-service"]
 
-CMD ["serve", "--bind", "0.0.0.0:8000"]
+CMD ["serve", "--bind", "0.0.0.0:7777"]
