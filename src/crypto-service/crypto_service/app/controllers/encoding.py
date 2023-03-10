@@ -11,6 +11,7 @@ from typing import List
 class ComputationResult(BaseModel):
     result: int
     nonce: int
+    key: int
 
 
 router = APIRouter()
@@ -35,7 +36,7 @@ async def make_encoding(computation_result: ComputationResult) -> EncodingRespon
 
     result = int.to_bytes(computation_result.result, 32, "big")
     nonce = int.to_bytes(computation_result.nonce, 32, "big")
-    key = bytess.generate_bytes(32, 123)
+    key = int.to_bytes(computation_result.key, 32, "big")
 
     plain_merkle_tree = merkle.from_bytes(result + nonce)
     encrypted_merkle_tree = encoding.encode(plain_merkle_tree, key)
