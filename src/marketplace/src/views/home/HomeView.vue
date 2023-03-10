@@ -60,6 +60,14 @@
       :code="fileSession || ''"
       filename="file-session.json"
     />
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="getReceipt">
+      Get Receipt
+    </AppButton>
+    <Terminal
+      :loading="receiptLoading"
+      :code="JSON.stringify(receipt, null, 2) || ''"
+      filename="receipt.json"
+    />
     <AppButton class="ml-auto" :fullWidth="false" @click.prevent="buy">
       Accept Order
     </AppButton>
@@ -265,6 +273,8 @@ const fetchFileSessions = async () => {
 
 const bytecode = ref();
 const bytecodeLoading = ref(false);
+const receiptLoading = ref(false);
+const receipt = ref();
 
 const makeOrder = async () => {
   try {
@@ -298,7 +308,7 @@ const makeOrder = async () => {
     bytecodeLoading.value = false;
 
     const verifierAddress = await deployVerifier(program, abi);
-
+    console.log("verifier deployed");
     const { data: datasets } = await client.query({
       query: GetDatasetsDocument,
       fetchPolicy: "no-cache",
@@ -315,7 +325,31 @@ const makeOrder = async () => {
         pkUrl: result.returnvalue.pkUrl,
         verifierAddress,
       });
+      console.log("order created");
     }
+
+    await fetchFileSessions();
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const getReceipt = async () => {
+  try {
+    receiptLoading.value = true;
+
+    const order = JSON.parse(fileSession.value);
+    const receiptData = await fetch(
+      `${env.API_GATEWAY}/api/orders/${order.id}/receipt`,
+      {
+        method: "GET",
+      },
+    );
+
+    // receipt.value = await receiptData.json();
+    receipt.value = await receiptData.json();
+
+    receiptLoading.value = false;
   } catch (e) {
     console.log(e);
   }

@@ -73,7 +73,7 @@ export const createDatasetMetadata = ({ rows }: DatasetMetadata) => {
     name: "Steps & Heartrate",
     description: "This is a description of a dataset.",
     tags: ["health", "heartrate", "steps"],
-    uri: `http://localhost:3000/assets/${id}`,
+    providerUri: `http://localhost:8060`,
     data: {
       rows,
       columns: [
