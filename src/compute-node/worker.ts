@@ -15,6 +15,7 @@ import all from "it-all";
 import fs from "fs";
 import { addAssets } from "@/services/assets.service";
 import crypto from "crypto";
+import axios from "axios";
 
 const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
 
@@ -183,6 +184,7 @@ const createLog = ({ encoding, program, duration, constraints, createdAt }) => {
 };
 
 const nonce = crypto.randomBytes(32).toString("hex");
+const encKey = crypto.randomBytes(32).toString("hex");
 
 new Worker(
   "Order",
@@ -205,12 +207,12 @@ new Worker(
       const out = fs.readFileSync(`${path}/out`);
       const outR1CS = fs.readFileSync(`${path}/out.r1cs`);
       await Promise.all([
-        addAssets("sales", `${receiver}/${algorithm}/out`, out),
-        addAssets("sales", `${receiver}/${algorithm}/out.r1cs`, outR1CS),
+        addAssets("orders", `${sessionId}/out`, out),
+        addAssets("orders", `${sessionId}/out.r1cs`, outR1CS),
       ]);
       await updateJob(job, 40);
-      const data = await getFromIpfs(pkAddress, "buffer");
-      fs.writeFileSync(`${path}/proving.key`, data);
+      const pKey = await getFromIpfs(pkAddress, "buffer");
+      fs.writeFileSync(`${path}/proving.key`, pKey);
       await updateJob(job, 60);
       const { computationStdout } = await computeWitness(
         witnessInput,
@@ -220,19 +222,15 @@ new Worker(
       const witness = readFile(`${path}/witness`);
       const outWitness = readFile(`${path}/out.wtns`);
       await Promise.all([
-        addAssets("sales", `${receiver}/${algorithm}/witness`, witness),
-        addAssets("sales", `${receiver}/${algorithm}/out.wtns`, outWitness),
+        addAssets("orders", `${sessionId}/witness`, witness),
+        addAssets("orders", `${sessionId}/out.wtns`, outWitness),
       ]);
       await updateJob(job, 80);
       await generateProof(path, job);
       const generatedProof = readFile(`${path}/proof.json`).toString();
       const { proof, inputs } = JSON.parse(generatedProof);
       await Promise.all([
-        addAssets(
-          "sales",
-          `${receiver}/${algorithm}/proof.json`,
-          generatedProof,
-        ),
+        addAssets("orders", `${sessionId}/proof.json`, generatedProof),
         proofComputation({ sessionId, inputs, proof }),
       ]);
       await updateJob(job, 100);
@@ -243,22 +241,24 @@ new Worker(
 
       const end = Date.now();
       const createdAt = new Date().toISOString();
+
+      const { data } = await axios.post("http://localhost:7777/api/encoding", {
+        result: Number(computationStdout),
+        nonce: parseInt(nonce, 16),
+        key: parseInt(encKey, 16),
+      });
+
       const log = createLog({
         program,
-        encoding: [
-          "622aaa70db32069b6fb23b30bf78d3a020ce25f97c7544d18ae7ab49c84ee309",
-          "08257cda3d290a4d1d1f0d40efe1583acc678cb3b16f3570408b269a14357a6d",
-          "fe314db7be9736f0e56335def444b4d718abb5334ad8848ac9a6ab45f3b5d1d7",
-          "0000000000000000000000000000000000000000000000000000000000000000",
-        ],
+        encoding: data.encoding,
         duration: end - start,
         constraints,
         createdAt,
       });
 
       await addAssets(
-        "sales",
-        `${receiver}/${algorithm}/receipt.json`,
+        "orders",
+        `${sessionId}/receipt.json`,
         JSON.stringify(log),
       );
       return log;
