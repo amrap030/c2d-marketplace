@@ -6,6 +6,7 @@ const scopes = [
   "readme",
   "build",
   "compute",
+  "crypto",
   "frontend",
   "contracts",
   "sensor",
