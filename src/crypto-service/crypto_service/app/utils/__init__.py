@@ -7,4 +7,4 @@ Resources:
 from crypto_service.app.utils.aiohttp_client import AiohttpClient
 
 
-__all__ = ("AiohttpClient",)
+__all__ = ("AiohttpClient")
