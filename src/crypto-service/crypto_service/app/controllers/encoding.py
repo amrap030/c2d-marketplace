@@ -2,7 +2,11 @@
 import logging
 
 from fastapi import APIRouter
-from crypto_service.app.views import EncodingResponse, RootHashResponse
+from crypto_service.app.views import (
+    EncodingResponse,
+    RootHashResponse,
+    ComputationResultResponse,
+)
 from crypto_service.app.utils import encoding, merkle, bytes as bytess
 from pydantic import BaseModel
 from typing import List
@@ -80,3 +84,48 @@ async def make_encoding(leafs: Leafs) -> RootHashResponse:
     merkle_tree = merkle.from_leaves(hex_leafs)
 
     return RootHashResponse(root=merkle_tree.digest.hex())
+
+
+class Leafs(BaseModel):
+    leafs: List[str]
+    hash_leafs: List[str]
+    key: int
+
+
+@router.post(
+    "/decode",
+    tags=["encoding"],
+    response_model=ComputationResultResponse,
+    summary="Decodes computation result.",
+    status_code=200,
+)
+async def make_encoding(leafs: Leafs) -> ComputationResultResponse:
+    """Decode computation result with symmetric key.
+
+    Returns:
+        response (ComputationResultResponse): ComputationResultResponse model object instance.
+
+    Raises:
+        HTTPException: If applications has enabled Redis and can not connect
+            to it. NOTE! This is the custom exception, not to be mistaken with
+            FastAPI.HTTPException class.
+
+    """
+    log.info("Started POST /decode")
+
+    hex_leafs = [merkle.MerkleTreeLeaf(bytes.fromhex(leaf)) for leaf in leafs.leafs]
+    hex_leafs.extend(
+        [merkle.MerkleTreeHashLeaf(bytes.fromhex(leaf)) for leaf in leafs.hash_leafs]
+    )
+
+    key = int.to_bytes(leafs.key, 32, "big")
+
+    merkle_tree = merkle.from_leaves(hex_leafs)
+    decoded = encoding.decode(merkle_tree, key)
+    result = int.from_bytes(decoded[0].children[0].data, "big")
+
+    return ComputationResultResponse(
+        result=result,
+        decoded=[leaf.data.hex() for leaf in decoded[0].leaves],
+        encoding=[leaf.data.hex() for leaf in merkle_tree.leaves],
+    )
