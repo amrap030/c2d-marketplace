@@ -71,6 +71,14 @@
     <AppButton class="ml-auto" :fullWidth="false" @click.prevent="buy">
       Accept Order
     </AppButton>
+    <AppButton class="ml-auto" :fullWidth="false" @click.prevent="getResult">
+      Get Result
+    </AppButton>
+    <Terminal
+      :loading="resultLoading"
+      :code="JSON.stringify(result, null, 2) || ''"
+      filename="result.json"
+    />
   </div>
 </template>
 
@@ -346,10 +354,42 @@ const getReceipt = async () => {
       },
     );
 
-    // receipt.value = await receiptData.json();
     receipt.value = await receiptData.json();
 
     receiptLoading.value = false;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const resultLoading = ref(false);
+const result = ref();
+
+const getResult = async () => {
+  try {
+    resultLoading.value = true;
+
+    const resultData = await fetch(`${env.API_GATEWAY}/crypto/decode`, {
+      method: "POST",
+      body: JSON.stringify({
+        leafs: [
+          receipt.value.result.encoding[0],
+          receipt.value.result.encoding[1],
+        ],
+        hash_leafs: [
+          receipt.value.result.encoding[2],
+          receipt.value.result.encoding[3],
+        ],
+        key: JSON.parse(fileSession.value).key.slice(2),
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    result.value = await resultData.json();
+
+    resultLoading.value = false;
   } catch (e) {
     console.log(e);
   }

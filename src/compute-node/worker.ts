@@ -16,6 +16,7 @@ import fs from "fs";
 import { addAssets } from "@/services/assets.service";
 import crypto from "crypto";
 import axios from "axios";
+import { h2d } from "@/utils/util";
 
 const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
 
@@ -113,6 +114,9 @@ new Worker(
   { connection: CONNECTION, concurrency: CONCURRENCY },
 );
 
+const nonce = crypto.randomBytes(32).toString("hex");
+const encKey = crypto.randomBytes(32).toString("hex");
+
 const witnessInput = [
   "0",
   "0",
@@ -146,7 +150,7 @@ const witnessInput = [
   "0",
   "0",
   "5",
-  "123",
+  h2d(nonce),
   "211284057869832099014035831622581185257648010655577101702555687051243543409",
   "86879352787595152790056029059697888577935271275983373879547195205771125316",
   "5978134405341758551626751406772071994675738548173425210367593014524857184155",
@@ -170,11 +174,19 @@ const witnessInput = [
   "976631939",
 ];
 
-const createLog = ({ encoding, program, duration, constraints, createdAt }) => {
+const createLog = ({
+  encoding,
+  program,
+  duration,
+  constraints,
+  createdAt,
+  root,
+}) => {
   return {
     program,
     result: {
       encoding,
+      root,
       duration,
       constraints,
       createdAt,
@@ -182,9 +194,6 @@ const createLog = ({ encoding, program, duration, constraints, createdAt }) => {
     },
   };
 };
-
-const nonce = crypto.randomBytes(32).toString("hex");
-const encKey = crypto.randomBytes(32).toString("hex");
 
 new Worker(
   "Order",
@@ -229,9 +238,22 @@ new Worker(
       await generateProof(path, job);
       const generatedProof = readFile(`${path}/proof.json`).toString();
       const { proof, inputs } = JSON.parse(generatedProof);
+
+      const { data } = await axios.post("http://localhost:7777/api/encoding", {
+        result: Number(computationStdout),
+        nonce: nonce,
+        key: encKey,
+      });
+
       await Promise.all([
         addAssets("orders", `${sessionId}/proof.json`, generatedProof),
-        proofComputation({ sessionId, inputs, proof }),
+        proofComputation({
+          sessionId,
+          inputs,
+          proof,
+          key: encKey,
+          root: data.root,
+        }),
       ]);
       await updateJob(job, 100);
 
@@ -242,15 +264,10 @@ new Worker(
       const end = Date.now();
       const createdAt = new Date().toISOString();
 
-      const { data } = await axios.post("http://localhost:7777/api/encoding", {
-        result: Number(computationStdout),
-        nonce: parseInt(nonce, 16),
-        key: parseInt(encKey, 16),
-      });
-
       const log = createLog({
         program,
         encoding: data.encoding,
+        root: data.root,
         duration: end - start,
         constraints,
         createdAt,
@@ -259,7 +276,7 @@ new Worker(
       await addAssets(
         "orders",
         `${sessionId}/receipt.json`,
-        JSON.stringify(log),
+        JSON.stringify({ ...log, key: encKey }, null, 2),
       );
       return log;
     } catch (e) {

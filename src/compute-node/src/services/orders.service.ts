@@ -31,7 +31,9 @@ export const getReceipt = async (folder: string): Promise<Blob> => {
       );
     });
 
-    return JSON.parse(await receipt.text());
+    const parsedReceipt = JSON.parse(await receipt.text());
+    delete parsedReceipt.key;
+    return parsedReceipt;
   } catch (e) {
     throw new HttpException(400, e.toString());
   }
