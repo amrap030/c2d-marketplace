@@ -1,7 +1,7 @@
 import ethereum from "@/events/ethereum.events";
 import { ordersQueue } from "@/queues/orders.queue";
 import { marketplace } from "@/contracts";
-import { minioClient } from "@/db/minio.db";
+import { minioClient } from "@/db/minio.s3";
 import { Blob } from "buffer";
 
 const PATH = "orders";

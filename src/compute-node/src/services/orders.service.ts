@@ -1,5 +1,5 @@
 import { HttpException } from "@/exceptions/HttpException";
-import { minioClient } from "@/db/minio.db";
+import { minioClient } from "@/db/minio.s3";
 import { Blob } from "buffer";
 
 const PATH = "orders";
