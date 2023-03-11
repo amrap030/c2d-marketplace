@@ -14,8 +14,8 @@ from typing import List
 
 class ComputationResult(BaseModel):
     result: int
-    nonce: int
-    key: int
+    nonce: str
+    key: str
 
 
 router = APIRouter()
@@ -39,15 +39,15 @@ async def make_encoding(computation_result: ComputationResult) -> EncodingRespon
     log.info("Started POST /encoding")
 
     result = int.to_bytes(computation_result.result, 32, "big")
-    nonce = int.to_bytes(computation_result.nonce, 32, "big")
-    key = int.to_bytes(computation_result.key, 32, "big")
+    nonce = bytes.fromhex(computation_result.nonce)
+    key = bytes.fromhex(computation_result.key)
 
     plain_merkle_tree = merkle.from_bytes(result + nonce)
     encrypted_merkle_tree = encoding.encode(plain_merkle_tree, key)
 
     leafs = [leaf.data.hex() for leaf in encrypted_merkle_tree.leaves]
 
-    return EncodingResponse(encoding=leafs)
+    return EncodingResponse(encoding=leafs, root=encrypted_merkle_tree.digest.hex())
 
 
 class Leafs(BaseModel):
@@ -89,7 +89,7 @@ async def make_encoding(leafs: Leafs) -> RootHashResponse:
 class Leafs(BaseModel):
     leafs: List[str]
     hash_leafs: List[str]
-    key: int
+    key: str
 
 
 @router.post(
@@ -118,7 +118,7 @@ async def make_encoding(leafs: Leafs) -> ComputationResultResponse:
         [merkle.MerkleTreeHashLeaf(bytes.fromhex(leaf)) for leaf in leafs.hash_leafs]
     )
 
-    key = int.to_bytes(leafs.key, 32, "big")
+    key = bytes.fromhex(leafs.key)
 
     merkle_tree = merkle.from_leaves(hex_leafs)
     decoded = encoding.decode(merkle_tree, key)

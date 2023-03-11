@@ -16,6 +16,7 @@ class EncodingResponse(BaseModel):
     """
 
     encoding: List[str]
+    root: str
 
     class Config:
         """Config sub-class needed to extend/override the generated JSON schema.
@@ -106,7 +107,7 @@ class ComputationResultResponse(BaseModel):
 
     encoding: List[str]
     decoded: List[str]
-    result: str
+    result: int
 
     class Config:
         """Config sub-class needed to extend/override the generated JSON schema.
