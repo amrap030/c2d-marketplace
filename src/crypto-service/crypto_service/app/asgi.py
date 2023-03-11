@@ -9,6 +9,7 @@ from crypto_service.app.exceptions import (
     HTTPException,
     http_exception_handler,
 )
+from fastapi.middleware.cors import CORSMiddleware
 
 
 log = logging.getLogger(__name__)
@@ -51,7 +52,13 @@ def get_application() -> FastAPI:
         version=settings.VERSION,
         docs_url=settings.DOCS_URL,
         on_startup=[on_startup],
-        on_shutdown=[on_shutdown],
+        on_shutdown=[on_shutdown]
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:5173"],
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "OPTIONS"]
     )
     log.debug("Add application routes.")
     app.include_router(root_api_router)
