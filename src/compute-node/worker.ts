@@ -13,10 +13,11 @@ import { proofComputation, getMetadataUri } from "@/contracts";
 import solc from "solc";
 import all from "it-all";
 import fs from "fs";
-import { addAssets } from "@/services/assets.service";
 import crypto from "crypto";
 import axios from "axios";
 import { h2d } from "@/utils/util";
+import { HttpException } from "@/exceptions/HttpException";
+import { minioClient } from "@/db/minio.db";
 
 const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
 
@@ -113,6 +114,21 @@ new Worker(
   },
   { connection: CONNECTION, concurrency: CONCURRENCY },
 );
+
+const addAssets = async (bucket: string, dir: string, file: any) => {
+  try {
+    return await new Promise((resolve, reject) => {
+      minioClient.putObject(bucket, `${dir}`, file, (err, objInfo) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(objInfo);
+      });
+    });
+  } catch (e) {
+    throw new HttpException(400, e.toString());
+  }
+};
 
 const nonce = crypto.randomBytes(32).toString("hex");
 const encKey = crypto.randomBytes(32).toString("hex");
