@@ -18,7 +18,8 @@ yarn hh-node
 yarn deploy
 
 # Start all docker containers
-docker compose up
+docker compose build # in case local images are not build
+docker compose up -d
 
 # Create & deploy the subgraph indexer
 cd src/subgraph
