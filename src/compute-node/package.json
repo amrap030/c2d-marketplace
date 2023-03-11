@@ -28,7 +28,6 @@
     "hpp": "^0.2.3",
     "ipfs-http-client": "56.0.2",
     "it-all": "1.0.6",
-    "mime-types": "^2.1.35",
     "minio": "^7.0.32",
     "morgan": "^1.10.0",
     "solc": "^0.8.19",
