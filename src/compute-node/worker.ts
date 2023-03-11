@@ -17,7 +17,7 @@ import crypto from "crypto";
 import axios from "axios";
 import { h2d } from "@/utils/util";
 import { HttpException } from "@/exceptions/HttpException";
-import { minioClient } from "@/db/minio.db";
+import { minioClient } from "@/db/minio.s3";
 
 const ipfs = create({ protocol: "http", port: 5001, host: "localhost" });
 
