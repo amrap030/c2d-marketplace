@@ -1,0 +1,94 @@
+{
+  "inputs": [
+    {
+      "name": "values",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 64,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonce",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "R0",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S0",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "A",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "M10",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M01",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R1",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S1",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M20",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M02",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "field"
+  }
+}

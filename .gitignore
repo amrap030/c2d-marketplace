@@ -412,3 +412,12 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+out
+out.r1cs
+out.wtns
+witness
+proving.key
+verification.key
+benchmarks/**/measurements/*.json
+benchmarks-checkpoint.ipynb

@@ -1,0 +1,29 @@
+{
+  "inputs": [
+    {
+      "name": "values",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 32,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "tuple",
+    "components": {
+      "elements": [
+        {
+          "type": "bool"
+        },
+        {
+          "type": "bool"
+        },
+        {
+          "type": "u32"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,542 @@
+{
+  "inputs": [
+    {
+      "name": "values",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 512,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "nonce",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "R1",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S1",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "A",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "M10",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M01",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R2",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S2",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M20",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M02",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R3",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S3",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M30",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M03",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R4",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S4",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M40",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M04",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R5",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S5",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M50",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M05",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R6",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S6",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M60",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M06",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R7",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S7",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M70",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M07",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R8",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S8",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M80",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M08",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R9",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S9",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M90",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M09",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R10",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S10",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M100",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M001",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R20",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S20",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M200",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M002",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R30",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S30",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M300",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M003",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R40",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S40",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M400",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M004",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R50",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S50",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M500",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M005",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R60",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S60",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M600",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M006",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "R70",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S70",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "M700",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "M007",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "field"
+  }
+}

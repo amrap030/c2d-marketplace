@@ -1,0 +1,314 @@
+import "hashes/sha256/1024bitPadded.code" as sha256_1024;
+import "hashes/sha256/512bitPadded.code" as sha256_512;
+import "hashes/sha256/256bitPadded.code" as sha256_256;
+import "signatures/verifyEddsa.code" as verifyEddsa;
+import "ecc/babyjubjubParams.code" as context;
+import "utils/pack/u32/nonStrictUnpack256.code" as unpack;
+import "utils/pack/u32/pack256.code" as pack256;
+import "utils/casts/u32_to_field.code" as u32_to_field;
+from "ecc/babyjubjubParams" import BabyJubJubParams;
+
+def main(private u32[768] values, private field nonce, private field[2] R1, private field S1, field[2] A, u32[8] M10, u32[8] M01, private field[2] R2, private field S2, u32[8] M20, u32[8] M02, private field[2] R3, private field S3, u32[8] M30, u32[8] M03, private field[2] R4, private field S4, u32[8] M40, u32[8] M04, private field[2] R5, private field S5, u32[8] M50, u32[8] M05, private field[2] R6, private field S6, u32[8] M60, u32[8] M06, private field[2] R7, private field S7, u32[8] M70, u32[8] M07, private field[2] R8, private field S8, u32[8] M80, u32[8] M08, private field[2] R9, private field S9, u32[8] M90, u32[8] M09, private field[2] R10, private field S10, u32[8] M100, u32[8] M001, private field[2] R20, private field S20, u32[8] M200, u32[8] M002, private field[2] R30, private field S30, u32[8] M300, u32[8] M003, private field[2] R40, private field S40, u32[8] M400, u32[8] M004, private field[2] R50, private field S50, u32[8] M500, u32[8] M005, private field[2] R60, private field S60, u32[8] M600, u32[8] M006, private field[2] R70, private field S70, u32[8] M700, u32[8] M007, private field[2] R80, private field S80, u32[8] M800, u32[8] M008, private field[2] R90, private field S90, u32[8] M900, u32[8] M009, private field[2] R111, private field S111, u32[8] M1100, u32[8] M0011, private field[2] R222, private field S222, u32[8] M2200, u32[8] M0022, private field[2] R333, private field S333, u32[8] M3300, u32[8] M0033, private field[2] R444, private field S444, u32[8] M4400, u32[8] M0044, private field[2] R555, private field S555, u32[8] M5500, u32[8] M0055, private field[2] R666, private field S666, u32[8] M6600, u32[8] M0066) -> field {
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R1, S1, A, M10, M01, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[0..8],values[8..16],values[16..24],values[24..32]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M10 && hash == M01;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R2, S2, A, M20, M02, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[32..40],values[40..48],values[48..56],values[56..64]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M20 && hash == M02;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R3, S3, A, M30, M03, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[64..72],values[72..80],values[80..88],values[88..96]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M30 && hash == M03;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R4, S4, A, M40, M04, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[96..104],values[104..112],values[112..120],values[120..128]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M40 && hash == M04;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R5, S5, A, M50, M05, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[128..136],values[136..144],values[144..152],values[152..160]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M60 && hash == M06;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R6, S6, A, M60, M06, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[160..168],values[168..176],values[176..184],values[184..192]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M60 && hash == M06;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R7, S7, A, M70, M07, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[192..200],values[200..208],values[208..216],values[216..224]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M70 && hash == M07;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R8, S8, A, M80, M08, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[224..232],values[232..240],values[240..248],values[248..256]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M80 && hash == M08;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R9, S9, A, M90, M09, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[256..264],values[264..272],values[272..280],values[280..288]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M90 && hash == M09;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R10, S10, A, M100, M001, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[288..296],values[296..304],values[304..312],values[312..320]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M100 && hash == M001;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R20, S20, A, M200, M002, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[320..328],values[328..336],values[336..344],values[344..352]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M200 && hash == M002;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R30, S30, A, M300, M003, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[352..360],values[360..368],values[368..376],values[376..384]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M300 && hash == M003;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R40, S40, A, M400, M004, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[384..392],values[392..400],values[400..408],values[408..416]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M400 && hash == M004;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R50, S50, A, M500, M005, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[416..424],values[424..432],values[432..440],values[440..448]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M500 && hash == M005;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R60, S60, A, M600, M006, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[448..456],values[456..464],values[464..472],values[472..480]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M600 && hash == M006;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R70, S70, A, M700, M007, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[480..488],values[488..496],values[496..504],values[504..512]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M800 && hash == M008;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R80, S80, A, M800, M008, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[512..520],values[520..528],values[528..536],values[536..544]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M800 && hash == M008;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R90, S90, A, M900, M009, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[544..552],values[552..560],values[560..568],values[568..576]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M900 && hash == M009;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R111, S111, A, M1100, M0011, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[576..584],values[584..592],values[592..600],values[600..608]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M1100 && hash == M0011;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R222, S222, A, M2200, M0022, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[608..616],values[616..624],values[624..632],values[632..640]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M2200 && hash == M0022;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R333, S333, A, M3300, M0033, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[640..648],values[648..656],values[656..664],values[664..672]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M3300 && hash == M0033;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R444, S444, A, M4400, M0044, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[672..680],values[680..688],values[688..696],values[696..704]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M4400 && hash == M0044;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R555, S555, A, M5500, M0055, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[704..712],values[712..720],values[720..728],values[728..736]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M5500 && hash == M0055;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R666, S666, A, M6600, M0066, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[736..744],values[744..752],values[752..760],values[760..768]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M6600 && hash == M0066;
+    assert(isHashMatching);
+
+    // computation of sum
+    field mut sum = 0;
+    for u32 i in 0..768 {
+        sum = sum + u32_to_field(values[i]);
+    }
+    log("[Witness] result={}", sum);
+
+    // create merkle tree
+    u32[8] h_computation = sha256_256(unpack(sum));
+    u32[8] h_nonce = sha256_256(unpack(nonce));
+
+    field result = pack256(sha256_512(h_computation, h_nonce));
+
+    return result;
+}
