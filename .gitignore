@@ -420,4 +420,5 @@ witness
 proving.key
 verification.key
 benchmarks/**/measurements/*.json
+benchmarks/**/zokrates/verifier.sol
 benchmarks-checkpoint.ipynb
