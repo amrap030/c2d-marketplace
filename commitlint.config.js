@@ -1,10 +1,7 @@
 const scopes = [
   "ci",
   "deps",
-  "example",
   "release",
-  "readme",
-  "build",
   "compute",
   "crypto",
   "frontend",
