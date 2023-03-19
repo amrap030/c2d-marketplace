@@ -10,10 +10,6 @@ BASED ON ZERO_TRUST PRINCIPLES NENNEN?!?! DAPP NENNEN?, SERVICE ORIENTED ARCHITE
 
 This section defines the main components of the proposed decentralized, blockchain-based data marketplace. Although it can be run by any central party or deployed on any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates trust in central servers and ensures great control over the data, as it never leaves the operator's premises. It also provides excellent flexibility, as each operator can scale its own infrastructure independently, deploying only the components he or she needs. The complete software stack, as shown in figure \ref{fig:arch}, consists of a full Ethereum node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway.
 
-%This section defines the main software components of our decentralized blockchain-based data marketplace. Although it can be run by any central party or deployed to any cloud infrastructure, it is intended to be deployed on the operator's own local on-premises infrastructure. This eliminates the trust in central servers and ensures great control over data as it never has to leave the operator's boundaries. Furthermore, it ensures high flexibility since every operator can independently scale their own infrastructure and only needs to deploy the necessary components according to their needs. The full software stack as depicted in figure \ref{fig:arch} is composed of an Ethereum full node, a blockchain indexer, an IPFS node, a compute microservice, a crypto microservice, a message queue, and an API gateway. The following sections describe those components in more detail.
-
-%Accordingly, our main objectives were to make the platform as available, scalable, and decentralized as possible, while maintaining the highest level of security. The former is achieved by forcing each user of Taia-X to deploy the entire platform on their own local infrastructure. This eliminates the need for a centralized server. The latter aspect is realized by keeping the entry points to our platform as minimal as possible and secured by an access control mechanism. Our platform consists of a Tezos full node, blockchain indexers, a frontend, a backend, and a node, as shown in Figure 5.1. A more detailed diagram of the final architecture, including the technologies, can be found in Figure 2. The following sections describe the components in more detail.
-
 \begin{figure}[!htb]
     \centering
     \includegraphics[width=14cm]{images/arch.png}
@@ -29,15 +25,11 @@ First, any transaction sent to a public RPC endpoint poses a privacy and securit
 
 The implementation of own Ethereum full nodes aligns well with zero trust principles and allows to interact with the blockchain in a trustless, privacy-preserving, and secure manner. It eliminates censorship and single point of failure while making the network more reliable, robust, and geographically diverse. Likewise, it is relatively easy and affordable to deploy an Ethereum full node. Although not recommended, it could even run on a lightweight single-board computer (SBC) such as a Raspberry Pi with enough external storage.
 
-%A blockchain full node typically stores an entire copy of the distributed ledger and validates transactions and blocks. To be able to interact with the blockchain, decentralized applications usually leverage RPC calls to send transactions to - and receive data from a node. However, most decentralized applications connect via community-run\footnote{https://tezostaquito.io/docs/rpc\_nodes/} nodes, which are publicly available. Unfortunately, these nodes can be considered as trustful central entities. A user essentially trusts these nodes not to modify their requests, as well as not to censor operations. Additionally, community-run nodes can be unavailable in case of network partitioning. Hence, every deployment of Taia-X includes its own Tezos Full Node.
-            
-%Firstly, it helps the network to grow and implicitly makes it more secure by following the network's protocol. Secondly, users of Taia-X don't have to trust public servers to handle transactions to - and queries from the blockchain correctly. Thirdly, it keeps the user's privacy safe, because transactions are not broadcasted to a central server that can leak the user's address. Lastly, it is not complicated and very affordable to deploy a Tezos Full Node.
-
 \subsection{Decentralized Application}
 
 A \acrfull{dapp} is an application, that relies on decentralized networks, such as a blockchain, to execute backend application logic and to persist data. In this thesis, the \acrshort{dapp} consists of a frontend user interface that is connected to smart contracts on the Ethereum blockchain, more specifically the \acrshort{evm}. All smart contracts are responsible for executing the protocols in the marketplace in a trustless and censorship-resistant manner with full data integrity, as data stored on the blockchain is immutable. However, it only stores a minimum necessary amount of data to avoid blockchain bloating. Larger amounts of data are stored on other immutable decentralized storages such as IPFS, as described in section \ref{subsec:ipfs}, while leaving a related pointer on the blockchain according to the Content-Addressable Storage Pattern \cite{eberhardtBlockchainInsightsOffChaining2017}
 
-The user interface is the main component for users to interact with the marketplace, i.e. creating computation algorithms, offering computations on private datasets, browsing and filtering the marketplace for interesting offerings as well as making purchases. It is responsible for providing a holistic seamless user experience, however, this is harder to engineer compared to traditional user interfaces, as it introduces a steep learning curve for end-users to understand wallets, transactions, or gas fees among others. In the real world, it is often seen that the frontend part of a \acrshort{dapp} is hosted on centralized cloud servers. However, to be fully decentralized, \acrshort{dapp}s can also be hosted on decentralized \acrshort{p2p} networks such as IPFS, but, the initial loading time could be negatively affected, resulting in a poor user experience. In the proposed marketplace, it is not necessary to host the frontend on IPFS, as each operator hosts its own version of the frontend and doesn't need to trust any centralized servers. %It is even possible to customize the appearance of each user interface.
+The user interface is the main component for users to interact with the marketplace, i.e. creating computation algorithms, offering computations on private datasets, browsing and filtering the marketplace for interesting offerings as well as making purchases. It is responsible for providing a holistic seamless user experience, however, this is harder to engineer compared to traditional user interfaces, as it introduces a steep learning curve for end-users to understand wallets, transactions, or gas fees among others. In the real world, it is often seen that the frontend part of a \acrshort{dapp} is hosted on centralized cloud servers. However, to be fully decentralized, \acrshort{dapp}s can also be hosted on decentralized \acrshort{p2p} networks such as IPFS, but, the initial loading time could be negatively affected, resulting in a poor user experience. In the proposed marketplace, it is not necessary to host the frontend on IPFS, as each operator hosts its own version of the frontend and doesn't need to trust any centralized servers.
             
 \subsection{Blockchain Indexer}
 \label{subsec:indexer}
@@ -54,8 +46,6 @@ However, the majority of \acrshort{dapp}'s are connected to public centralized b
 Storing large amounts of data on the blockchain is very expensive and limited due to block size and gas limitations. For this reason, the proposed marketplace requires a large number of files to be stored on \emph{off-chain} storage. Typical off-chain storage services such as Amazon AWS S3\footnote{https://aws.amazon.com/de/s3/}, Azure Blob Storage\footnote{https://azure.microsoft.com/en-in/services/storage/blobs/} and Google Cloud Storage\footnote{https://cloud.google.com/storage} are easy to use, but they have some significant drawbacks. A cloud storage service is a trusted central third-party system that can be very expensive, vulnerable to cyber-attacks, and unavailable in the event of network partitioning. It also poses a vendor lock-in, making it difficult and costly to switch. Likewise, data stored on cloud storage is not immutable.
 
 The \acrfull{ipfs} is a decentralized peer-to-peer hypermedia protocol for storing and accessing content-addressable files in a distributed file system. An \acrshort{ipfs} node can expose an API to write chunks to the node, and a gateway to read files from the node. While it is possible to leverage public \acrshort{ipfs} nodes, they can represent a single point of failure, just like any cloud storage service. For this reason, each deployment of the proposed marketplace includes an \acrshort{ipfs} node connected to the public \acrshort{ipfs} network. This not only strengthens the network and makes it more geographically diverse, but also replicates and caches files on other nodes, resulting in highly available data. In the proposed marketplace, token metadata, computation algorithms, and evidence key pairs are stored on the \acrshort{ipfs} node and addressable by a \acrfull{cid} that is stored on the blockchain. A \acrshort{cid} is an absolute pointer to the content, similar to a hash of a file, making the content behind the \acrshort{cid} immutable and unique.
-
-%The InterPlanetary File System is a decentralized peer-to-peer hypermedia protocol for storing and accessing files, websites, applications, and data. While it is possible to use some public IPFS nodes for reading from - and writing to the network, it introduces availability and trust problems, such as Cloud Storage Services. For this reason, every deployment of Taia-X includes its own IPFS node. The idea goes hand in hand with running a Blockchain Full Node with each deployment. It is a trustless and highly available node, which helps the network to grow with cheap operating costs. Providers essentially use their local IPFS node to upload token metadata and preview files for each dataset. When other users explore the marketplace of Taia-X and query token metadata, their IPFS node caches the files, making it more and more available and distributed across the planet. This makes it very unlikely that token metadata and preview files ever get lost.
             
 \subsection{Compute Service}
 \label{subsec:compute}
@@ -83,8 +73,31 @@ In the proposed marketplace, raw datasets never leave the seller's boundaries to
 \section{Exchange Flow}
 \label{section:exchange}
 
+vllt version mit fairswap blackbox und das hier in appendix?
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=14cm]{images/protocol.png}
+    \caption[High Level Software Architecture Diagram of Taia-X]{High Level Software Architecture Diagram of Taia-X including the Data Flow}
+    \label{fig:arch}
+\end{figure}
+
 \subsection{Order Lifecycle}
 \label{subsection:lifecycle}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=3.5cm]{images/lifecycle.png}
+    \caption[High Level Software Architecture Diagram of Taia-X]{High Level Software Architecture Diagram of Taia-X including the Data Flow}
+    \label{fig:arch}
+\end{figure}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=12cm]{images/architecture.png}
+    \caption[High Level Software Architecture Diagram of Taia-X]{High Level Software Architecture Diagram of Taia-X including the Data Flow}
+    \label{fig:arch}
+\end{figure}
 
 \subsection{Abbruchbedingungen}
 \label{subsection:cancel}
