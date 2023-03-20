@@ -5,6 +5,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
+import "hardhat-contract-sizer";
 
 dotenv.config();
 
@@ -30,9 +31,7 @@ const config: HardhatUserConfig = {
   networks: {
     local: {
       url: "http://127.0.0.1:8545",
-      gas: 10000000,
-      blockGasLimit: 300000,
-      allowUnlimitedContractSize: true,
+      blockGasLimit: 30_000_000,
     },
     goerli: {
       url:
@@ -46,16 +45,22 @@ const config: HardhatUserConfig = {
     },
   },
   gasReporter: {
-    enabled: false,
-    token: "ETH",
-    currency: "EUR",
-    gasPrice: 21,
-    coinmarketcap: process.env.COINMARKETCAP_KEY,
+    enabled: true,
+    token: "MATIC",
+    currency: "USD",
+    gasPrice: 129,
+    coinmarketcap: "3f8bf723-10ad-422d-b62f-7550e4af730c",
   },
   etherscan: {
     apiKey: {
       goerli: process.env.ALCHEMY_GOERLI_KEY || "",
     },
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
   },
 };
 
