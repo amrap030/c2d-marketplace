@@ -39,7 +39,7 @@ A simulation of the marketplace is conducted on a single machine, specifically a
 
 \section{Computational Costs}
 
-To evaluate the computational performance of system components in the marketplace, on-chain and off-chain computations are observed. Off-chain computations are measured in terms of computation time, the average memory consumption, the number of constraints in the R1CS, and the size of resulting artifacts on the disc. On-chain computations are measured in Gas, to indicate the amount of computational effort, required to execute transactions on the Ethereum blockchain. Therefore, Gas converts into real costs and is denoted in gwei which is a denomination of Ethereum's native coin. Accordingly, 1 gwei is equal to 0.000000001 ETH (10\textsuperscript{-9} ETH). Experiments are conducted with varying numbers of batches as depicted in table \ref{tab:batches}, each comprising 32 records of positive integer values. (Info about SUM + gas units genauer (gas nicht gleich gwei))
+To evaluate the computational performance of the system components in the marketplace, on-chain and off-chain computations are observed. Off-chain computations are measured in terms of computation time, the average memory consumption, the number of constraints in the R1CS, and the size of resulting artifacts on the disc. On-chain computations are measured in Gas, to indicate the amount of computational effort, required to execute transactions on the Ethereum blockchain. Therefore, Gas converts into real costs and is denoted in gwei\footnote{Gwei is a denomination of Ethereum's native coin Ether (ETH), where 1 gwei is equal to 0.000000001 ETH (10\textsuperscript{-9} ETH)}. Experiments are conducted with varying numbers of batches as depicted in table \ref{tab:batches}, each comprising 32 records of positive integer values. (Info about SUM + gas units genauer (gas nicht gleich gwei))
 
 \begin{xltabular}{\textwidth}{lccccc}
 \toprule
@@ -65,7 +65,7 @@ To evaluate the computational performance of system components in the marketplac
 \caption{TODO TODO TODO!} \label{tab:batches}
 \end{xltabular}%
 
-The \emph{setup phase} consists of two off-chain computations, i.e. the compilation of the ZoKrates program into a \acrshort{r1cs} and the generation of an evidence key pair, denoted as the \emph{setup} in Figure \ref{fig:setup-phase}. While the number of constraints and the size of the compiled \acrshort{r1cs} behave rather linear, the compilation time increases rather exponentially. Unexpectedly, the pattern of memory consumption during compilation is different for the highest number of batches, which actually consumes the second least amount of memory on average across all numbers of batches. Peaks are reached with 4 and 8 batches at a memory consumption of more than 8 GB. On the test system at most 24 batches are successfully compiled, while the next larger number of batches ran out of memory.
+The \emph{setup phase} consists of two off-chain computations, i.e. compiling the ZoKrates program into a \acrshort{r1cs} and the generation of an evidence key pair, denoted as the \emph{setup} in Figure \ref{fig:setup-phase}. While the number of constraints and the size of the compiled \acrshort{r1cs} behave rather linear, the compilation time increases rather exponentially. Unexpectedly, the pattern of memory usage at compile time only differs for the highest number of batches, while it actually uses less memory on average than lower numbers of batches. Peaks are reached with 4 and 8 batches at a memory consumption of more than 8 GB. On the test system at most 24 batches are successfully compiled, while the next larger number of batches ran out of memory.
 
 The time for the creation of an evidence key pair (setup), and the size of the proving key are mostly linear to the increasing number of batches. In contrast, the size of the generated verification key increases logarithmically, which is expected to keep the smart contract size and deployment costs low.
 
@@ -88,7 +88,9 @@ The time for the creation of an evidence key pair (setup), and the size of the p
     \label{fig:setup-phase}
 \end{figure}
 
-In addition to the off-chain computations, the setup phase includes the deployment of the on-chain verifier. Although the size of the verification key is relatively small, it takes up a significant amount of space in the resulting smart contract. The Ethereum mainnet introduced a smart contract size limit of 24.576 KB with EIP-170\footnote{https://eips.ethereum.org/EIPS/eip-170} in the Spurious Dragon hard-fork. While the verifier is converted to bytecode prior to deployment, thereby significantly reducing its size, the last two numbers of batches exceed the contract size limit due to large verification keys. This introduces an unexpected limit to the overall protocol as these verifiers cannot be deployed on the Ethereum blockchain. However, the verifier for the highest possible number of batches requires 3765288 Gas, which is rather expensive and approximately 12.5\% of the current 30 million block gas limit on the mainnet.
+In addition to the off-chain computations, the setup phase includes the deployment of the on-chain verifier. Although the size of the verification key is relatively small, it takes up a significant amount of space in the resulting smart contract. The Ethereum mainnet introduced a smart contract size limit of 24.576 KB with EIP-170\footnote{https://eips.ethereum.org/EIPS/eip-170} in the Spurious Dragon hard-fork. While the compiled verifier is converted to bytecode prior to deployment, thereby significantly reducing its size, 16 batches exceed the contract size limit by \textasciitilde 10 KB due to a large verification key. This introduces an unexpected limit to the overall protocol as the verifier cannot be deployed on the Ethereum blockchain. However, the verifier for the next lower number of batches in Table \ref{tab:methods} requires 4219202 Gas, which is rather expensive and approximately 14\% of the current 30 million block gas limit on the mainnet.
+
+The \emph{proving phase} consists of three off-chain computations, i.e. compiling the ZoKrates program into a \acrshort{r1cs}, witness generation, and proof generation. As shown in Figure \ref{fig:proving-phase}, the witness generation clearly consumes the least amount of memory. While the memory consumption increases linearly to the number of batches, it remains below 300 MB. In addition, witness generation is quite fast compared to the other off-chain computations. On the other hand, proof generation is a very memory-intensive computation, peaking at more than 7 GB for 16 batches. In the \emph{proving phase}, the verification of the proof is executed on-chain. It is the most expensive of all on-chain transactions in the protocol and is referred to as the \texttt{proofComputation} method in Table \ref{tab:methods}.
 
 \begin{figure}[h]
     \centering
@@ -106,10 +108,35 @@ In addition to the off-chain computations, the setup phase includes the deployme
         \label{fig:y equals x}
     \end{subfigure}
     \caption{Three simple graphs}
-    \label{fig:three graphs}
+    \label{fig:proving-phase}
 \end{figure}
 
-tabelle mit gas kosten
+All the other on-chain transactions within the protocol require rather small amounts of Gas, as shown in Table \ref{tab:methods}. The \texttt{createOrder} transaction requires more Gas, as it stores a fairly large struct in the blockchain's storage. The \texttt{cloneContract} transaction requires even more Gas, however, it effectively deploys a new \texttt{ERC721Template} contract with only 317566 - as opposed to 2252199 Gas. This is a significant reduction of \textasciitilde 86\% smaller due to the minimal proxy design pattern.
+
+\begin{xltabular}{\textwidth}{lccccc}
+\toprule
+\textbf{Batches [\#]} & \textbf{1} & \textbf{2} & \textbf{4} & \textbf{8} & \textbf{16} \\ \midrule
+\textbf{Methods} & & & & & \\ \midrule
+\endfirsthead
+
+\multicolumn{4}{c}%
+{\tablename\ \thetable{} -- continued from previous page}\vspace{2mm} \\
+\endhead
+    cloneContract & 317566 & - & - & - & - \\
+    buy & 40220 & - & - & - & - \\
+    complainAboutRoot & 59088 & - & - & - & - \\
+    createOffer & 84870 & - & - & - & - \\
+    createOrder & 190627 & - & - & - & - \\
+    proofComputation & 556951 & - & - & - & - \\
+    refund & 75860 & - & - & - & - \\
+    reveal & 61428 & - & - & - & - \\ \midrule
+    \textbf{Deployments} & & & & & \\ \midrule
+    ERC721Template & 2252199 & - & - & - & - \\
+    ERC721Factory & 514108 & - & - & - & - \\
+    Marketplace & 1656611 & - & - & - & - \\
+    Verifier & 1314383 & 1729682 & 2559170 & 4219202 & - \\ \bottomrule
+\caption{TODO TODO TODO!} \label{tab:methods}
+\end{xltabular}%
 
 \section{Practical Feasibility}
 
@@ -131,5 +158,6 @@ geometrische folge 2^n
 
 - feasibility
 - threat model
+- prices
 
 extra chapter?
