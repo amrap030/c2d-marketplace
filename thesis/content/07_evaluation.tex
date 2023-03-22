@@ -1,30 +1,32 @@
 \chapter{Evaluation}
 \label{cha:evaluation}
 
-The outcome of this thesis will be evaluated according to predetermined functional and non-functional requirements. As already described in the previous sections, this thesis aims to enhance \emph{Privacy}, \emph{Fairness} and \emph{Regulation} in blockchain-based data trading platforms by combining Compute-to-Data and Verifiable Off-chain Computation. These 3 requirements are hard to measure numerically, but the evaluation will include an in-depth discussion about the pros and cons of the proposed system design accordingly, and compared to related work. %However, if I manage to implement verifiable Differential Privacy, privacy gets indeed measurable. % Possibly in form of Threat Model?
+This paper proposes a novel approach for a blockchain-based data marketplace with \acrfull{c2d}, to exchange computations on private datasets. 
 
-The second part of the evaluation will include multiple benchmarks with regards to the practicality, also referred as efficiency, of the proposed system design. Interestingly, \emph{Efficiency} is one of the key features of any digital data trading platform as depicted in chapter \ref{chapter:problem}. %Hence, the result of this evaluation will provide a decent proposition about the real 
-Therefore, I will analyze efficiency of on-chain and off-chain components individually, according to costs, scalability and computation time.
+%The outcome of this thesis will be evaluated according to predetermined functional and non-functional requirements. As already described in the previous sections, this thesis aims to enhance \emph{Privacy}, \emph{Fairness} and \emph{Regulation} in blockchain-based data trading platforms by combining Compute-to-Data and Verifiable Off-chain Computation. These 3 requirements are hard to measure numerically, but the evaluation will include an in-depth discussion about the pros and cons of the proposed system design accordingly, and compared to related work. %However, if I manage to implement verifiable Differential Privacy, privacy gets indeed measurable. % Possibly in form of Threat Model?
 
-One of the most suitable measurements for on-chain components are the costs for each transaction, with regards to gas fees. This is important because the proposed system design is only feasible as a real-world system when costs are reasonably low for the buyer and seller. Since the Blockchain is primarily used to secure the protocol, costs can be compared to conventional buyer and seller protection systems from Ebay or PayPal for example. The most important on-chain transaction will probably be the verification of the zero-knowledge proof, which has to be cheaper than the on-chain execution in the first place. Benchmarks will vary in the size of the dataset and the computation algorithm.
+%The second part of the evaluation will include multiple benchmarks with regards to the practicality, also referred as efficiency, of the proposed system design. Interestingly, \emph{Efficiency} is one of the key features of any digital data trading platform as depicted in chapter \ref{chapter:problem}. %Hence, the result of this evaluation will provide a decent proposition about the real 
+%Therefore, I will analyze efficiency of on-chain and off-chain components individually, according to costs, scalability and computation time.
 
-The second analysis includes the evaluation of off-chain components. According to that, the ZKP, which is composed of different phases, is the most important evaluation. I will benchmark especially the time for the one-time setup as well as the proof generation time. The proof generation time will probably have the most impact on the practicality of the proposed system design. Benchmarks will again vary in the size of the dataset and the computation algorithm. Furthermore, I will take the underlying hardware with regards to the computational power into account for this analysis. 
+%One of the most suitable measurements for on-chain components are the costs for each transaction, with regards to gas fees. This is important because the proposed system design is only feasible as a real-world system when costs are reasonably low for the buyer and seller. Since the Blockchain is primarily used to secure the protocol, costs can be compared to conventional buyer and seller protection systems from Ebay or PayPal for example. The most important on-chain transaction will probably be the verification of the zero-knowledge proof, which has to be cheaper than the on-chain execution in the first place. Benchmarks will vary in the size of the dataset and the computation algorithm.
 
-The entire system can be measured in the overall time and amount of exchanged messages until the trade between buyer and seller is completely fulfilled. All benchmarks can be compared to conventional data marketplaces as well as related work, and used to construct suggestions to improve the system design in future work.
+%The second analysis includes the evaluation of off-chain components. According to that, the ZKP, which is composed of different phases, is the most important evaluation. I will benchmark especially the time for the one-time setup as well as the proof generation time. The proof generation time will probably have the most impact on the practicality of the proposed system design. Benchmarks will again vary in the size of the dataset and the computation algorithm. Furthermore, I will take the underlying hardware with regards to the computational power into account for this analysis. 
 
-THREAT MODEL?
-    sybill
+%The entire system can be measured in the overall time and amount of exchanged messages until the trade between buyer and seller is completely fulfilled. All benchmarks can be compared to conventional data marketplaces as well as related work, and used to construct suggestions to improve the system design in future work.
+
+%THREAT MODEL?
+%    sybill
     
     
-GAS COSTS
+%GAS COSTS
 
-EXECUTION TIME
+%EXECUTION TIME
 
-INFRASTRUCTURE COSTS
+%INFRASTRUCTURE COSTS
 
-ZKP'S
+%ZKP'S
 
-REQUIREMENTS
+%REQUIREMENTS
 
 % https://ethgasstation.info/ for price evaluations
 \section{Dataset}
@@ -62,10 +64,10 @@ To evaluate the computational performance of the system components in the market
     Proof Time [seconds] & 14.259 & 18.158 & 30.908 & 59.524 & 131.485 \\
     Proof Memory [GB] & 1.240 & 1.730 & 2.694 & 3.439 & 3.029
     \\ \bottomrule
-\caption{TODO TODO TODO!} \label{tab:batches}
+\caption[Computational performance of off-chain computations]{Computational performance of off-chain computations in the proposed marketplace for a sum with varying numbers of batches, each comprising 32 records of positive integer values. Time is measured in seconds (s) while resulting artifacts on the disc are measured in Gigabytes (GB), Megabytes (MB), or Kilobytes (KB).} \label{tab:batches}
 \end{xltabular}%
 
-The \emph{setup phase} consists of two off-chain computations, i.e. compiling the ZoKrates program into a \acrshort{r1cs} and the generation of an evidence key pair, denoted as the \emph{setup} in Figure \ref{fig:setup-phase}. While the number of constraints and the size of the compiled \acrshort{r1cs} behave rather linear, the compilation time increases rather exponentially. Unexpectedly, the pattern of memory usage at compile time only differs for the highest number of batches, while it actually uses less memory on average than lower numbers of batches. Peaks are reached with 4 and 8 batches at a memory consumption of more than 8 GB. On the test system at most 24 batches are successfully compiled, while the next larger number of batches ran out of memory.
+The \emph{setup phase} consists of two off-chain computations, i.e. compiling the ZoKrates program into a \acrshort{r1cs} and the generation of an evidence key pair (setup), as depicted in Figure \ref{fig:setup-phase}. While the number of constraints and the size of the compiled \acrshort{r1cs} behave rather linear, the compilation time increases rather exponentially. Unexpectedly, the pattern of memory usage at compile time only differs for the highest number of batches, while it actually uses less memory on average than lower numbers of batches. Peaks are reached with 4 and 8 batches at a memory consumption of more than 8 GB. On the test system at most 24 batches are successfully compiled, while the next larger number of batches ran out of memory.
 
 The time for the creation of an evidence key pair (setup), and the size of the proving key are mostly linear to the increasing number of batches. In contrast, the size of the generated verification key increases logarithmically, which is expected to keep the smart contract size and deployment costs low.
 
@@ -74,21 +76,21 @@ The time for the creation of an evidence key pair (setup), and the size of the p
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=1\textwidth]{benchmarks/compilation.pdf}
-        \caption{$y=x$}
+        \caption{Memory requirements for the compilation of a sum with 1, 2, 4, 8 \& 16 batches, each comprising 32 records of positive integer values.}
         \label{fig:y equals x}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=1\textwidth]{benchmarks/setup.pdf}
-        \caption{$y=x$}
+        \caption{Memory requirements for the creation of an evidence key pair of a sum with 1, 2, 4, 8 \& 16 batches, each comprising 32 records of positive integer values.}
         \label{fig:setup-graph}
     \end{subfigure}
-    \caption{Three simple graphs}
+    \caption{Memory requirements of compilation and setup with different numbers of batches.}
     \label{fig:setup-phase}
 \end{figure}
 
-In addition to the off-chain computations, the setup phase includes the deployment of the on-chain verifier. Although the size of the verification key is relatively small, it takes up a significant amount of space in the resulting smart contract. The Ethereum mainnet introduced a smart contract size limit of 24.576 KB with EIP-170\footnote{https://eips.ethereum.org/EIPS/eip-170} in the Spurious Dragon hard-fork. While the compiled verifier is converted to bytecode prior to deployment, thereby significantly reducing its size, 16 batches exceed the contract size limit by \textasciitilde 10 KB due to a large verification key. This introduces an unexpected limit to the overall protocol as the verifier cannot be deployed on the Ethereum blockchain. However, the verifier for the next lower number of batches in Table \ref{tab:methods} requires 4219202 Gas, which is rather expensive and approximately 14\% of the current 30 million block gas limit on the mainnet.
+In addition to the off-chain computations, the \emph{setup phase} includes the deployment of the on-chain verifier. Although the size of the verification key is relatively small, it takes up a significant amount of space in the resulting smart contract. The Ethereum mainnet introduced a smart contract size limit of 24.576 KB with EIP-170\footnote{https://eips.ethereum.org/EIPS/eip-170} in the Spurious Dragon hard-fork. While the compiled verifier is converted to bytecode prior to deployment, thereby significantly reducing its size, 16 batches exceed the contract size limit by \textasciitilde 10 KB due to a large verification key. This introduces an unexpected limit to the overall protocol as the verifier cannot be deployed on the Ethereum blockchain. The remaining deployable verifier contracts are rather expensive with a maximum of 4219202 Gas, which is about \textasciitilde 14\% of the current 30 million block gas limit on the mainnet.
 
 The \emph{proving phase} consists of three off-chain computations, i.e. compiling the ZoKrates program into a \acrshort{r1cs}, witness generation, and proof generation. As shown in Figure \ref{fig:proving-phase}, the witness generation clearly consumes the least amount of memory. While the memory consumption increases linearly to the number of batches, it remains below 300 MB. In addition, witness generation is quite fast compared to the other off-chain computations. On the other hand, proof generation is a very memory-intensive computation, peaking at more than 7 GB for 16 batches. In the \emph{proving phase}, the verification of the proof is executed on-chain. It is the most expensive of all on-chain transactions in the protocol and is referred to as the \texttt{proofComputation} method in Table \ref{tab:methods}.
 
@@ -97,21 +99,21 @@ The \emph{proving phase} consists of three off-chain computations, i.e. compilin
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=1\textwidth]{benchmarks/witness.pdf}
-        \caption{$y=x$}
+        \caption{Memory requirements for the witness-computation of a sum with 1, 2, 4, 8 \& 16 batches, each comprising 32 records of positive integer values.}
         \label{fig:y equals x}
     \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=1\textwidth]{benchmarks/proof.pdf}
-        \caption{$y=x$}
+        \caption{Memory requirements for the proof-generation of a sum with 1, 2, 4, 8 \& 16 batches, each comprising 32 records of positive integer values.}
         \label{fig:y equals x}
     \end{subfigure}
-    \caption{Three simple graphs}
+    \caption{Memory requirements of witness-computation and proof-generation with different numbers of batches.}
     \label{fig:proving-phase}
 \end{figure}
 
-All the other on-chain transactions within the protocol require rather small amounts of Gas, as shown in Table \ref{tab:methods}. The \texttt{createOrder} transaction requires more Gas, as it stores a fairly large struct in the blockchain's storage. The \texttt{cloneContract} transaction requires even more Gas, however, it effectively deploys a new \texttt{ERC721Template} contract with only 317566 - as opposed to 2252199 Gas. This is a significant reduction of \textasciitilde 86\% smaller due to the minimal proxy design pattern.
+All the other on-chain transactions within the protocol require rather small amounts of Gas, as shown in Table \ref{tab:methods}. The \texttt{createOrder} transaction requires more Gas, presumably because it stores a fairly large struct in the blockchain's storage. Moreover, the \texttt{cloneContract} transaction requires even more Gas, however, it effectively deploys a new \texttt{ERC721Template} contract with only 317566 - as opposed to 2252199 Gas originally. This is a significant reduction of \textasciitilde 86\% due to the minimal proxy design pattern.
 
 \begin{xltabular}{\textwidth}{lccccc}
 \toprule
@@ -122,23 +124,54 @@ All the other on-chain transactions within the protocol require rather small amo
 \multicolumn{4}{c}%
 {\tablename\ \thetable{} -- continued from previous page}\vspace{2mm} \\
 \endhead
-    cloneContract & 317566 & - & - & - & - \\
     buy & 40220 & - & - & - & - \\
     complainAboutRoot & 59088 & - & - & - & - \\
+    reveal & 61428 & - & - & - & - \\
+    refund & 75860 & - & - & - & - \\
     createOffer & 84870 & - & - & - & - \\
     createOrder & 190627 & - & - & - & - \\
-    proofComputation & 556951 & - & - & - & - \\
-    refund & 75860 & - & - & - & - \\
-    reveal & 61428 & - & - & - & - \\ \midrule
+    cloneContract & 317566 & - & - & - & - \\
+    proofComputation & 556951 & - & - & - & - \\ \midrule
     \textbf{Deployments} & & & & & \\ \midrule
-    ERC721Template & 2252199 & - & - & - & - \\
     ERC721Factory & 514108 & - & - & - & - \\
+    Verifier & 1314383 & 1729682 & 2559170 & 4219202 & - \\
     Marketplace & 1656611 & - & - & - & - \\
-    Verifier & 1314383 & 1729682 & 2559170 & 4219202 & - \\ \bottomrule
-\caption{TODO TODO TODO!} \label{tab:methods}
+    ERC721Template & 2252199 & - & - & - & - \\ \bottomrule
+\caption[Average amount of utilized Gas for on-chain transactions and deployments]{Average amount of utilized Gas in gwei for on-chain transactions and deployments according to varying numbers of batches in the proposed marketplace.} \label{tab:methods}
 \end{xltabular}%
 
 \section{Practical Feasibility}
+
+\subsection{Protocol Duration}
+\label{subsec:duration}
+
+The \emph{protocol duration} is defined as the time $t_{protocol}$ that elapses between each purchase of a computation and the receipt of the computational result in clear text. Within this time, several on- and off-chain computations are performed, however, most of them are negligible, as they require minimal computational efforts of seconds or even milliseconds. Accordingly, this converges to the time required for the \acrshort{zkp}, i.e. compilation $t_{compilation}$, generation of an evidence key pair $t_{setup}$, computation of the witness $t_{witness}$, and generation of the proof $t_{proof}$. The compilation and setup is performed once by the buyer, while the compilation is performed a second time by the seller, followed by the computation of the witness and the generation of the proof. In addition, the FairSwap protocol adds several timeouts of equal length, denoted by $t_{timeout}$, leading to the following Equation \ref{eq:full}.
+
+\begin{equation}\label{eq:full}
+t_{protocol} = t^{B}_{compilation} + t^{B}_{setup} + t^{S}_{compilation} + t^{S}_{witness} + t^{S}_{proof} + t^{B}_{timeout} + t^{S}_{timeout}
+\end{equation}
+
+Since the compilation depends on the underlying hardware of the system, which may be different for buyers and sellers, Equation \ref{eq:full} cannot be simplified any further. In addition, buyers and sellers may require different amounts of time for the next step in the protocol, leading to different timeouts for each party. Currently, the maximum timeout in the experimental setup is set to $\max{t_{timeout}} = 1$ hour. Assuming the same system for both buyer and seller and the full utilization of timeouts by both parties, the maximum protocol duration for each number of batches in the experimental setup is shown in the following Equation \ref{eq:max}.
+
+\begin{equation}\label{eq:max}
+\max{t_{timeout}} = \begin{cases}
+\approx 7276.52s \approx 2.02h & \text{$\# batches = 1$;}\\
+\approx 7311.39s \approx 2.03h & \text{$\# batches = 2$;}\\
+\approx 7389.69s \approx 2.05h & \text{$\# batches = 4$;}\\
+\approx 7594.83s \approx 2.11h & \text{$\# batches = 8$.}
+\end{cases}
+\end{equation}
+%\begin{equation}
+%t_{protocol} = 2t_{compilation} + t^{B}_{setup} + t^{S}_{witness} + t^{S}_{proof} + 2t_{timeout}
+%\end{equation}
+
+As shown above, the timeout can currently represent a large overhead in the overall protocol duration, if fully utilized by both parties. Although the marketplace can be designed to set an individual timeout for each trade in the protocol, it cannot be 0 or near 0. This ensures that both buyers and sellers equally have a fair chance to execute the next step in the protocol. If the chance is missed, the other party is always able to get a refund back from the marketplace. However, a reasonable and acceptable timeout for the marketplace participants must be determined.
+
+\subsection{Financial Costs}
+\label{subsec:financial}
+
+\subsection{Number of interactions}
+\label{subsec:duration}
 
 - roundtrip time
 - prices
