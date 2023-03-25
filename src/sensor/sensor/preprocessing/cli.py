@@ -1,13 +1,17 @@
 from argparse import ArgumentParser, Namespace
-from zokrates import write_zokrates_input
+from zokrates import write_zokrates_input, createMerkleRoot
 
 parser = ArgumentParser()
 
 parser.add_argument('-i', '--input', type=int, nargs='+')
+parser.add_argument('-m', '--merkle', action='store_true')
 
 args: Namespace = parser.parse_args()
 
-print(" ".join(write_zokrates_input(args.input)))
+if args.merkle == True:
+    print(" ".join(createMerkleRoot(args.input)))
+else:
+    print(" ".join(write_zokrates_input(args.input)))
 
 # example
 # 
