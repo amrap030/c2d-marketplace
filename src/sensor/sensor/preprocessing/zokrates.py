@@ -32,6 +32,22 @@ def write_zokrates_input(numbers: list[int]):
         write_signature_for_zokrates_cli(verifyKey, signature, sha256_hash)
     ]
 
+def createMerkleRoot(numbers: list[int]):
+    num_bytes = [int.to_bytes(num, 4, "big") for num in numbers]
+    leafs = [hashlib.sha256(b"".join(num_bytes[i*32:i*32+32])).digest() for i in range(len(numbers)//32)]
+    offset = 0
+
+    for _ in range(len(leafs)-1):
+        leafs.append(hashlib.sha256(b"".join([leafs[offset], leafs[offset+1]])).digest())
+        offset += 2
+
+    msg = leafs[len(leafs)-1] + leafs[len(leafs)-1]
+    signature = signKey.sign(msg)
+    return [
+        " ".join([str(i) for i in struct.unpack(">%dI" % len(numbers), get_bytes_packed(numbers))][-len(numbers):]),
+        write_signature_for_zokrates_cli(verifyKey, signature, msg)
+    ]
+
 def write_signature_for_zokrates_cli(pk, sig, msg):
     "Writes the input arguments for verifyEddsa in the ZoKrates stdlib to file."
     sig_R, sig_S = sig
@@ -41,5 +57,5 @@ def write_signature_for_zokrates_cli(pk, sig, msg):
     M1 = msg.hex()[64:]
     b0 = [str(int(M0[i:i+8], 16)) for i in range(0,len(M0), 8)]
     b1 = [str(int(M1[i:i+8], 16)) for i in range(0,len(M1), 8)]
-    args = args + " " + " ".join(b0 + b1)
+    args = args + " " + " ".join(b0)
     return args
