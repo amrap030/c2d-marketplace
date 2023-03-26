@@ -1,0 +1,68 @@
+import "hashes/sha256/1024bitPadded.code" as sha256_1024;
+import "hashes/sha256/512bitPadded.code" as sha256_512;
+import "hashes/sha256/256bitPadded.code" as sha256_256;
+import "signatures/verifyEddsa.code" as verifyEddsa;
+import "ecc/babyjubjubParams.code" as context;
+import "utils/pack/u32/nonStrictUnpack256.code" as unpack;
+import "utils/pack/u32/pack256.code" as pack256;
+import "utils/casts/u32_to_field.code" as u32_to_field;
+from "ecc/babyjubjubParams" import BabyJubJubParams;
+
+const u32 NUM_VALUES = 256;
+const u32 NUM_LEAFS = NUM_VALUES / 32;
+const u32 SIZE = NUM_LEAFS * 2 - 1;
+
+// encode all input values to form the leafs of the merkle tree
+// assumption: number of values (N) must be a multitude of 64
+def encodeLeafs<N, T, P>(u32[N] values) -> u32[P][8] {
+    u32[P][8] mut list = [[0x00000000; 8]; P];
+
+    for u32 i in 0..T {
+        u32[8] s = sha256_1024(values[i*32..i*32+8],values[i*32+8..i*32+16],values[i*32+16..i*32+24],values[i*32+24..i*32+32]);
+        list[i] = s;
+    }
+
+    return list;
+}
+
+// generate merkle root hash for arbitrary values
+// assumption: number of leafs (P) in the merkle tree must be a multiple of 2
+def makeRoot<T, P>(u32[P][8] mut values) -> u32[8] {
+    u32 mut offset = 0;
+
+    for u32 i in 0..T-1 {
+        values[i+T] = sha256_512(values[offset],values[offset+1]);
+        offset = offset + 2;
+    }
+
+    return values[P-1];
+}
+
+def main(private u32[NUM_VALUES] values, private field nonce, private field[2] R, private field S, field[2] A, u32[8] M) -> field {
+    // verify signature of the message M
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R, S, A, M, M, context);
+    assert(isVerified);
+    
+    // generate merkle root hash of private input values
+    u32[SIZE][8] mut encoded_leafs = encodeLeafs::<NUM_VALUES, NUM_LEAFS, SIZE>(values);
+    u32[8] root = makeRoot::<NUM_LEAFS, SIZE>(encoded_leafs);
+    
+    // check integrity of private input values
+    bool isHashMatching = root == M;
+    assert(isHashMatching);
+
+    // calculate the sum
+    field mut sum = 0;
+    for u32 i in 0..NUM_VALUES {
+        sum = sum + u32_to_field(values[i]);
+    }
+    log("[Witness] result={}", sum);
+
+    // obfuscate plain text result and prepare root hash for FairSwap
+    u32[8] h_computation = sha256_256(unpack(sum));
+    u32[8] h_nonce = sha256_256(unpack(nonce));
+    field result = pack256(sha256_512(h_computation, h_nonce));
+
+    return result;
+}

@@ -1,14 +1,16 @@
 {
-  "name": "benchmarks",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "hardhat-project",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "hh-node": "hardhat node",
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test-coverage": "hardhat coverage",
+    "test-and-coverage": "hardhat test && hardhat coverage"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "eth-gas-reporter": "^0.2.25"
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "hardhat": "^2.13.0",
+    "hardhat-contract-sizer": "^2.8.0",
+    "hardhat-gas-reporter": "^1.0.9"
   }
 }
