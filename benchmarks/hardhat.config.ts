@@ -4,7 +4,22 @@ import "hardhat-gas-reporter";
 import "hardhat-contract-sizer";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.17",
+  solidity: {
+    version: "0.8.19",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
+  defaultNetwork: "local",
+  networks: {
+    local: {
+      url: "http://127.0.0.1:8545",
+      blockGasLimit: 30_000_000,
+    },
+  },
   gasReporter: {
     enabled: true,
     token: "ETH",
@@ -15,7 +30,7 @@ const config: HardhatUserConfig = {
   contractSizer: {
     alphaSort: true,
     disambiguatePaths: false,
-    runOnCompile: false,
+    runOnCompile: true,
     strict: true,
   },
 };
