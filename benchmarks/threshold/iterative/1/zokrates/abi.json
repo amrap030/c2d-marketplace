@@ -1,0 +1,58 @@
+{
+  "inputs": [
+    {
+      "name": "values",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 32,
+        "type": "u32"
+      }
+    },
+    {
+      "name": "threshold",
+      "public": true,
+      "type": "u32"
+    },
+    {
+      "name": "nonce",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "R",
+      "public": false,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "S",
+      "public": false,
+      "type": "field"
+    },
+    {
+      "name": "A",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 2,
+        "type": "field"
+      }
+    },
+    {
+      "name": "M",
+      "public": true,
+      "type": "array",
+      "components": {
+        "size": 8,
+        "type": "u32"
+      }
+    }
+  ],
+  "output": {
+    "type": "field"
+  }
+}

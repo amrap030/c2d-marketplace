@@ -48,7 +48,7 @@ const config: HardhatUserConfig = {
     enabled: true,
     token: "MATIC",
     currency: "USD",
-    gasPrice: 129,
+    gasPrice: 250,
     coinmarketcap: "3f8bf723-10ad-422d-b62f-7550e4af730c",
   },
   etherscan: {

@@ -1,0 +1,46 @@
+import "hashes/sha256/1024bitPadded.code" as sha256_1024;
+import "hashes/sha256/512bitPadded.code" as sha256_512;
+import "hashes/sha256/256bitPadded.code" as sha256_256;
+import "signatures/verifyEddsa.code" as verifyEddsa;
+import "ecc/babyjubjubParams.code" as context;
+import "utils/pack/u32/nonStrictUnpack256.code" as unpack;
+import "utils/pack/u32/pack256.code" as pack256;
+import "utils/casts/u32_to_field.code" as u32_to_field;
+from "ecc/babyjubjubParams" import BabyJubJubParams;
+
+const u32 NUM_VALUES = 32;
+
+def main(private u32[32] mut values, private field nonce, private field[2] R, private field S, field[2] A, u32[8] M) -> field {
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R, S, A, M, M, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[0..8],values[8..16],values[16..24],values[24..32]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M;
+    assert(isHashMatching);
+
+    // bubblesort
+    for u32 i in 0..NUM_VALUES-1 {
+        for u32 j in 0..NUM_VALUES-i-1 {
+            u32 temp = values[j];
+            values[j] = values[j] > values[j + 1] ? values[j+1] : values[j];
+            values[j+1] = temp > values[j] ? temp : values[j + 1];
+        }
+    }
+
+    // calculate median
+    field median = NUM_VALUES % 2 == 0 ? u32_to_field((values[NUM_VALUES / 2 - 1] + values[32 / 2]) / 2) : u32_to_field(values[NUM_VALUES / 2]);
+    log("[Witness] result={}", median);
+
+    // create merkle tree
+    u32[8] h_computation = sha256_256(unpack(median));
+    u32[8] h_nonce = sha256_256(unpack(nonce));
+
+    field result = pack256(sha256_512(h_computation, h_nonce));
+
+    return result;
+}

@@ -1,0 +1,56 @@
+import "hashes/sha256/1024bitPadded.code" as sha256_1024;
+import "hashes/sha256/512bitPadded.code" as sha256_512;
+import "hashes/sha256/256bitPadded.code" as sha256_256;
+import "signatures/verifyEddsa.code" as verifyEddsa;
+import "ecc/babyjubjubParams.code" as context;
+import "utils/pack/u32/nonStrictUnpack256.code" as unpack;
+import "utils/pack/u32/pack256.code" as pack256;
+import "utils/casts/u32_to_field.code" as u32_to_field;
+from "ecc/babyjubjubParams" import BabyJubJubParams;
+
+def main(private u32[64] mut values, private field nonce, private field[2] R0, private field S0, field[2] A, u32[8] M1, private field[2] R1, private field S1, u32[8] M2) -> field {
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R0, S0, A, M1, M1, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[0..8],values[8..16],values[16..24],values[24..32]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M1;
+    assert(isHashMatching);
+
+    // verify signature
+    BabyJubJubParams context = context();
+    bool isVerified = verifyEddsa(R1, S1, A, M2, M2, context);
+    assert(isVerified);
+
+    // calculate hash of input values from dataset
+    u32[8] hash = sha256_1024(values[32..40],values[40..48],values[48..56],values[56..64]);
+    
+    // check integrity of input values
+    bool isHashMatching = hash == M2;
+    assert(isHashMatching);
+
+    // bubblesort (inefficient)
+    for u32 i in 0..64-1 {
+        for u32 j in 0..64-i-1 {
+            u32 temp = values[j];
+            values[j] = values[j] > values[j + 1] ? values[j+1] : values[j];
+            values[j+1] = temp > values[j] ? temp : values[j + 1];
+        }
+    }
+
+    // calculate max
+    field max = u32_to_field(values[64 - 1]);
+    log("[Witness] result={}", max);
+
+    // create merkle tree
+    u32[8] h_computation = sha256_256(unpack(max));
+    u32[8] h_nonce = sha256_256(unpack(nonce));
+
+    field result = pack256(sha256_512(h_computation, h_nonce));
+
+    return result;
+}

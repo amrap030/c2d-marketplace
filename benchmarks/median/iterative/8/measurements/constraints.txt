@@ -1,0 +1,4 @@
+Compiling /Users/kevinhertwig/master-thesis/Latex/c2d-marketplace/benchmarks/median/iterative/8/zokrates/main.zok
+
+Compiled code written to '/Users/kevinhertwig/master-thesis/Latex/c2d-marketplace/benchmarks/median/iterative/8/zokrates/out'
+Number of constraints: 4875376
