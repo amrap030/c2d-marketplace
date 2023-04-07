@@ -1,0 +1,4 @@
+Compiling /Users/kevinhertwig/master-thesis/Latex/c2d-marketplace/benchmarks/variance/merkle/2/zokrates/main.zok
+
+Compiled code written to '/Users/kevinhertwig/master-thesis/Latex/c2d-marketplace/benchmarks/variance/merkle/2/zokrates/out'
+Number of constraints: 417206

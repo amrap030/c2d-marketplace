@@ -1,0 +1,2 @@
+Compiling /Users/kevinhertwig/master-thesis/Latex/c2d-marketplace/benchmarks/median/merkle/4/zokrates/main.zok
+

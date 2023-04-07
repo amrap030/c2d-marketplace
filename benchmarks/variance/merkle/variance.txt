@@ -1,3 +1,3 @@
-proof,timestamp,deployment_gas,compiled_size,proving_key_size,verification_key_size,verifier_size
-2,1679931268,1172026,2.7G,159M,4.0K,12K
-4,1679931270,1172902,8.5G,277M,4.0K,12K
+proof,timestamp,constraints,deployment_gas,compiled_size,proving_key_size,verification_key_size,verifier_size,compiled_verifier
+2,1680782277,417206,1172902,2.7G,159M,4.0K,12K,5.062
+4,1680783503,701654,1172914,8.5G,277M,4.0K,12K,5.062
